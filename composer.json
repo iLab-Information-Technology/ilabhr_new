@@ -129,8 +129,7 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "barryvdh/laravel-ide-helper",
-                "laravel/dusk"
+                "barryvdh/laravel-ide-helper"
             ]
         }
     },
