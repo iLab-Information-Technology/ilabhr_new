@@ -34,9 +34,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Cashier::useCustomerModel(Company::class);
 
-        if (config('app.redirect_https')) {
-            \URL::forceScheme('https');
-        }
+               // Force HTTPS scheme for URLs in non-local environments
+               if (!$this->app->environment('local') && config('app.redirect_https')) {
+                URL::forceScheme('https');
+            }
 
         Schema::defaultStringLength(191);
 
