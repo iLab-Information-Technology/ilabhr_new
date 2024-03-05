@@ -18,6 +18,14 @@ class TwoFASettingController extends AccountBaseController
         $this->activeSettingMenu = '2fa_settings';
     }
 
+    public function index()
+    {
+        $user = auth()->user();
+        $pageTitle = $this->pageTitle;
+        
+        return view('auth.two-factor-authentication', compact('user', 'pageTitle'));
+    }
+
     public function verify()
     {
         $this->method = request()->method;
@@ -38,12 +46,10 @@ class TwoFASettingController extends AccountBaseController
 
         if ($currentMethod == $method && $status == 'disable') {
             $twoFaVerifyVia = null;
-
         } elseif ($currentMethod == 'both') {
 
             if ($method == 'email' && $status == 'disable') {
                 $twoFaVerifyVia = 'google_authenticator';
-
             } elseif ($method == 'google_authenticator' && $status == 'disable') {
                 $twoFaVerifyVia = 'email';
             }
@@ -80,7 +86,7 @@ class TwoFASettingController extends AccountBaseController
         // File name that will be used in the download
         $fileName = 'codes.txt';
 
-        $headers = ['Content-type' => 'text/plain', 'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),'Content-Length' => strlen($content)];
+        $headers = ['Content-type' => 'text/plain', 'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName), 'Content-Length' => strlen($content)];
 
         return Response::make($content, 200, $headers);
     }
@@ -121,7 +127,6 @@ class TwoFASettingController extends AccountBaseController
 
         if ($currentMethod == 'google_authenticator') {
             $twoFaVerifyVia = 'both';
-
         } else {
             $twoFaVerifyVia = 'email';
         }
@@ -141,5 +146,4 @@ class TwoFASettingController extends AccountBaseController
 
         return Reply::success(__('messages.updateSuccess'));
     }
-
 }

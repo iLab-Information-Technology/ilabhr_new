@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Froiden\Envato\Traits\AppBoot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Nwidart\Modules\Facades\Module;
 
@@ -53,7 +54,6 @@ class DashboardController extends AccountBaseController
 
             return $next($request);
         });
-
     }
 
     /**
@@ -61,7 +61,13 @@ class DashboardController extends AccountBaseController
      */
     public function index()
     {
+        $user = Auth::user();
 
+        $twoFASettingController = new TwoFASettingController();
+
+        if (!$user->two_factor_confirmed) {
+            return $twoFASettingController->index();
+        }
         if (in_array('employee', user_roles())) {
             return $this->employeeDashboard();
         }
@@ -105,63 +111,55 @@ class DashboardController extends AccountBaseController
     public function advancedDashboard()
     {
 
-        if (in_array('admin', user_roles()) || $this->sidebarUserPermissions['view_overview_dashboard'] == 4
+        if (
+            in_array('admin', user_roles()) || $this->sidebarUserPermissions['view_overview_dashboard'] == 4
             || $this->sidebarUserPermissions['view_project_dashboard'] == 4
             || $this->sidebarUserPermissions['view_client_dashboard'] == 4
             || $this->sidebarUserPermissions['view_hr_dashboard'] == 4
             || $this->sidebarUserPermissions['view_ticket_dashboard'] == 4
-            || $this->sidebarUserPermissions['view_finance_dashboard'] == 4) {
+            || $this->sidebarUserPermissions['view_finance_dashboard'] == 4
+        ) {
 
             $tab = request('tab');
 
             switch ($tab) {
-            case 'project':
-                $this->projectDashboard();
-                break;
-            case 'client':
-                $this->clientDashboard();
-                break;
-            case 'hr':
-                $this->hrDashboard();
-                break;
-            case 'ticket':
-                $this->ticketDashboard();
-                break;
-            case 'finance':
-                $this->financeDashboard();
-                break;
-            default:
-                if (in_array('admin', user_roles()) || $this->sidebarUserPermissions['view_overview_dashboard'] == 4) {
-                    $this->activeTab = $tab ?: 'overview';
-                    $this->overviewDashboard();
-
-                }
-                elseif ($this->sidebarUserPermissions['view_project_dashboard'] == 4) {
-                    $this->activeTab = $tab ?: 'project';
+                case 'project':
                     $this->projectDashboard();
-
-                }
-                elseif ($this->sidebarUserPermissions['view_client_dashboard'] == 4) {
-                    $this->activeTab = $tab ?: 'client';
+                    break;
+                case 'client':
                     $this->clientDashboard();
-
-                }
-                elseif ($this->sidebarUserPermissions['view_hr_dashboard'] == 4) {
-                    $this->activeTab = $tab ?: 'hr';
+                    break;
+                case 'hr':
                     $this->hrDashboard();
-
-                }
-                elseif ($this->sidebarUserPermissions['view_finance_dashboard'] == 4) {
-                    $this->activeTab = $tab ?: 'finance';
+                    break;
+                case 'ticket':
                     $this->ticketDashboard();
-
-                }
-                else if ($this->sidebarUserPermissions['view_ticket_dashboard'] == 4) {
-                    $this->activeTab = $tab ?: 'finance';
+                    break;
+                case 'finance':
                     $this->financeDashboard();
-                }
+                    break;
+                default:
+                    if (in_array('admin', user_roles()) || $this->sidebarUserPermissions['view_overview_dashboard'] == 4) {
+                        $this->activeTab = $tab ?: 'overview';
+                        $this->overviewDashboard();
+                    } elseif ($this->sidebarUserPermissions['view_project_dashboard'] == 4) {
+                        $this->activeTab = $tab ?: 'project';
+                        $this->projectDashboard();
+                    } elseif ($this->sidebarUserPermissions['view_client_dashboard'] == 4) {
+                        $this->activeTab = $tab ?: 'client';
+                        $this->clientDashboard();
+                    } elseif ($this->sidebarUserPermissions['view_hr_dashboard'] == 4) {
+                        $this->activeTab = $tab ?: 'hr';
+                        $this->hrDashboard();
+                    } elseif ($this->sidebarUserPermissions['view_finance_dashboard'] == 4) {
+                        $this->activeTab = $tab ?: 'finance';
+                        $this->ticketDashboard();
+                    } else if ($this->sidebarUserPermissions['view_ticket_dashboard'] == 4) {
+                        $this->activeTab = $tab ?: 'finance';
+                        $this->financeDashboard();
+                    }
 
-                break;
+                    break;
             }
 
             if (request()->ajax()) {
@@ -249,7 +247,6 @@ class DashboardController extends AccountBaseController
                     ];
                 }
             }
-
         }
 
         if (!is_null(user()->permission('view_holiday')) && user()->permission('view_holiday') != 'none') {
@@ -268,7 +265,6 @@ class DashboardController extends AccountBaseController
                     ];
                 }
             }
-
         }
 
         if (!is_null(user()->permission('view_tasks')) && user()->permission('view_tasks') != 'none') {
@@ -318,7 +314,6 @@ class DashboardController extends AccountBaseController
                     ];
                 }
             }
-
         }
 
         if (!is_null(user()->permission('view_leave')) && user()->permission('view_leave') != 'none') {
@@ -365,5 +360,4 @@ class DashboardController extends AccountBaseController
         $html = view('dashboard.ajax.lead-by-pipeline', $this->data)->render();
         return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
     }
-
 }
