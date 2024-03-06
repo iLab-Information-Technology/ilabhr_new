@@ -119,7 +119,7 @@ use App\Http\Controllers\EmployeeShiftChangeRequestController;
 use App\Http\Controllers\LeadContactController;
 use App\Http\Controllers\PipelineController;
 
-Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified'], 'prefix' => 'account'], function () {
+Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified', 'enforce-2fa'], 'prefix' => 'account'], function () {
     Route::post('image/upload', [ImageController::class, 'store'])->name('image.store');
 
     Route::get('account-unverified', [DashboardController::class, 'accountUnverified'])->name('account_unverified');

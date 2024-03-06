@@ -63,11 +63,6 @@ class DashboardController extends AccountBaseController
     {
         $user = Auth::user();
 
-        $twoFASettingController = new TwoFASettingController();
-
-        if (!$user->two_factor_confirmed) {
-            return $twoFASettingController->index();
-        }
         if (in_array('employee', user_roles())) {
             return $this->employeeDashboard();
         }

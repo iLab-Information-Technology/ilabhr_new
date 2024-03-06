@@ -81,6 +81,7 @@ class Kernel extends HttpKernel
         'translation' => \App\Http\Middleware\EnsureTranslationToken::class,
         'check-company-package' => \App\Http\Middleware\CheckCompanyPackage::class,
         'auto-logout' => \App\Http\Middleware\AutoLogout::class,
+        'enforce-2fa' => \App\Http\Middleware\Enforce2Fa::class
     ];
 
     /**
