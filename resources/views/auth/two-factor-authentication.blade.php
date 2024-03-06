@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@include('sections.2fa-css')
 
 <style>
     .two-factor-bg {
