@@ -69,11 +69,6 @@
                                             data-target="#twoFactorModal">
                                             @lang('modules.twofactor.validate2FA')
                                         </x-forms.button-primary>
-
-                                        <x-forms.button-secondary class="change-2fa-status ml-3"
-                                            data-method="google_authenticator" data-status="disable">
-                                            @lang('app.disable')
-                                        </x-forms.button-secondary>
                                     @endif
                                 @else
                                     <x-forms.button-primary class="change-2fa-status" data-method="google_authenticator"
