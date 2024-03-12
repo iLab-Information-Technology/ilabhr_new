@@ -857,6 +857,30 @@ return new class extends Migration {
                 $table->timestamps();
             });
 
+            Schema::create('drivers', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('company_id')->unsigned()->nullable();
+                $table->integer('nationality_id')->unsigned();
+                $table->string('name', 155);
+                $table->string('iqaama_number');
+                $table->string('absher_number');
+                $table->string('sponsprship');
+                $table->string('sponsprship_id');
+                $table->string('insurance_policy_number');
+                $table->string('address');
+                $table->string('remarks');
+                $table->string('email');
+                $table->string('work_mobile_no');
+                $table->date('insurance_expiry');
+                $table->date('license_expiry');
+                $table->date('iqaama_expiry');
+                $table->date('date_of_birth');
+
+                $table->foreign('nationality_id')->references('id')->on('countries')->onUpdate('CASCADE')->onDelete('CASCADE');
+                $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade')->onUpdate('cascade');
+                $table->timestamps();
+            });
+
             Schema::create('employee_details', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('company_id')->unsigned()->nullable();

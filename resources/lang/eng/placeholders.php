@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'contractPeriodInYears' => 'Contract Period (Years)',
     'knowledgeBase' => 'Update your profile picture',
     'writeshortcode' => 'Project unique short code',
     'taskshortcode' => 'Task unique short code',

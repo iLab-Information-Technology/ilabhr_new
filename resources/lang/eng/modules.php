@@ -222,6 +222,77 @@ return array(
         'addContact' => 'Add Contact',
         'contactName' => 'Contact Name',
     ),
+    'drivers' => array(
+        'personalDetails' => 'Personal Details',
+        'bankDetails' => 'Bank Details',
+        'contact' => 'Contact',
+        'employment' => 'Employment',
+        'projects' => 'Projects',
+        'vehicle' => 'Vehicle',
+        'documents' => 'Documents',
+        
+        // Personal Information
+        'name' => 'Name',
+        'nameInfo' => 'Driver name',
+        'iqamaNumber' => 'Iqama Number',
+        'dateOfBirth' => 'Date of Birth',
+        'nationality' => 'Nationality',
+        'address' => 'Address',
+        'workMobileNumber' => 'Work Mobile Number',
+        'absherNumber' => 'Absher Number',
+        'sponsorship' => 'Sponsorship',
+        'sponsorshipId' => 'Sponsorship ID',
+        'contractPeriod' => 'Contract Period',
+        'emailAddress' => 'Email Address',
+        'department' => 'Department',
+        'jobPosition' => 'Job Position',
+
+        // Document Expiry Information
+        'iqamaExpiry' => 'Iqama Expiry',
+        'licenseExpiry' => 'License Expiry',
+        'insurancePolicyNumber' => 'Insurance Policy Number',
+        'insuranceExpiry' => 'Insurance Expiry',
+
+        // Employment Information
+        'dateOfJoining' => 'Date of Joining',
+        'stcPay' => 'STC Pay',
+        'bankName' => 'Bank Name',
+        'iban' => 'IBAN',
+        'vehicleName' => 'Vehicle Name',
+        'vehicleModel' => 'Vehicle Model',
+        'vehicleCarPlate' => 'Vehicle Car Plate',
+
+        // Project Information
+        'projects' => 'Projects',
+        'hungerId' => 'Hunger ID',
+        'jahezId' => 'Jahez ID',
+        'speedLogisticId' => 'Speed Logistic ID',
+        'speedKitchenId' => 'Speed Kitchen ID',
+        'eCommerceId' => 'E-commerce ID',
+        'otherProjectId' => 'Other Project ID',
+
+        // Salary Information
+        'basicSalary' => 'Basic Salary',
+        'housingAllowance' => 'Housing Allowance',
+        'transportationAllowance' => 'Transportation Allowance',
+        'performanceAllowance' => 'Performance Allowance',
+        'otherAllowance' => 'Other Allowance',
+        'totalSalary' => 'Total Salary',
+
+        // Additional Information
+        'remarks' => 'Remarks',
+
+        // Uploads
+        'uploads' => 'Uploads',
+        'iqama' => 'Iqama',
+        'license' => 'License',
+        'tammDetails' => 'TAMM Details',
+        'profilePic' => 'Profile Picture',
+        'mobileForm' => 'Mobile Form',
+        'simForm' => 'SIM Form',
+        'medical' => 'Medical',
+        'otherDoc' => 'Other Document',
+    ),
     'employees' => array(
         'addNewEmployee' => 'Add New Employee',
         'createTitle' => 'Add Employee Info',
