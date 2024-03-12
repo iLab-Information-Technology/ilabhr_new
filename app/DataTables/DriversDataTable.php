@@ -100,8 +100,7 @@ class DriversDataTable extends DataTable
             Column::make('work_mobile_no'),
             Column::make('absher_number'),
             Column::make('iqaama_number'),
-            Column::make('sponsorship')
-                ->title(__('app.workMobile')),
+            Column::make('sponsorship'),
         ];
     }
 
