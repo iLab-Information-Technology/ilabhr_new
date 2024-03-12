@@ -22,36 +22,11 @@ class DriversDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function ($row) {
-                $action = '<div class="task_view">
-
-                        <div class="dropdown">
-                            <a class="task_view_more d-flex align-items-center justify-content-center dropdown-toggle" type="link"
-                                id="dropdownMenuLink-' . $row->id . '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-options-vertical icons"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink-' . $row->id . '" tabindex="0">';
-
-                $action .= '<a href="' . route('drivers.show', [$row->id]) . '" class="dropdown-item"><i class="fa fa-eye mr-2"></i>' . __('app.view') . '</a>';
-               
-                $action .= '<a class="dropdown-item openRightModal" href="' . route('drivers.edit', [$row->id]) . '">
-                            <i class="fa fa-edit mr-2"></i>
-                            ' . trans('app.edit') . '
-                        </a>';
-
-                $action .= '<a class="dropdown-item delete-table-row" href="javascript:;" data-user-id="' . $row->id . '">
-                            <i class="fa fa-trash mr-2"></i>
-                            ' . trans('app.delete') . '
-                        </a>';
-
-                $action .= '</div>
-                        </div>
-                    </div>';
-
-                return $action;
-            })
-            // ->addColumn('action', 'drivers.action')
-            ->setRowId('id');
+            ->addColumn('name', 'drivers.datatable.name-with-image')
+            ->addColumn('action', 'drivers.datatable.action')
+            ->addColumn('status', 'drivers.datatable.status')
+            ->setRowId('id')
+            ->rawColumns([ 'name', 'status', 'action']);
     }
 
     /**
@@ -89,18 +64,17 @@ class DriversDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::make('id'),
+            Column::make('driver_id'),
+            Column::make('name'),
+            Column::make('iqaama_number'),
+            Column::make('work_mobile_no'),
+            Column::make('status'),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('name'),
-            Column::make('email'),
-            Column::make('work_mobile_no'),
-            Column::make('absher_number'),
-            Column::make('iqaama_number'),
-            Column::make('sponsorship'),
         ];
     }
 

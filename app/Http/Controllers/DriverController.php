@@ -11,6 +11,8 @@ use App\Models\LanguageSetting;
 use App\Models\Role;
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
+use App\Helper\Files;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DriverController extends AccountBaseController
@@ -93,8 +95,21 @@ class DriverController extends AccountBaseController
 
         DB::beginTransaction();
         try {
-            Driver::create($request->validated());
+            $validated = $request->validated();
 
+            $validated['insurance_expiry_date'] = $request->insurance_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->insurance_expiry_date)->format('Y-m-d') : null;
+            $validated['license_expiry_date'] = $request->license_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->license_expiry_date)->format('Y-m-d') : null;
+            $validated['iqaama_expiry_date'] = $request->iqaama_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->iqaama_expiry_date)->format('Y-m-d') : null;
+            $validated['date_of_birth'] = $request->date_of_birth ? Carbon::createFromFormat($this->company->date_format, $request->date_of_birth)->format('Y-m-d') : null;
+            $validated['work_mobile_no'] = '+' . $request->work_mobile_country_code . $request->work_mobile_no;
+
+            unset($validated['work_mobile_country_code']);
+
+            if ($request->hasFile('image')) {
+                $validated['image'] = Files::uploadLocalOrS3($request->image, 'avatar', 300);
+            }
+            
+            Driver::create($validated);
             // Commit Transaction
             DB::commit();
 

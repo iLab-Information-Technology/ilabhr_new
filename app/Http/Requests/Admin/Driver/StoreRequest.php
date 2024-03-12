@@ -28,6 +28,8 @@ class StoreRequest extends CoreRequest
     {
         $setting = company();
         $rules = [
+            'driver_id' => 'required',
+            'image' => 'required|image',
             'name' => 'required',
             'iqaama_number' => 'required',
             'absher_number' => 'required',
@@ -37,6 +39,7 @@ class StoreRequest extends CoreRequest
             'remarks' => 'nullable',
             'email' => 'required|email',
             'work_mobile_no' => 'required',
+            'work_mobile_country_code' => 'required',
             'insurance_expiry_date' => 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.now($setting->timezone)->toDateString(),
             'license_expiry_date' => 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.now($setting->timezone)->toDateString(),
             'iqaama_expiry_date' => 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.now($setting->timezone)->toDateString(),

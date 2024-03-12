@@ -13,6 +13,12 @@ $addDesignationPermission = user()->permission('add_designation');
                     @lang('modules.drivers.personalDetails')
                 </h4>
 
+                <div class="col-lg-3">
+                    <x-forms.file allowedFileExtensions="png jpg jpeg svg bmp" class="mr-0 mr-lg-2 mr-md-2 cropper"
+                        :fieldLabel="__('modules.drivers.image')" fieldName="image" fieldId="image"
+                        fieldHeight="119" :popover="__('messages.fileFormat.ImageFile')" />
+                </div>
+
                 <div class="row  p-20">
                     <div class="col-md-4">
                         <x-forms.text fieldId="name" :fieldLabel="__('modules.drivers.name')"
@@ -20,6 +26,14 @@ $addDesignationPermission = user()->permission('add_designation');
                             :fieldPlaceholder="__('modules.drivers.nameInfo')">
                         </x-forms.text>
                     </div>
+
+                    <div class="col-md-4">
+                        <x-forms.text fieldId="driver_id" :fieldLabel="__('modules.drivers.driverId')"
+                            fieldName="driver_id" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.drivers.driverId')">
+                        </x-forms.text>
+                    </div>
+
                     <div class="col-md-4">
                         <x-forms.text fieldId="iqaama_number" :fieldLabel="__('modules.drivers.iqamaNumber')"
                             fieldName="iqaama_number" fieldRequired="true"
@@ -94,19 +108,19 @@ $addDesignationPermission = user()->permission('add_designation');
                         <x-forms.input-group style="margin-top:-4px">
 
 
-                            <x-forms.select fieldId="work_mobile_no" fieldName="work_mobile_no"
+                            <x-forms.select fieldId="work_mobile_country_code" fieldName="work_mobile_country_code"
                                 search="true">
 
                                 @foreach ($countries as $item)
                                     <option data-tokens="{{ $item->name }}"
                                             data-content="{{$item->flagSpanCountryCode()}}"
-                                            value="{{ $item->phonecode }}">{{ $item->phonecode }}
+                                            value="{{ $item->phonecode }}"  @selected($item->phonecode == config('app.DEFAULT_PHONE_CODE'))  >{{ $item->phonecode }}
                                     </option>
                                 @endforeach
                             </x-forms.select>
 
                             <input type="tel" class="form-control height-35 f-14" placeholder="@lang('placeholders.mobile')"
-                                name="mobile" id="mobile">
+                                name="work_mobile_no" id="work_mobile_no">
                         </x-forms.input-group>
                     </div>
 
@@ -290,7 +304,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     <x-forms.button-primary id="save-driver-form" class="mr-3" icon="check">
                         @lang('app.save')
                     </x-forms.button-primary>
-                    <x-forms.button-secondary class="mr-3" id="save-more-employee-form" icon="check-double">@lang('app.saveAddMore')
+                    <x-forms.button-secondary class="mr-3" id="save-more-driver-form" icon="check-double">@lang('app.saveAddMore')
                     </x-forms.button-secondary>
                     <x-forms.button-cancel class="border-0 " data-dismiss="modal">@lang('app.cancel')
                     </x-forms.button-cancel>
@@ -332,13 +346,13 @@ $addDesignationPermission = user()->permission('add_designation');
             ...datepickerConfig
         });
 
-        $('#save-more-employee-form').click(function() {
+        $('#save-more-driver-form').click(function() {
 
             $('#add_more').val(true);
 
-            const url = "{{ route('employees.store') }}";
+            const url = "{{ route('drivers.store') }}";
             var data = $('#save-driver-data-form').serialize();
-            saveDriver(data, url, "#save-more-employee-form");
+            saveDriver(data, url, "#save-more-driver-form");
 
 
         });

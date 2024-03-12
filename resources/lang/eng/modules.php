@@ -232,7 +232,9 @@ return array(
         'documents' => 'Documents',
         
         // Personal Information
+        'image' => 'Image',
         'name' => 'Name',
+        'driverId' => 'Driver ID',
         'nameInfo' => 'Driver name',
         'iqamaNumber' => 'Iqama Number',
         'dateOfBirth' => 'Date of Birth',

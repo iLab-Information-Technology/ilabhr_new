@@ -20,6 +20,8 @@ return [
     'app_name' => 'worksuite-saas',
 
     'name' => 'Worksuite Saas',
+
+    'DEFAULT_PHONE_CODE' => '+966',
     /*
     |--------------------------------------------------------------------------
     | Application Name
