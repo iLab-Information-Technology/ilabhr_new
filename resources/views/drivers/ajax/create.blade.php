@@ -330,19 +330,16 @@ $addDesignationPermission = user()->permission('add_designation');
 
         datepicker('#iqaama_expiry_date', {
             position: 'bl',
-            minDate: new Date(),
             ...datepickerConfig
         });
 
         datepicker('#license_expiry_date', {
             position: 'bl',
-            minDate: new Date(),
             ...datepickerConfig
         });
 
         datepicker('#insurance_expiry_date', {
             position: 'bl',
-            minDate: new Date(),
             ...datepickerConfig
         });
 

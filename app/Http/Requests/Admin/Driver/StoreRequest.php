@@ -40,9 +40,9 @@ class StoreRequest extends CoreRequest
             'email' => 'required|email',
             'work_mobile_no' => 'required',
             'work_mobile_country_code' => 'required',
-            'insurance_expiry_date' => 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.now($setting->timezone)->toDateString(),
-            'license_expiry_date' => 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.now($setting->timezone)->toDateString(),
-            'iqaama_expiry_date' => 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.now($setting->timezone)->toDateString(),
+            'insurance_expiry_date' => 'required|date_format:"' . $setting->date_format . '"',
+            'license_expiry_date' => 'required|date_format:"' . $setting->date_format . '"',
+            'iqaama_expiry_date' => 'required|date_format:"' . $setting->date_format . '"',
             'date_of_birth' => 'required|date_format:"' . $setting->date_format . '"|before_or_equal:'.now($setting->timezone)->toDateString(),
         ];
 
