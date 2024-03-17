@@ -63,4 +63,4 @@ jobs:
           app-name: 'hrilab'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_43915EDD3E53433E888E868D4B254805 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
