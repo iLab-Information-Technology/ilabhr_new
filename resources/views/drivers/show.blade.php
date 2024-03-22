@@ -23,9 +23,9 @@ $viewImmigrationPermission = user()->permission('view_immigration');
 $showFullProfile = false;
 
 if ($viewPermission == 'all'
-    || ($viewPermission == 'added' && $employee->employeeDetail->added_by == user()->id)
-    || ($viewPermission == 'owned' && $employee->employeeDetail->user_id == user()->id)
-    || ($viewPermission == 'both' && ($employee->employeeDetail->user_id == user()->id || $employee->employeeDetail->added_by == user()->id))
+    || ($viewPermission == 'added' && $driver->employeeDetail->added_by == user()->id)
+    || ($viewPermission == 'owned' && $driver->employeeDetail->user_id == user()->id)
+    || ($viewPermission == 'both' && ($driver->employeeDetail->user_id == user()->id || $driver->employeeDetail->added_by == user()->id))
 ) {
     $showFullProfile = true;
 }
@@ -47,84 +47,29 @@ if ($viewPermission == 'all'
             <nav class="tabs">
                 <ul class="-primary">
                     <li>
-                        <x-tab :href="route('employees.show', $employee->id)" :text="__('modules.employees.profile')" class="profile" />
+                        <x-tab :href="route('drivers.show', $driver->id)" :text="__('modules.drivers.profile')" class="profile" />
                     </li>
-
-                    @if ($viewEmployeeProjects == 'all' && in_array('projects', user_modules()))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=projects'" :text="__('app.menu.projects')" ajax="false" class="projects" />
-                        </li>
-                    @endif
-
-                    @if ($viewEmployeeTasks == 'all' && in_array('tasks', user_modules()))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=tasks'" :text="__('app.menu.tasks')" ajax="false" class="tasks" />
-                        </li>
-                    @endif
-
-                    @if (in_array('leaves', user_modules()) && ($viewLeavePermission == 'all' || ($viewLeavePermission == 'owned' || $viewLeavePermission == 'both') && $employee->id == user()->id ))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=leaves'" :text="__('app.menu.leaves')" ajax="false" class="leaves" />
-                        </li>
 
                     <li>
-                        <x-tab :href="route('employees.show', $employee->id) . '?tab=leaves-quota'" :text="__('app.menu.leavesQuota')" class="leaves-quota" />
+                        <x-tab :href="route('drivers.show', $driver->id) . '?tab=businesses'" :text="__('app.menu.businesses')" ajax="false" class="businesses" />
                     </li>
-                    @endif
 
-                    @if ($viewEmployeeTimelogs == 'all' && in_array('timelogs', user_modules()))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=timelogs'" :text="__('app.menu.timeLogs')" ajax="false" class="timelogs" />
-                        </li>
-                    @endif
+                    <li>
+                        <x-tab :href="route('drivers.show', $driver->id) . '?tab=employment'" :text="__('app.menu.employment')" ajax="false" class="employment" />
+                    </li>
 
-                    @if ($viewDocumentPermission != 'none')
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=documents'" :text="__('app.menu.documents')" class="documents" />
-                        </li>
-                    @endif
+                    <li>
+                        <x-tab :href="route('drivers.show', $driver->id) . '?tab=locality'" :text="__('app.menu.locality')" ajax="false" class="locality" />
+                    </li>
 
-                    @if ($showFullProfile && ($manageEmergencyContact == 'all' || $employee->id == user()->id))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=emergency-contacts'" :text="__('modules.emergencyContact.emergencyContact')" class="emergency-contacts" />
-                        </li>
-                    @endif
-
-                    @if ($viewTickets == 'all' && in_array('tickets', user_modules()))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=tickets'" :text="__('modules.tickets.ticket')" ajax="false" class="tickets" />
-                        </li>
-                    @endif
-
-                    @if ($showFullProfile && !in_array('client', user_roles()))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=appreciation'" :text="__('app.menu.appreciation')" class="appreciation" />
-                        </li>
-                    @endif
-
-                    @if ($manageShiftPermission == 'all' && in_array('attendance', user_modules()))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=shifts'" :text="__('app.menu.shiftRoster')" class="shifts" />
-                        </li>
-                    @endif
-
-                    @if ($manageRolePermissionSetting == 'all')
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=permissions'" :text="__('modules.permission.permissions')" class="permissions" />
-                        </li>
-                    @endif
-
-                    @if ($showFullProfile)
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=activity'" :text="__('modules.employees.activity')" class="activity" />
-                        </li>
-                    @endif
-
-                    @if($viewImmigrationPermission == 'all' ||  (in_array($viewImmigrationPermission, ['added', 'owned', 'both']) && user()->id == $employee->id))
-                        <li>
-                            <x-tab :href="route('employees.show', $employee->id) . '?tab=immigration'" :text="__('modules.employees.immigration')" class="immigration" />
-                        </li>
-                    @endif
+                    <li>
+                        <x-tab :href="route('drivers.show', $driver->id) . '?tab=banking'" :text="__('app.menu.banking')" ajax="false" class="banking" />
+                    </li>
+                
+                    <li>
+                        <x-tab :href="route('drivers.show', $driver->id) . '?tab=documents'" :text="__('modules.drivers.documents')" class="documents" />
+                    </li>
+                    
                 </ul>
             </nav>
         </div>

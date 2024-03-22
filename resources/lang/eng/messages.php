@@ -11,6 +11,7 @@ return array(
     'checkDayHoliday' => 'Choose at-least 1.',
     'addItem' => 'Add at-least 1 item.',
     'quantityNumber' => 'Quantity should be a number',
+    'businessExists' => 'Business already exists.',
     'unitPriceNumber' => 'Unit price should be a number',
     'amountNumber' => 'Amount should be a number.',
     'itemBlank' => 'Item name cannot be blank.',

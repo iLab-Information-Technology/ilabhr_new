@@ -118,6 +118,7 @@
     <div class="accordionItemContent pb-2">
         {{-- @if (in_array('employees', user_modules()) && $sidebarUserPermissions['view_employees'] != 5 && $sidebarUserPermissions['view_employees'] != 'none') --}}
             <x-sub-menu-item :link="route('drivers.index')" :text="__('app.menu.drivers')" />
+            <x-sub-menu-item :link="route('businesses.index')" :text="__('app.menu.businesses')" />
         {{-- @endif --}}
         <!-- NAV ITEM - CUSTOM MODULES  -->
         @foreach ($worksuitePlugins as $item)

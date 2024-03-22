@@ -137,6 +137,7 @@ return array(
     ),
     'select2Min' => 'Please enter 2 or more characters',
     'searchForProjects' => 'Search for projects',
+    'searchForBusinesses' => 'Search for businesses',
     'min' => 'Min',
     'max' => 'Max',
     'consent_description' => 'consent description',

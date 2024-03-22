@@ -26,7 +26,7 @@
                 cache: true
             },
             placeholder: '{{$placeholder}}',
-            minimumInputLength: 2,
+            // minimumInputLength: 2,
             language: {
                 inputTooShort: function () {
                     return "@lang('placeholders.select2Min')";
