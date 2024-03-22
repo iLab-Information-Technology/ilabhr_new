@@ -5,7 +5,7 @@
     </a>
     <div class="media-body {{$status}}">
         <h5 class="mb-0 f-12">
-            <a href="{{ route('employees.show', [$id]) }}"
+            <a href="{{ route('drivers.show', [$id]) }}"
                 class="text-darkest-grey disabled-link">{{ $name }}</a>
         </h5>
     </div>

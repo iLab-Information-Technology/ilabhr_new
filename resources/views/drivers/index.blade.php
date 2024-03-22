@@ -206,7 +206,7 @@
         });
 
         const showTable = () => {
-            window.LaravelDataTables["employees-table"].draw(false);
+            window.LaravelDataTables["drivers-table"].draw(false);
         }
 
         $('#employee, #status, #role, #gender, #skill, #designation, #department').on('change keyup',
@@ -293,7 +293,7 @@
         });
 
         $('body').on('click', '.delete-table-row', function () {
-            var id = $(this).data('user-id');
+            var id = $(this).data('driver-id');
             Swal.fire({
                 title: "@lang('messages.sweetAlertTitle')",
                 text: "@lang('messages.recoverRecord')",
@@ -313,7 +313,7 @@
                 buttonsStyling: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var url = "{{ route('employees.destroy', ':id') }}";
+                    var url = "{{ route('drivers.destroy', ':id') }}";
                     url = url.replace(':id', id);
 
                     var token = "{{ csrf_token() }}";

@@ -16,7 +16,7 @@
                 {{ trans('app.edit') }}
             </a>
 
-            <a class="dropdown-item delete-table-row" href="javascript:;" data-user-id="{{ $id }}">
+            <a class="dropdown-item delete-table-row" href="javascript:;" data-driver-id="{{ $id }}">
                 <i class="fa fa-trash mr-2"></i>
                 {{ trans('app.delete') }}
             </a>

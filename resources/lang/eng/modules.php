@@ -228,8 +228,23 @@ return array(
         'contact' => 'Contact',
         'employment' => 'Employment',
         'projects' => 'Projects',
-        'vehicle' => 'Vehicle',
         'documents' => 'Documents',
+        'profile' => 'Profile',
+        'locality' => 'Locality',
+        'banking' => 'Banking',
+        'addIqama' => 'Add Iqama',
+        'iqamaDetails' => 'Iqama Details',
+        'addLicense' => 'Add License',
+        'licenseDetails' => 'License Details',
+        'addMobileForm' => 'Add Mobile Form',
+        'mobileFormDetails' => 'Mobile Form Details',
+        'addSimForm' => 'Add Sim Form',
+        'simFormDetails' => 'Sim Form Details',
+        'addMedical' => 'Add Medical Form',
+        'medicalDetails' => 'Medical Form Details',
+        'addOtherDocument' => 'Add Other Document',
+        'otherDocumentDetails' => 'Other Document Details',
+        'expiryDate' => 'Expiry Date',
         
         // Personal Information
         'image' => 'Image',
@@ -243,11 +258,8 @@ return array(
         'workMobileNumber' => 'Work Mobile Number',
         'absherNumber' => 'Absher Number',
         'sponsorship' => 'Sponsorship',
-        'sponsorshipId' => 'Sponsorship ID',
-        'contractPeriod' => 'Contract Period',
+        'sponsorshipID' => 'Sponsorship ID',
         'emailAddress' => 'Email Address',
-        'department' => 'Department',
-        'jobPosition' => 'Job Position',
 
         // Document Expiry Information
         'iqamaExpiry' => 'Iqama Expiry',
@@ -255,14 +267,22 @@ return array(
         'insurancePolicyNumber' => 'Insurance Policy Number',
         'insuranceExpiry' => 'Insurance Expiry',
 
-        // Employment Information
-        'dateOfJoining' => 'Date of Joining',
+        // Banking
         'stcPay' => 'STC Pay',
         'bankName' => 'Bank Name',
         'iban' => 'IBAN',
-        'vehicleName' => 'Vehicle Name',
-        'vehicleModel' => 'Vehicle Model',
-        'vehicleCarPlate' => 'Vehicle Car Plate',
+
+        // Employment Information
+        'department' => 'Department',
+        'jobPosition' => 'Job Position',
+        'contractPeriod' => 'Contract Period',
+        'contractPeriodInfo' => 'Contract Period (months)',
+        'basicSalary' => 'Basic Salary',
+        'housingAllowance' => 'Housing Allowance',
+        'transportationAllowance' => 'Transportation Allowance',
+        'performanceAllowance' => 'Performance Allowance',
+        'otherAllowance' => 'Other Allowance',
+        'totalSalary' => 'Total Salary',
 
         // Project Information
         'projects' => 'Projects',
@@ -272,14 +292,6 @@ return array(
         'speedKitchenId' => 'Speed Kitchen ID',
         'eCommerceId' => 'E-commerce ID',
         'otherProjectId' => 'Other Project ID',
-
-        // Salary Information
-        'basicSalary' => 'Basic Salary',
-        'housingAllowance' => 'Housing Allowance',
-        'transportationAllowance' => 'Transportation Allowance',
-        'performanceAllowance' => 'Performance Allowance',
-        'otherAllowance' => 'Other Allowance',
-        'totalSalary' => 'Total Salary',
 
         // Additional Information
         'remarks' => 'Remarks',
@@ -293,7 +305,14 @@ return array(
         'mobileForm' => 'Mobile Form',
         'simForm' => 'SIM Form',
         'medical' => 'Medical',
-        'otherDoc' => 'Other Document',
+        'otherDocument' => 'Other Document',
+        'joiningDate' => 'Joining Date'
+    ),
+    'businesses' => array(
+        'businessDetails' => 'Business Details',
+        'business' => 'Business',
+        'businessID' => 'Business ID',
+        'platformID' => 'Platform ID',
     ),
     'employees' => array(
         'addNewEmployee' => 'Add New Employee',

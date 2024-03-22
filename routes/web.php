@@ -108,6 +108,8 @@ use App\Http\Controllers\ContractDiscussionController;
 use App\Http\Controllers\DealNoteController;
 use App\Http\Controllers\DiscussionCategoryController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\BusinessDriverController;
+use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\ProjectTemplateTaskController;
 use App\Http\Controllers\ProjectTimelogBreakController;
@@ -118,7 +120,6 @@ use App\Http\Controllers\ProjectTemplateMemberController;
 use App\Http\Controllers\ProjectTemplateSubTaskController;
 use App\Http\Controllers\EmployeeShiftChangeRequestController;
 use App\Http\Controllers\LeadContactController;
-use App\Http\Controllers\PipelineController;
 
 Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified'], 'prefix' => 'account'], function () {
     Route::post('image/upload', [ImageController::class, 'store'])->name('image.store');
@@ -174,6 +175,9 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
 
     // DMS
     Route::resource('drivers', DriverController::class);
+    Route::resource('drivers.businesses', BusinessDriverController::class);
+    Route::get('business-ajax', [BusinessController::class, 'ajaxLoadBusiness'])->name('get.business-ajax');
+    Route::resource('businesses', BusinessController::class);
 
     // employee routes
     Route::post('employees/apply-quick-action', [EmployeeController::class, 'applyQuickAction'])->name('employees.apply_quick_action');

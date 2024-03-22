@@ -63,7 +63,7 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-md-4">
                         <x-forms.number fieldName="sponsorship_id" fieldId="sponsorship_id"
-                        fieldLabel="{{ __('modules.drivers.sponsorshipId') }}" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.sponsorshipId')" />
+                        fieldLabel="{{ __('modules.drivers.sponsorshipID') }}" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.sponsorshipID')" />
                     </div>
 
                     <div class="col-lg-4 col-md-6">

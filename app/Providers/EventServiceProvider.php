@@ -443,7 +443,9 @@ use App\Listeners\SuperAdmin\PackageUpdateNotifyListener;
 use App\Observers\SuperAdmin\PackageUpdateNotifyObserver;
 use App\Events\SuperAdmin\PackageUpdateNotifyEvent;
 use App\Models\Driver;
+use App\Models\Business;
 use App\Observers\DriverObserver;
+use App\Observers\BusinessObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -558,6 +560,7 @@ class EventServiceProvider extends ServiceProvider
         Issue::class => [IssueObserver::class],
         Deal::class => [DealObserver::class],
         Driver::class => [DriverObserver::class],
+        Business::class => [BusinessObserver::class],
         LeadAgent::class => [LeadAgentObserver::class],
         LeadCategory::class => [LeadCategoryObserver::class],
         LeadCustomForm::class => [LeadCustomFormObserver::class],

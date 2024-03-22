@@ -1,190 +1,323 @@
-@php
-$addDocumentPermission = user()->permission('add_documents');
-$viewDocumentPermission = user()->permission('view_documents');
-$deleteDocumentPermission = user()->permission('delete_documents');
-$editDocumentPermission = user()->permission('edit_documents');
-@endphp
-
-<style>
-    .file-action {
-        visibility: hidden;
-    }
-
-    .file-card:hover .file-action {
-        visibility: visible;
-    }
-
-</style>
-
-<!-- TAB CONTENT START -->
-<div class="tab-pane fade show active mt-5" role="tabpanel" aria-labelledby="nav-email-tab">
-    <x-cards.data :title="__('app.menu.documents')">
-
-        @if ($addDocumentPermission == 'all' || $addDocumentPermission == 'added')
-
-            <div class="row">
-                <div class="col-md-12">
-                    <a class="f-15 f-w-500" href="javascript:;" id="add-task-file"><i
-                            class="icons icon-plus font-weight-bold mr-1"></i>@lang('modules.lead.addFile')
-                        </a>
-                </div>
-            </div>
-
-            <x-form id="save-taskfile-data-form" class="d-none">
-                <input type="hidden" name="user_id" value="{{ $employee->id }}">
-                <div class="row">
-                    <div class="col-md-12">
-                        <x-forms.text :fieldLabel="__('modules.projects.fileName')" fieldName="name"
-                            fieldRequired="true" fieldId="file_name" />
-                    </div>
-                    <div class="col-md-12">
-                        <x-forms.file :fieldLabel="__('modules.projects.uploadFile')" fieldName="file"
-                            fieldRequired="true" fieldId="employee_file"
-                            allowedFileExtensions="txt pdf doc xls xlsx docx rtf png jpg jpeg svg"
-                            :popover="__('messages.fileFormat.multipleImageFile')" />
-                    </div>
-                    <div class="col-md-12">
-                        <div class="w-100 justify-content-end d-flex mt-2">
-                            <x-forms.button-cancel id="cancel-document" class="border-0 mr-3">@lang('app.cancel')
-                            </x-forms.button-cancel>
-                            <x-forms.button-primary id="submit-document" icon="check">@lang('app.submit')
-                            </x-forms.button-primary>
-                        </div>
-                    </div>
-                </div>
-            </x-form>
+<!-- IQAMA ROW START -->
+<div class="row">
+    <!--  USER CARDS START -->
+    <div class="col-xl-12 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0 mt-5">
+        @if(is_null($driver->iqama))
+             <x-forms.button-primary class="mr-3 add-document mb-3" icon="plus"  data-tab="iqama">
+                @lang('modules.drivers.addIqama')
+            </x-forms.button-primary>
         @endif
+        <x-cards.data :title="__('modules.drivers.iqamaDetails')">
 
-        <div class="d-flex flex-wrap mt-3" id="task-file-list">
-            @php
-                $totalDocuments = ($user->clientDocuments) ? count($user->clientDocuments) : 0;
-                $permission = 0; // assuming we do have permission for all uploaded files
-            @endphp
-            @forelse($employee->documents as $file)
-                @if ($viewDocumentPermission == 'all'
-                || ($viewDocumentPermission == 'added' && $file->added_by == user()->id)
-                || ($viewDocumentPermission == 'owned' && ($file->user_id == user()->id && $file->added_by != user()->id))
-                || ($viewDocumentPermission == 'both' && ($file->added_by == user()->id || $file->user_id == user()->id)))
-                    <x-file-card :fileName="$file->name" :dateAdded="$file->created_at->diffForHumans()">
-                        @if ($file->icon == 'images')
-                            <img src="{{ $file->doc_url }}">
+            @if($driver->iqama)
+                <x-slot name="action">
+                    <div class="dropdown">
+                        <button class="btn f-14 px-0 py-0 text-dark-grey dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                            aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item edit-document"  data-tab="iqama"
+                                    href="javascript:;">@lang('app.edit')</a>
+                        </div>
+
+                    </div>
+                </x-slot>
+
+                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $driver->iqaama_expiry_date  ? $driver->iqaama_expiry_date->format(company()->date_format) : '--'" />
+                <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
+                    <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
+                        @lang('modules.employees.scanCopy')</p>
+                    <p class="mb-0 text-dark-grey f-14 w-70">
+                        @if($driver->iqama)
+                            <a target="_blank" class="text-dark-grey"
+                                href="{{ $driver->iqama_url }}"><i class="fa fa-external-link-alt"></i> <u>@lang('app.viewScanCopy')</u></a>
                         @else
-                            <i class="fa {{ $file->icon }} text-lightest"></i>
+                        --
                         @endif
-                        <x-slot name="action">
-                            <div class="dropdown ml-auto file-action">
-                                <button
-                                    class="btn btn-lg f-14 p-0 text-lightest text-capitalize rounded  dropdown-toggle"
-                                    type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-ellipsis-h"></i>
-                                </button>
 
-                                <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
-                                    aria-labelledby="dropdownMenuLink" tabindex="0">
-                                    @if ($viewDocumentPermission == 'all'
-                                    || ($viewDocumentPermission == 'added' && $file->added_by == user()->id)
-                                    || ($viewDocumentPermission == 'owned' && ($file->user_id == user()->id && $file->added_by != user()->id))
-                                    || ($viewDocumentPermission == 'both' && ($file->added_by == user()->id || $file->user_id == user()->id)))
-
-                                        <a class="cursor-pointer d-block text-dark-grey f-13 pt-3 px-3 "
-                                            target="_blank" href="{{ $file->doc_url }}">@lang('app.view')</a>
-
-                                        <a class="cursor-pointer d-block text-dark-grey f-13 py-3 px-3 "
-                                            href="{{ route('employee-docs.download', md5($file->id)) }}">@lang('app.download')</a>
-                                    @endif
-
-                                    @if ($editDocumentPermission == 'all'
-                                    || ($editDocumentPermission == 'added' && $file->added_by == user()->id)
-                                    || ($editDocumentPermission == 'owned' && ($file->user_id == user()->id && $file->added_by != user()->id))
-                                    || ($editDocumentPermission == 'both' && ($file->added_by == user()->id || $file->user_id == user()->id)))
-                                        <a class="cursor-pointer d-block text-dark-grey pb-3 f-13 px-3 edit-file"
-                                            href="javascript:;" data-file-id="{{ $file->id }}">@lang('app.edit')</a>
-                                    @endif
-
-                                    @if ($deleteDocumentPermission == 'all'
-                                    || ($deleteDocumentPermission == 'added' && $file->added_by == user()->id)
-                                    || ($deleteDocumentPermission == 'owned' && ($file->user_id == user()->id && $file->added_by != user()->id))
-                                    || ($deleteDocumentPermission == 'both' && ($file->added_by == user()->id || $file->user_id == user()->id)))
-                                        <a class="cursor-pointer d-block text-dark-grey f-13 pb-3 px-3 delete-file"
-                                            data-row-id="{{ $file->id }}"
-                                            href="javascript:;">@lang('app.delete')</a>
-                                    @endif
-                                </div>
-                            </div>
-                        </x-slot>
-                    </x-file-card>
-                @else
-                    @php
-                        $permission++;
-                    @endphp
-                @endif
-            @empty
-                <div class="align-items-center d-flex flex-column text-lightest p-20 w-100">
-                    <i class="fa fa-file f-21 w-100"></i>
-
-                    <div class="f-15 mt-4">
-                        - @lang('messages.noFileUploaded')
-                    </div>
+                    </p>
                 </div>
-            @endforelse
-            @if (isset($user->clientDocuments) && $totalDocuments > 0 && $totalDocuments == $permission)
-                <div class="align-items-center d-flex flex-column text-lightest p-20 w-100">
-                    <i class="fa fa-file-excel f-21 w-100"></i>
 
-                    <div class="f-15 mt-4">
-                        - @lang('messages.noFileUploaded') -
-                    </div>
-                </div>
+            @else
+                <x-cards.no-record-found-list colspan="5"/>
             @endif
-        </div>
-    </x-cards.data>
+        </x-cards.data>
+    </div>
+    <!--  USER CARDS END -->
 </div>
-<!-- TAB CONTENT END -->
+<!-- IQAMA ROW END -->
+
+<!-- LICENSE ROW START -->
+<div class="row">
+    <!--  USER CARDS START -->
+    <div class="col-xl-12 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0 mt-5">
+        @if(is_null($driver->license))
+             <x-forms.button-primary class="mr-3 add-document mb-3" icon="plus"  data-tab="license">
+                @lang('modules.drivers.addLicense')
+            </x-forms.button-primary>
+        @endif
+        <x-cards.data :title="__('modules.drivers.licenseDetails')">
+
+            @if($driver->license)
+                <x-slot name="action">
+                    <div class="dropdown">
+                        <button class="btn f-14 px-0 py-0 text-dark-grey dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                            aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item edit-document"  data-tab="license"
+                                    href="javascript:;">@lang('app.edit')</a>
+                        </div>
+
+                    </div>
+                </x-slot>
+
+                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $driver->iqaama_expiry_date  ? $driver->iqaama_expiry_date->format(company()->date_format) : '--'" />
+                <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
+                    <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
+                        @lang('modules.employees.scanCopy')</p>
+                    <p class="mb-0 text-dark-grey f-14 w-70">
+                        @if($driver->license)
+                            <a target="_blank" class="text-dark-grey"
+                                href="{{ $driver->license_url }}"><i class="fa fa-external-link-alt"></i> <u>@lang('app.viewScanCopy')</u></a>
+                        @else
+                        --
+                        @endif
+
+                    </p>
+                </div>
+
+            @else
+                <x-cards.no-record-found-list colspan="5"/>
+            @endif
+        </x-cards.data>
+    </div>
+    <!--  USER CARDS END -->
+</div>
+<!-- LICENSE ROW END -->
+
+<!-- MEDICAL ROW START -->
+<div class="row">
+    <!--  USER CARDS START -->
+    <div class="col-xl-12 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0 mt-5">
+        @if(is_null($driver->medical))
+             <x-forms.button-primary class="mr-3 add-document mb-3" icon="plus"  data-tab="medical">
+                @lang('modules.drivers.addMedical')
+            </x-forms.button-primary>
+        @endif
+        <x-cards.data :title="__('modules.drivers.medicalDetails')">
+
+            @if($driver->medical)
+                <x-slot name="action">
+                    <div class="dropdown">
+                        <button class="btn f-14 px-0 py-0 text-dark-grey dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                            aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item edit-document"  data-tab="medical"
+                                    href="javascript:;">@lang('app.edit')</a>
+                        </div>
+
+                    </div>
+                </x-slot>
+
+                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $driver->iqaama_expiry_date  ? $driver->iqaama_expiry_date->format(company()->date_format) : '--'" />
+                <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
+                    <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
+                        @lang('modules.employees.scanCopy')</p>
+                    <p class="mb-0 text-dark-grey f-14 w-70">
+                        @if($driver->medical)
+                            <a target="_blank" class="text-dark-grey"
+                                href="{{ $driver->medical_url }}"><i class="fa fa-external-link-alt"></i> <u>@lang('app.viewScanCopy')</u></a>
+                        @else
+                        --
+                        @endif
+
+                    </p>
+                </div>
+
+            @else
+                <x-cards.no-record-found-list colspan="5"/>
+            @endif
+        </x-cards.data>
+    </div>
+    <!--  USER CARDS END -->
+</div>
+<!-- MEDICAL ROW END -->
+
+<!-- SIM-FORM ROW START -->
+<div class="row">
+    <!--  USER CARDS START -->
+    <div class="col-xl-12 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0 mt-5">
+        @if(is_null($driver->sim_form))
+             <x-forms.button-primary class="mr-3 add-document mb-3" icon="plus"  data-tab="sim-form">
+                @lang('modules.drivers.addSimForm')
+            </x-forms.button-primary>
+        @endif
+        <x-cards.data :title="__('modules.drivers.simFormDetails')">
+
+            @if($driver->sim_form)
+                <x-slot name="action">
+                    <div class="dropdown">
+                        <button class="btn f-14 px-0 py-0 text-dark-grey dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                            aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item edit-document"  data-tab="sim-form"
+                                    href="javascript:;">@lang('app.edit')</a>
+                        </div>
+
+                    </div>
+                </x-slot>
+
+                <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
+                    <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
+                        @lang('modules.employees.scanCopy')</p>
+                    <p class="mb-0 text-dark-grey f-14 w-70">
+                        @if($driver->sim_form)
+                            <a target="_blank" class="text-dark-grey"
+                                href="{{ $driver->sim_form_url }}"><i class="fa fa-external-link-alt"></i> <u>@lang('app.viewScanCopy')</u></a>
+                        @else
+                        --
+                        @endif
+
+                    </p>
+                </div>
+
+            @else
+                <x-cards.no-record-found-list colspan="5"/>
+            @endif
+        </x-cards.data>
+    </div>
+    <!--  USER CARDS END -->
+</div>
+<!-- SIM-FORM ROW END -->
+
+<!-- MOBILE-FORM ROW START -->
+<div class="row">
+    <!--  USER CARDS START -->
+    <div class="col-xl-12 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0 mt-5">
+        @if(is_null($driver->mobile_form))
+             <x-forms.button-primary class="mr-3 add-document mb-3" icon="plus"  data-tab="mobile-form">
+                @lang('modules.drivers.addMobileForm')
+            </x-forms.button-primary>
+        @endif
+        <x-cards.data :title="__('modules.drivers.mobileFormDetails')">
+
+            @if($driver->mobile_form)
+                <x-slot name="action">
+                    <div class="dropdown">
+                        <button class="btn f-14 px-0 py-0 text-dark-grey dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                            aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item edit-document"  data-tab="mobile-form"
+                                    href="javascript:;">@lang('app.edit')</a>
+                        </div>
+
+                    </div>
+                </x-slot>
+
+                <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
+                    <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
+                        @lang('modules.employees.scanCopy')</p>
+                    <p class="mb-0 text-dark-grey f-14 w-70">
+                        @if($driver->mobile_form)
+                            <a target="_blank" class="text-dark-grey"
+                                href="{{ $driver->mobile_form_url }}"><i class="fa fa-external-link-alt"></i> <u>@lang('app.viewScanCopy')</u></a>
+                        @else
+                        --
+                        @endif
+
+                    </p>
+                </div>
+
+            @else
+                <x-cards.no-record-found-list colspan="5"/>
+            @endif
+        </x-cards.data>
+    </div>
+    <!--  USER CARDS END -->
+</div>
+<!-- MOBILE-FORM ROW END -->
+
+<!-- OTHER DOCUMENT ROW START -->
+<div class="row">
+    <!--  USER CARDS START -->
+    <div class="col-xl-12 col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0 mt-5">
+        @if(is_null($driver->other_document))
+             <x-forms.button-primary class="mr-3 add-document mb-3" icon="plus"  data-tab="other-document">
+                @lang('modules.drivers.addOtherDocument')
+            </x-forms.button-primary>
+        @endif
+        <x-cards.data :title="__('modules.drivers.otherDocumentDetails')">
+
+            @if($driver->other_document)
+                <x-slot name="action">
+                    <div class="dropdown">
+                        <button class="btn f-14 px-0 py-0 text-dark-grey dropdown-toggle" type="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                            aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item edit-document"  data-tab="other-document"
+                                    href="javascript:;">@lang('app.edit')</a>
+                        </div>
+
+                    </div>
+                </x-slot>
+
+                <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
+                    <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
+                        @lang('modules.employees.scanCopy')</p>
+                    <p class="mb-0 text-dark-grey f-14 w-70">
+                        @if($driver->other_document)
+                            <a target="_blank" class="text-dark-grey"
+                                href="{{ $driver->other_document_url }}"><i class="fa fa-external-link-alt"></i> <u>@lang('app.viewScanCopy')</u></a>
+                        @else
+                        --
+                        @endif
+
+                    </p>
+                </div>
+
+            @else
+                <x-cards.no-record-found-list colspan="5"/>
+            @endif
+        </x-cards.data>
+    </div>
+    <!--  USER CARDS END -->
+</div>
+<!-- OTHER DOCUMENT ROW END -->
 
 <script>
-    $('#add-task-file').click(function() {
-        $(this).closest('.row').addClass('d-none');
-        $('#save-taskfile-data-form').removeClass('d-none');
+
+    // Iqama Start
+    $('.add-document, .edit-document').click(function(){
+        const tab = $(this).attr('data-tab');
+        var url = `{{ route('drivers.edit', $driver->id) }}?tab=${tab}`;
+        $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
+        $.ajaxModal(MODAL_LG, url);
     });
 
-    $('body').on('click', '.edit-file', function() {
-        var fileId = $(this).data('file-id');
-        var url = "{{ route('employee-docs.edit', ':id') }}";
-        url = url.replace(':id', fileId);
-
-        $(MODAL_DEFAULT + ' ' + MODAL_HEADING).html('...');
-        $.ajaxModal(MODAL_DEFAULT, url);
-    });
-
-    $('#cancel-document').click(function() {
-        $('#save-taskfile-data-form').addClass('d-none');
-        $('#add-task-file').closest('.row').removeClass('d-none');
-    });
-
-    $('#submit-document').click(function() {
-        var url = "{{ route('employee-docs.store') }}";
-
-        $.easyAjax({
-            url: url,
-            container: '#save-taskfile-data-form',
-            type: "POST",
-            disableButton: true,
-            buttonSelector: "#submit-document",
-            file: true,
-            data: $('#editSettings').serialize(),
-            success: function(response) {
-                if (response.status == 'success') {
-                    $('#task-file-list').html(response.view);
-                    $('#save-taskfile-data-form')[0].reset();
-                    $(".dropify-clear").trigger("click");
-                    $('.invalid-feedback').addClass('d-none');
-                }
-            }
-        })
-    });
-
-    $('body').on('click', '.delete-file', function() {
-        var id = $(this).data('row-id');
+    $('body').on('click', '.delete-iqama', function () {
         Swal.fire({
             title: "@lang('messages.sweetAlertTitle')",
             text: "@lang('messages.recoverRecord')",
@@ -204,25 +337,27 @@ $editDocumentPermission = user()->permission('edit_documents');
             buttonsStyling: false
         }).then((result) => {
             if (result.isConfirmed) {
-                var url = "{{ route('employee-docs.destroy', ':id') }}";
-                url = url.replace(':id', id);
 
+                var url = "{{ route('drivers.update', $driver->id) }}";
                 var token = "{{ csrf_token() }}";
 
                 $.easyAjax({
                     type: 'POST',
                     url: url,
+                    blockUI: true,
                     data: {
                         '_token': token,
                         '_method': 'DELETE'
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status == "success") {
-                            $('#task-file-list').html(response.view);
+                            window.location.reload();
                         }
                     }
                 });
             }
         });
     });
+    // Iqama End
+
 </script>
