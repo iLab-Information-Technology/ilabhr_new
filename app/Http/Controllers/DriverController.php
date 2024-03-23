@@ -217,11 +217,14 @@ class DriverController extends AccountBaseController
         }
 
         if (request()->ajax()) {
-            $html = view($this->view, $this->data)->render();
+            if (!$tab) {
+                $html = view($this->view, $this->data)->render();
+                return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+            }
 
-            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+            return view($this->view, $this->data);
         }
-        
+
         return view('drivers.create', $this->data);
     }
 
