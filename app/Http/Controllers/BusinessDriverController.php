@@ -148,14 +148,14 @@ class BusinessDriverController extends AccountBaseController
         $this->pageTitle = _('app.update');
         $this->driver = $driver;
         $this->business = $driver->businesses()->where('business_id', $business->id)->first();
+        $this->view = 'drivers.business.ajax.edit';
 
         if (request()->ajax()) {
-            $html = view('drivers.business.ajax.edit', $this->data)->render();
+            $html = view($this->view, $this->data)->render();
 
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
-        $this->view = 'drivers.business.ajax.edit';
 
         return view('drivers.business.create', $this->data);
     }

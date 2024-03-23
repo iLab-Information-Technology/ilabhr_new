@@ -6,7 +6,7 @@ $addDesignationPermission = user()->permission('add_designation');
 
 <div class="row">
     <div class="col-sm-12">
-        <x-form id="save-driver-project-data-form">
+        <x-form id="save-business-data-form">
 
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
@@ -25,7 +25,7 @@ $addDesignationPermission = user()->permission('add_designation');
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
 
                 <x-form-actions>
-                    <x-forms.button-primary id="save-driver-project-form" class="mr-3" icon="check">
+                    <x-forms.button-primary id="save-business-form" class="mr-3" icon="check">
                         @lang('app.save')
                     </x-forms.button-primary>
                     <x-forms.button-secondary class="mr-3" id="save-more-driver-project-form" icon="check-double">@lang('app.saveAddMore')
@@ -47,24 +47,24 @@ $addDesignationPermission = user()->permission('add_designation');
             $('#add_more').val(true);
 
             const url = "{{ route('drivers.store') }}";
-            var data = $('#save-driver-project-data-form').serialize();
-            saveDriverProject(data, url, "#save-more-driver-project-form");
+            var data = $('#save-business-data-form').serialize();
+            saveBusiness(data, url, "#save-more-driver-project-form");
 
 
         });
 
-        $('#save-driver-project-form').click(function() {
+        $('#save-business-form').click(function() {
 
             const url = "{{ route('businesses.store') }}";
-            var data = $('#save-driver-project-data-form').serialize();
-            saveDriverProject(data, url, "#save-driver-project-form");
+            var data = $('#save-business-data-form').serialize();
+            saveBusiness(data, url, "#save-business-form");
 
         });
 
-        function saveDriverProject(data, url, buttonSelector) {
+        function saveBusiness(data, url, buttonSelector) {
             $.easyAjax({
                 url: url,
-                container: '#save-driver-project-data-form',
+                container: '#save-business-data-form',
                 type: "POST",
                 disableButton: true,
                 blockUI: true,

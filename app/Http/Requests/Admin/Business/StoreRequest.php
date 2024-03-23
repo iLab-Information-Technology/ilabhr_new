@@ -28,12 +28,6 @@ class StoreRequest extends CoreRequest
     {
         $rules = [
             'name' => 'required|unique:businesses,name',
-            'hunger_id' => 'nullable',
-            'jahez_id' => 'nullable',
-            'speed_logistics_id' => 'nullable',
-            'speed_kitchen_id' => 'nullable',
-            'ecommerce_id' => 'nullable',
-            'other_project_id' => 'nullable'
         ];
 
         $rules = $this->customFieldRules($rules);

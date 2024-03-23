@@ -8,8 +8,8 @@
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink-{{ $id }}"
             tabindex="0">
 
-            <a href="{{ route('businesses.show', [$id]) }}" class="dropdown-item"><i
-                    class="fa fa-eye mr-2"></i>{{ __('app.view') }}</a>
+            {{-- <a href="{{ route('businesses.show', [$id]) }}" class="dropdown-item"><i
+                    class="fa fa-eye mr-2"></i>{{ __('app.view') }}</a> --}}
 
             <a class="dropdown-item openRightModal" href="{{ route('businesses.edit', [$id]) }}">
                 <i class="fa fa-edit mr-2"></i>

@@ -6,6 +6,7 @@ use App\DataTables\BusinessesDataTable;
 use App\Enums\Salutation;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Business\StoreRequest;
+use App\Http\Requests\Admin\Business\UpdateRequest;
 use App\Models\Driver;
 use App\Models\LanguageSetting;
 use App\Models\Role;
@@ -161,17 +162,30 @@ class BusinessController extends AccountBaseController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Business $business)
     {
-        //
+        $this->pageTitle = _('app.update');
+        $this->business = $business;
+        $this->view = 'businesses.ajax.edit';
+        
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        return view('businesses.create', $this->data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, Business $business)
     {
-        //
+        $validated = $request->validated();
+        $business->update($validated);
+
+        return Reply::success(__('messages.updateSuccess'));
     }
 
     /**
