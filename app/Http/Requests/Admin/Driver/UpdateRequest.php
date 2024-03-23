@@ -48,6 +48,22 @@ class UpdateRequest extends CoreRequest
             'performance_allowance' => 'nullable|numeric',
             'other_allowance' => 'nullable|numeric',
             'total_salary' => 'nullable|numeric',
+            'driver_id' => 'nullable',
+            'image' => 'nullable|image',
+            'name' => 'nullable',
+            'iqaama_number' => 'nullable',
+            'absher_number' => 'nullable',
+            'sponsorship' => 'nullable',
+            'sponsorship_id' => 'nullable',
+            'insurance_policy_number' => 'nullable',
+            'remarks' => 'nullable',
+            'email' => 'nullable|email',
+            'work_mobile_no' => 'nullable',
+            'work_mobile_country_code' => 'nullable',
+            'insurance_expiry_date' => 'nullable|date_format:"' . $setting->date_format . '"',
+            'license_expiry_date' => 'nullable|date_format:"' . $setting->date_format . '"',
+            'iqaama_expiry_date' => 'nullable|date_format:"' . $setting->date_format . '"',
+            'date_of_birth' => 'nullable|date_format:"' . $setting->date_format . '"|before_or_equal:'.now($setting->timezone)->toDateString(),
         ];
 
         $rules = $this->customFieldRules($rules);

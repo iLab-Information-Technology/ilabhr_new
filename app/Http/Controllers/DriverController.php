@@ -50,29 +50,7 @@ class DriverController extends AccountBaseController
         $addPermission = user()->permission('add_employees');
         abort_403(!in_array($addPermission, ['all', 'added']));
 
-
-        $this->teams = []; // Team::all();
-        $this->designations = []; // Designation::allDesignations();
-
-        $this->skills = []; // Skill::all()->pluck('name')->toArray();
         $this->countries = countries();
-        $this->lastEmployeeID = 0; // EmployeeDetails::count();
-        $this->checkifExistEmployeeId = []; // EmployeeDetails::select('id')->where('employee_id', ($this->lastEmployeeID + 1))->first();
-        $this->employees = []; // User::allEmployees(null, true);
-        $this->languages = LanguageSetting::where('status', 'enabled')->get();
-        $this->salutations = Salutation::cases();
-
-        $userRoles = user()->roles->pluck('name')->toArray();
-
-        if(in_array('admin', $userRoles))
-        {
-            $this->roles = Role::where('name', '<>', 'client')->get();
-        }
-        else
-        {
-            $this->roles = Role::whereNotIn('name', ['admin', 'client'])->get();
-        }
-
         $this->view = 'drivers.ajax.create';
 
         if (request()->ajax()) {
@@ -103,9 +81,6 @@ class DriverController extends AccountBaseController
             $validated['license_expiry_date'] = $request->license_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->license_expiry_date)->format('Y-m-d') : null;
             $validated['iqaama_expiry_date'] = $request->iqaama_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->iqaama_expiry_date)->format('Y-m-d') : null;
             $validated['date_of_birth'] = $request->date_of_birth ? Carbon::createFromFormat($this->company->date_format, $request->date_of_birth)->format('Y-m-d') : null;
-            $validated['work_mobile_no'] = '+' . $request->work_mobile_country_code . $request->work_mobile_no;
-
-            unset($validated['work_mobile_country_code']);
 
             if ($request->hasFile('image')) {
                 $validated['image'] = Files::uploadLocalOrS3($request->image, 'avatar', 300);
@@ -236,13 +211,18 @@ class DriverController extends AccountBaseController
             case 'other-document':
                 $this->view = 'drivers.ajax.other-document-modal';
                 break;
+            default:
+                $this->countries = countries();
+                $this->view = 'drivers.ajax.edit';
         }
 
         if (request()->ajax()) {
-            return view($this->view, $this->data);
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
         
-        return view('drivers.ajax.iqama-modal', $this->data);
+        return view('drivers.create', $this->data);
     }
 
     /**
@@ -252,10 +232,10 @@ class DriverController extends AccountBaseController
     {
         $validated = $request->validated();
         
-        $validated['joining_date'] = $request->joining_date ? Carbon::createFromFormat($this->company->date_format, $request->joining_date)->format('Y-m-d') : $driver->joining_date;
-        $validated['insurance_expiry_date'] = $request->insurance_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->insurance_expiry_date)->format('Y-m-d') : $driver->insurance_expiry_date;
-        $validated['license_expiry_date'] = $request->license_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->license_expiry_date)->format('Y-m-d') : $driver->license_expiry_date;
-        $validated['iqaama_expiry_date'] = $request->iqaama_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->iqaama_expiry_date)->format('Y-m-d') : $driver->iqaama_expiry_date;
+        $validated['insurance_expiry_date'] = $request->insurance_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->insurance_expiry_date)->format('Y-m-d') : null;
+        $validated['license_expiry_date'] = $request->license_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->license_expiry_date)->format('Y-m-d') : null;
+        $validated['iqaama_expiry_date'] = $request->iqaama_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->iqaama_expiry_date)->format('Y-m-d') : null;
+        $validated['date_of_birth'] = $request->date_of_birth ? Carbon::createFromFormat($this->company->date_format, $request->date_of_birth)->format('Y-m-d') : null;
 
         if ($request->hasFile('iqama'))
             $validated['iqama'] = Files::uploadLocalOrS3($request->iqama, 'iqama', 300);
