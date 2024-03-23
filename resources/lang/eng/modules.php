@@ -309,6 +309,7 @@ return array(
         'joiningDate' => 'Joining Date'
     ),
     'businesses' => array(
+        'name' => 'Name',
         'businessDetails' => 'Business Details',
         'business' => 'Business',
         'businessID' => 'Business ID',

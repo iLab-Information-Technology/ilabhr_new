@@ -27,7 +27,7 @@ class StoreRequest extends CoreRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|unique:driver_projects,name',
+            'name' => 'required|unique:businesses,name',
             'hunger_id' => 'nullable',
             'jahez_id' => 'nullable',
             'speed_logistics_id' => 'nullable',
