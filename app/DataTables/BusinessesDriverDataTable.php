@@ -31,7 +31,11 @@ class BusinessesDriverDataTable extends DataTable
      */
     public function query(BusinessDriver $model): QueryBuilder
     {
-        return $model->newQuery()->with(['business'])->select('business_driver.*');
+        return $model
+            ->newQuery()
+            ->with(['business'])
+            ->select('business_driver.*')
+            ->when($this->driver_id, fn ($q) => $q->where('driver_id', $this->driver_id));
     }
 
     /**

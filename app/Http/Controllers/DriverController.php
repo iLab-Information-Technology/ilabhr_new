@@ -9,7 +9,7 @@ use App\Helper\Reply;
 use App\Http\Requests\Admin\Driver\StoreRequest;
 use App\Models\Driver;
 use App\Models\LanguageSetting;
-use App\Models\Role;
+use App\Models\BusinessDriver;
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
@@ -21,7 +21,7 @@ class DriverController extends AccountBaseController
 {
     use ImportExcel;
 
-    public function __construct()
+    public function __construct(private BusinessesDriverDataTable $businessDataTable)
     {
         parent::__construct();
         $this->pageTitle = 'app.menu.drivers';
@@ -114,7 +114,6 @@ class DriverController extends AccountBaseController
 
     public function businesses()
     {
-
         // $viewPermission = user()->permission('view_employee_projects');
         // abort_403(!in_array($viewPermission, ['all']));
 
@@ -122,10 +121,7 @@ class DriverController extends AccountBaseController
         $this->activeTab = $tab ?: 'businesses';
         $this->view = 'drivers.ajax.businesses';
 
-        $dataTable = new BusinessesDriverDataTable();
-
-        return $dataTable->render('drivers.show', $this->data);
-
+        return $this->businessDataTable->with('driver_id', $this->driver->id)->render('drivers.show', $this->data);
     }
 
     /**

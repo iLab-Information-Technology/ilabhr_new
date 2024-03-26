@@ -36,7 +36,7 @@ class BusinessDriverController extends AccountBaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(Driver $driver, BusinessesDriverDataTable $dataTable)
+    public function index(Driver $driver)
     {
         $model = BusinessDriver::where('driver_id', $driver->id);
         return (new BusinessesDriverDataTable($model))->render('drivers.ajax.businesses', $this->data);

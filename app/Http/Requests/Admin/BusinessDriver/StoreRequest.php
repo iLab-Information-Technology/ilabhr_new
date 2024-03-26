@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\BusinessDriver;
 
 use App\Http\Requests\CoreRequest;
 use App\Traits\CustomFieldsRequestTrait;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends CoreRequest
 {
@@ -29,7 +30,10 @@ class StoreRequest extends CoreRequest
         $setting = company();
         $rules = [
             'business_id' => 'required',
-            'platform_id' => 'required'
+            'platform_id' => [ 
+                'required',
+                Rule::unique('business_driver')->where('platform_id', $this->platform_id)->where('business_id', $this->business_id)
+            ]
         ];
 
         $rules = $this->customFieldRules($rules);
