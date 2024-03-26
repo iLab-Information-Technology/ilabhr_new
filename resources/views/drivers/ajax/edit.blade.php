@@ -43,12 +43,12 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-lg-4 col-md-6">
                         <x-forms.datepicker fieldId="iqaama_expiry_date" :fieldLabel="__('modules.drivers.iqamaExpiry')"
-                            fieldName="iqaama_expiry_date" :fieldValue="$driver->iqaama_expiry_date->format(company()->date_format)" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.iqamaExpiry')" />
+                            fieldName="iqaama_expiry_date" :fieldValue="$driver->iqaama_expiry_date ? $driver->iqaama_expiry_date->format(company()->date_format) : null" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.iqamaExpiry')" />
                     </div>
 
                     <div class="col-md-4">
                         <x-forms.datepicker fieldId="date_of_birth" :fieldLabel="__('modules.drivers.dateOfBirth')"
-                            fieldName="date_of_birth" :fieldValue="$driver->date_of_birth->format(company()->date_format)" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" />
+                            fieldName="date_of_birth" :fieldValue="$driver->date_of_birth ? $driver->date_of_birth->format(company()->date_format) : null" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" />
                     </div>
                    
                     <div class="col-md-4">
@@ -68,7 +68,7 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-lg-4 col-md-6">
                         <x-forms.datepicker fieldId="license_expiry_date" :fieldLabel="__('modules.drivers.licenseExpiry')"
-                            fieldName="license_expiry_date" :fieldValue="$driver->license_expiry_date->format(company()->date_format)" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.licenseExpiry')" />
+                            fieldName="license_expiry_date" :fieldValue="$driver->license_expiry_date ? $driver->license_expiry_date->format(company()->date_format) : null" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.licenseExpiry')" />
                     </div>
 
                     <div class="col-lg-4 col-md-6">
@@ -79,7 +79,7 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-lg-4 col-md-6">
                         <x-forms.datepicker fieldId="insurance_expiry_date" :fieldLabel="__('modules.drivers.insuranceExpiry')"
-                            fieldName="insurance_expiry_date" :fieldValue="$driver->insurance_expiry_date->format(company()->date_format)" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.insuranceExpiry')" />
+                            fieldName="insurance_expiry_date" :fieldValue="$driver->insurance_expiry_date ? $driver->insurance_expiry_date->format(company()->date_format) : null" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.insuranceExpiry')" />
                     </div>
                     
                     <div class="col-md-4">

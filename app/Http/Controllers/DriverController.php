@@ -184,7 +184,7 @@ class DriverController extends AccountBaseController
      */
     public function edit(Driver $driver)
     {
-        $this->pageTitle = _('app.update');
+        $this->pageTitle = __('app.update');
         $this->driver = $driver;
         $tab = request('tab');
 
