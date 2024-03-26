@@ -78,7 +78,7 @@
                     </div>
                 </x-slot>
 
-                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $driver->iqaama_expiry_date  ? $driver->iqaama_expiry_date->format(company()->date_format) : '--'" />
+                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $driver->license_expiry_date  ? $driver->license_expiry_date->format(company()->date_format) : '--'" />
                 <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
                     <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
                         @lang('modules.employees.scanCopy')</p>
@@ -130,7 +130,6 @@
                     </div>
                 </x-slot>
 
-                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $driver->iqaama_expiry_date  ? $driver->iqaama_expiry_date->format(company()->date_format) : '--'" />
                 <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
                     <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
                         @lang('modules.employees.scanCopy')</p>

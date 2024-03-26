@@ -241,20 +241,52 @@ class DriverController extends AccountBaseController
         $validated['date_of_birth'] = $request->date_of_birth ? Carbon::createFromFormat($this->company->date_format, $request->date_of_birth)->format('Y-m-d') : null;
         $validated['joining_date'] = $request->joining_date ? Carbon::createFromFormat($this->company->date_format, $request->joining_date)->format('Y-m-d') : null;
 
+        if ($request->iqama_delete == 'yes') {
+            Files::deleteFile($driver->iqama, 'iqama');
+            $driver->iqama = null;
+            $validated['iqaama_expiry_date'] = null;
+        }
+
         if ($request->hasFile('iqama'))
             $validated['iqama'] = Files::uploadLocalOrS3($request->iqama, 'iqama', 300);
         
+        if ($request->license_delete == 'yes') {
+            Files::deleteFile($driver->license, 'license');
+            $driver->license = null;
+            $validated['license_expiry_date'] = null;
+        }
+
         if ($request->hasFile('license'))
             $validated['license'] = Files::uploadLocalOrS3($request->license, 'license', 300);
         
+        if ($request->mobile_form_delete == 'yes') {
+            Files::deleteFile($driver->mobile_form, 'mobile_form');
+            $driver->mobile_form = null;
+        }
+
         if ($request->hasFile('mobile_form'))
             $validated['mobile_form'] = Files::uploadLocalOrS3($request->mobile_form, 'mobile_form', 300);
+
+        if ($request->sim_form_delete == 'yes') {
+            Files::deleteFile($driver->sim_form, 'sim_form');
+            $driver->sim_form = null;
+        }
 
         if ($request->hasFile('sim_form'))
             $validated['sim_form'] = Files::uploadLocalOrS3($request->sim_form, 'sim_form', 300);
 
+        if ($request->medical_delete == 'yes') {
+            Files::deleteFile($driver->medical, 'medical');
+            $driver->medical = null;
+        }
+
         if ($request->hasFile('medical'))
             $validated['medical'] = Files::uploadLocalOrS3($request->medical, 'medical', 300);
+
+        if ($request->other_document_delete == 'yes') {
+            Files::deleteFile($driver->other_document, 'other_document');
+            $driver->other_document = null;
+        }
 
         if ($request->hasFile('other_document'))
             $validated['other_document'] = Files::uploadLocalOrS3($request->other_document, 'other_document', 300);
