@@ -891,8 +891,7 @@ class EmployeeController extends AccountBaseController
         $viewPermission = user()->permission('view_tickets');
         abort_403(!(in_array($viewPermission, ['all']) && in_array('tickets', user_modules())));
         $tab = request('tab');
-        $this->activeTab = $tab ?: 'profile';
-        $this->tickets = Ticket::all();
+        $this->activeTab = $tab ?: 'link-drivers';
         $this->view = 'employees.drivers.ajax.index';
         $dataTable = $this->driverEmployeeDataTable->with('employee_id', $this->employee->id);
 
