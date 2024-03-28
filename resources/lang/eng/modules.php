@@ -245,6 +245,7 @@ return array(
         'addOtherDocument' => 'Add Other Document',
         'otherDocumentDetails' => 'Other Document Details',
         'expiryDate' => 'Expiry Date',
+        'driver' => 'Driver',
         
         // Personal Information
         'image' => 'Image',
@@ -378,6 +379,7 @@ return array(
         'marriageAnniversaryDate' => 'Marriage Anniversary Date',
         'employmentType' => 'Employment Type',
         'immigration' => 'Immigration',
+        'linkDrivers' => 'Link Drivers',
         'passportDetails' => 'Passport Details',
         'passportNumber' => 'Passport Number',
         'visaNumber' => 'Visa Number',

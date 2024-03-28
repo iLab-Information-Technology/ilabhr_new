@@ -125,6 +125,9 @@ if ($viewPermission == 'all'
                             <x-tab :href="route('employees.show', $employee->id) . '?tab=immigration'" :text="__('modules.employees.immigration')" class="immigration" />
                         </li>
                     @endif
+                    <li>
+                        <x-tab :href="route('employees.show', $employee->id) . '?tab=link-drivers'" :text="__('modules.employees.linkDrivers')" class="link-drivers" />
+                    </li>
                 </ul>
             </nav>
         </div>

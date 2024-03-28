@@ -24,6 +24,7 @@ use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TimelogController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DriverEmployeeController;
 use App\Http\Controllers\EstimateController;
 use App\Http\Controllers\LeadFileController;
 use App\Http\Controllers\LeadNoteController;
@@ -177,6 +178,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::resource('drivers', DriverController::class);
     Route::resource('drivers.businesses', BusinessDriverController::class);
     Route::get('business-ajax', [BusinessController::class, 'ajaxLoadBusiness'])->name('get.business-ajax');
+    Route::get('driver-ajax', [DriverController::class, 'ajaxLoadDriver'])->name('get.driver-ajax');
     Route::resource('businesses', BusinessController::class);
 
     // employee routes
@@ -193,6 +195,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::post('employees/send-invite', [EmployeeController::class, 'sendInvite'])->name('employees.send_invite');
     Route::post('employees/create-link', [EmployeeController::class, 'createLink'])->name('employees.create_link');
     Route::resource('employees', EmployeeController::class);
+    Route::resource('employees.drivers', DriverEmployeeController::class);
     Route::resource('passport', PassportController::class);
     Route::resource('employee-visa', EmployeeVisaController::class);
 

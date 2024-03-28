@@ -111,6 +111,32 @@ class DriverController extends AccountBaseController
         return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => route('drivers.index')]);
     }
 
+    public function ajaxLoadDriver(Request $request)
+    {
+        $search = $request->search;
+
+        $drivers = Driver::orderby('name')
+            ->select('id', 'name')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->take(20)
+            ->get();
+
+        $response = array();
+
+        foreach ($drivers as $driver) {
+
+            $response[] = array(
+                'id' => $driver->id,
+                'text' => $driver->name
+            );
+
+        }
+
+        return response()->json($response);
+    }
+
 
     public function businesses()
     {

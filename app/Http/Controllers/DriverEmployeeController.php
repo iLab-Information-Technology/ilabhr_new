@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use App\DataTables\BusinessesDriverDataTable;
 use App\Enums\Salutation;
 use App\Helper\Reply;
-use App\Http\Requests\Admin\BusinessDriver\StoreRequest;
-use App\Http\Requests\Admin\BusinessDriver\UpdateRequest;
+use App\Http\Requests\Admin\DriverEmployee\StoreRequest;
+use App\Http\Requests\Admin\DriverEmployee\UpdateRequest;
 use App\Models\Driver;
 use App\Models\Business;
 use App\Models\BusinessDriver;
 use App\Models\LanguageSetting;
 use App\Models\Role;
+use App\Models\User;
 use App\Traits\ImportExcel;
-use Illuminate\Http\Request;
-use App\Helper\Files;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class BusinessDriverController extends AccountBaseController
+class DriverEmployeeController extends AccountBaseController
 {
     use ImportExcel;
 
@@ -38,32 +36,21 @@ class BusinessDriverController extends AccountBaseController
      */
     public function index(Driver $driver)
     {
-        $model = BusinessDriver::where('driver_id', $driver->id);
-        return (new BusinessesDriverDataTable($model))->render('drivers.ajax.businesses', $this->data);
+        
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Driver $driver)
+    public function create(User $employee)
     {
-        $this->pageTitle = __('app.addBusiness');
+        $this->pageTitle = __('app.addDriver');
 
         // $addPermission = user()->permission('add_employees');
         // abort_403(!in_array($addPermission, ['all', 'added']));
 
 
-        $this->driver = $driver;
-        $this->teams = []; // Team::all();
-        $this->designations = []; // Designation::allDesignations();
-
-        $this->skills = []; // Skill::all()->pluck('name')->toArray();
-        $this->countries = countries();
-        $this->lastEmployeeID = 0; // EmployeeDetails::count();
-        $this->checkifExistEmployeeId = []; // EmployeeDetails::select('id')->where('employee_id', ($this->lastEmployeeID + 1))->first();
-        $this->employees = []; // User::allEmployees(null, true);
-        $this->languages = LanguageSetting::where('status', 'enabled')->get();
-        $this->salutations = Salutation::cases();
+        $this->employee = $employee;
 
         $userRoles = user()->roles->pluck('name')->toArray();
 
@@ -76,7 +63,7 @@ class BusinessDriverController extends AccountBaseController
             $this->roles = Role::whereNotIn('name', ['admin', 'client'])->get();
         }
 
-        $this->view = 'drivers.business.ajax.create';
+        $this->view = 'employees.drivers.ajax.create';
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
@@ -84,13 +71,13 @@ class BusinessDriverController extends AccountBaseController
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
-        return view('drivers.business.create', $this->data);
+        return view('employees.drivers.create', $this->data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request, Driver $driver)
+    public function store(StoreRequest $request, User $employee)
     {
         // $addPermission = user()->permission('add_employees');
         // abort_403(!in_array($addPermission, ['all', 'added']));
@@ -98,16 +85,14 @@ class BusinessDriverController extends AccountBaseController
         // WORKSUITESAAS
         $company = company();
 
-        if ($driver->businesses()->where('business_id', $request->business_id)->exists()) {
-            return Reply::error(__('messages.businessExists'));
+        if ($employee->drivers()->where('driver_employee.driver_id', $request->driver_id)->exists()) {
+            return Reply::error(__('messages.driverExists'));
         }
 
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            $driver->businesses()->attach($validated['business_id'], [
-                'platform_id' => $validated['platform_id']
-            ]);
+            $employee->drivers()->attach($validated['driver_id']);
             // Commit Transaction
             DB::commit();
 
@@ -124,12 +109,12 @@ class BusinessDriverController extends AccountBaseController
 
 
         if (request()->add_more == 'true') {
-            $html = $this->create($driver);
+            $html = $this->create($employee);
 
             return Reply::successWithData(__('messages.recordSaved'), ['html' => $html, 'add_more' => true]);
         }
 
-        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => route('drivers.show', $driver->id) . '?tab=businesses']);
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => route('employees.show', $employee->id) . '?tab=link-drivers']);
     }
 
     /**
@@ -145,38 +130,23 @@ class BusinessDriverController extends AccountBaseController
      */
     public function edit(Driver $driver, Business $business)
     {
-        $this->pageTitle = _('app.update');
-        $this->driver = $driver;
-        $this->business = $driver->businesses()->where('business_id', $business->id)->first();
-        $this->view = 'drivers.business.ajax.edit';
-
-        if (request()->ajax()) {
-            $html = view($this->view, $this->data)->render();
-
-            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
-        }
-
-
-        return view('drivers.business.create', $this->data);
+       
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Driver $driver, Business $business)
+    public function update()
     {
-        $validated = $request->validated();
-
-        $driver->businesses()->updateExistingPivot($business->id, $validated);
-        return Reply::successWithData(__('messages.updateSuccess'), ['redirectUrl' => route('drivers.show', $driver->id) . '?tab=businesses']);
+        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Driver $driver, Business $business)
+    public function destroy(User $employee, Driver $driver)
     {
-        $this->discussion = $driver->businesses()->detach($business->id);
+        $this->discussion = $employee->drivers()->detach($driver->id);
 
         return Reply::success(__('messages.deleteSuccess'));
     }

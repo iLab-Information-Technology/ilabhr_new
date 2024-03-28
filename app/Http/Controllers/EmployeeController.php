@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\DriverEmployeeDataTable;
 use App\DataTables\EmployeesDataTable;
 use App\DataTables\LeaveDataTable;
 use App\DataTables\ProjectsDataTable;
@@ -59,7 +60,7 @@ class EmployeeController extends AccountBaseController
 {
     use ImportExcel;
 
-    public function __construct()
+    public function __construct(private DriverEmployeeDataTable $driverEmployeeDataTable)
     {
         parent::__construct();
         $this->pageTitle = 'app.menu.employees';
@@ -746,6 +747,9 @@ class EmployeeController extends AccountBaseController
             $this->view = 'employees.ajax.immigration';
             break;
 
+        case 'link-drivers':
+            return $this->driverEmployees();
+
         default:
             $this->view = 'employees.ajax.profile';
             break;
@@ -877,6 +881,20 @@ class EmployeeController extends AccountBaseController
         $this->tickets = Ticket::all();
         $this->view = 'employees.ajax.tickets';
         $dataTable = new TicketDataTable();
+
+        return $dataTable->render('employees.show', $this->data);
+
+    }
+
+    public function driverEmployees()
+    {
+        $viewPermission = user()->permission('view_tickets');
+        abort_403(!(in_array($viewPermission, ['all']) && in_array('tickets', user_modules())));
+        $tab = request('tab');
+        $this->activeTab = $tab ?: 'profile';
+        $this->tickets = Ticket::all();
+        $this->view = 'employees.drivers.ajax.index';
+        $dataTable = $this->driverEmployeeDataTable->with('employee_id', $this->employee->id);
 
         return $dataTable->render('employees.show', $this->data);
 
