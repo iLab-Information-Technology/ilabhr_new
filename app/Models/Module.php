@@ -95,7 +95,7 @@ class Module extends BaseModel
             ]
         ],
         [
-            'module_name' => 'coordinator_reports',
+            'module_name' => 'coordinatorReports',
             'permissions' => [ 
                 [
                     'allowed_permissions' => Permission::ALL_NONE,
@@ -240,6 +240,16 @@ class Module extends BaseModel
                     'allowed_permissions' => Permission::ALL_ADDED_NONE,
                     'is_custom' => 0,
                     'name' => 'delete_employees',
+                ],
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 1,
+                    'name' => 'add_linked_drivers',
+                ],
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 1,
+                    'name' => 'delete_linked_drivers',
                 ],
                 [
                     'allowed_permissions' => Permission::ALL_NONE,

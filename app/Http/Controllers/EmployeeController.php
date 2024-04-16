@@ -893,7 +893,7 @@ class EmployeeController extends AccountBaseController
         $tab = request('tab');
         $this->activeTab = $tab ?: 'link-drivers';
         $this->view = 'employees.drivers.ajax.index';
-        $dataTable = $this->driverEmployeeDataTable->with('employee_id', $this->employee->id);
+        $dataTable = $this->driverEmployeeDataTable->with('employee_id', $this->employee->id)->with('employee', $this->employee);
 
         return $dataTable->render('employees.show', $this->data);
 

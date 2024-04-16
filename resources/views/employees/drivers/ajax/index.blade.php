@@ -1,5 +1,5 @@
 @php
-// $addProjectPermission = user()->permission('add_projects');
+$addLinkedDriverPermission = $employee->permission('add_link_driver');
 @endphp
 
 <!-- ROW START -->
@@ -10,12 +10,12 @@
 
             <div id="table-actions" class="d-flex align-items-center">
 
-                {{-- @if ($addProjectPermission == 'all' || $addProjectPermission == 'added') --}}
+                @if ($addLinkedDriverPermission == 'all')
                     <x-forms.link-primary :link="route('employees.drivers.create', $employee->id)"
                         class="mr-3 openRightModal" icon="plus" data-redirect-url="{{ url()->full() }}">
                         @lang('app.addDriver')
                     </x-forms.link-primary>
-                {{-- @endif --}}
+                @endif
             </div>
 
             <x-datatable.actions>

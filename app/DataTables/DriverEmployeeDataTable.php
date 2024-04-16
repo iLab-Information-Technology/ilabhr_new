@@ -20,7 +20,7 @@ class DriverEmployeeDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'employees.drivers.datatable.action')
+            ->addColumn('action', fn ($driverEmployee) => view('employees.drivers.datatable.action', array_merge($driverEmployee->toArray(), [ 'employee' => $this->employee])))
             ->setRowId('id')
             ->rawColumns([ 'action' ]);
     }

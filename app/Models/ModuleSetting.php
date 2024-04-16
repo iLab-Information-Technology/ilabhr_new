@@ -37,6 +37,7 @@ class ModuleSetting extends BaseModel
     const CLIENT_MODULES = [
             'businesses',
             'drivers',
+            'coordinatorReports',
             'clients',
             'projects',
             'tickets',

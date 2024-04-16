@@ -27,7 +27,7 @@ class CoordinatorReportController extends AccountBaseController
         parent::__construct();
         $this->pageTitle = 'app.menu.coordinatorReport';
         $this->middleware(function ($request, $next) {
-            abort_403(!in_array('coordinator_reports', $this->user->modules));
+            abort_403(!in_array('coordinatorReports', $this->user->modules));
 
             return $next($request);
         });
@@ -43,7 +43,7 @@ class CoordinatorReportController extends AccountBaseController
         abort_403(!in_array($viewPermission, ['all']));
 
         $this->businesses = Business::select([ 'id', 'name' ])->get();
-        $this->business_id = request()->business_id ?? $this->businesses->first()->id;
+        $this->business_id = request()->business_id ?? $this->businesses->first()?->id;
 
         if (!$this->business_id)
             return redirect()->route('businesses.index');

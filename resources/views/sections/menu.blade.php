@@ -111,7 +111,7 @@
 
 <!-- NAV ITEM - DMS COLLAPASE MENU -->
 
-@if ((in_array('drivers', user_modules()) || in_array('businesses', user_modules()) || in_array('coordinator_reports', user_modules())) && ($sidebarUserPermissions['view_drivers'] != 5 || $sidebarUserPermissions['view_businesses'] != 5 || $sidebarUserPermissions['view_coordinator_reports'] != 5) && ($sidebarUserPermissions['view_drivers'] != 'none' || $sidebarUserPermissions['view_businesses'] != 'none' || $sidebarUserPermissions['view_coordinator_reports'] != 'none'))
+@if ((in_array('drivers', user_modules()) || in_array('businesses', user_modules()) || in_array('coordinatorReports', user_modules())) && ($sidebarUserPermissions['view_drivers'] != 5 || $sidebarUserPermissions['view_businesses'] != 5 || $sidebarUserPermissions['view_coordinator_reports'] != 5) && ($sidebarUserPermissions['view_drivers'] != 'none' || $sidebarUserPermissions['view_businesses'] != 'none' || $sidebarUserPermissions['view_coordinator_reports'] != 'none'))
 <x-menu-item icon="people" :text="__('app.menu.dms')">
     <x-slot name="iconPath">
         <path
@@ -124,7 +124,7 @@
         @if (in_array('businesses', user_modules()) && $sidebarUserPermissions['view_businesses'] != 5 && $sidebarUserPermissions['view_businesses'] != 'none')
             <x-sub-menu-item :link="route('businesses.index')" :text="__('app.menu.businesses')" />
         @endif
-        @if (in_array('coordinator_reports', user_modules()) && $sidebarUserPermissions['view_coordinator_reports'] != 5 && $sidebarUserPermissions['view_coordinator_reports'] != 'none')
+        @if (in_array('coordinatorReports', user_modules()) && $sidebarUserPermissions['view_coordinator_reports'] != 5 && $sidebarUserPermissions['view_coordinator_reports'] != 'none')
             <x-sub-menu-item :link="route('coordinator-report.index')" :text="__('app.menu.coordinatorReport')" />
         @endif
         <!-- NAV ITEM - CUSTOM MODULES  -->

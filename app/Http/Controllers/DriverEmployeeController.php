@@ -2,16 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\BusinessesDriverDataTable;
-use App\Enums\Salutation;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\DriverEmployee\StoreRequest;
-use App\Http\Requests\Admin\DriverEmployee\UpdateRequest;
 use App\Models\Driver;
 use App\Models\Business;
-use App\Models\BusinessDriver;
-use App\Models\LanguageSetting;
-use App\Models\Role;
 use App\Models\User;
 use App\Traits\ImportExcel;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +19,7 @@ class DriverEmployeeController extends AccountBaseController
         parent::__construct();
         $this->pageTitle = 'app.menu.drivers';
         $this->middleware(function ($request, $next) {
-            // abort_403(!in_array('driv', $this->user->modules));
+            abort_403(!in_array('employees', $this->user->modules));
 
             return $next($request);
         });
@@ -34,7 +28,7 @@ class DriverEmployeeController extends AccountBaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(Driver $driver)
+    public function index(User $employee)
     {
         
     }
@@ -44,25 +38,11 @@ class DriverEmployeeController extends AccountBaseController
      */
     public function create(User $employee)
     {
+        $addPermission = $employee->permission('add_linked_drivers');
+        abort_403(!in_array($addPermission, ['all', 'added']));
+
         $this->pageTitle = __('app.addDriver');
-
-        // $addPermission = user()->permission('add_employees');
-        // abort_403(!in_array($addPermission, ['all', 'added']));
-
-
         $this->employee = $employee;
-
-        $userRoles = user()->roles->pluck('name')->toArray();
-
-        if(in_array('admin', $userRoles))
-        {
-            $this->roles = Role::where('name', '<>', 'client')->get();
-        }
-        else
-        {
-            $this->roles = Role::whereNotIn('name', ['admin', 'client'])->get();
-        }
-
         $this->view = 'employees.drivers.ajax.create';
 
         if (request()->ajax()) {
@@ -79,11 +59,8 @@ class DriverEmployeeController extends AccountBaseController
      */
     public function store(StoreRequest $request, User $employee)
     {
-        // $addPermission = user()->permission('add_employees');
-        // abort_403(!in_array($addPermission, ['all', 'added']));
-
-        // WORKSUITESAAS
-        $company = company();
+        $addPermission = $employee->permission('add_linked_drivers');
+        abort_403(!in_array($addPermission, ['all', 'added']));
 
         if ($employee->drivers()->where('driver_employee.driver_id', $request->driver_id)->exists()) {
             return Reply::error(__('messages.driverExists'));
@@ -93,20 +70,14 @@ class DriverEmployeeController extends AccountBaseController
         try {
             $validated = $request->validated();
             $employee->drivers()->attach($validated['driver_id']);
-            // Commit Transaction
+
             DB::commit();
-
-            // WORKSUITESAAS
-            session()->forget('company');
-
         } catch (\Exception $e) {
             logger($e->getMessage());
-            // Rollback Transaction
             DB::rollback();
 
             return Reply::error('Some error occurred when inserting the data. Please try again or contact support '. $e->getMessage());
         }
-
 
         if (request()->add_more == 'true') {
             $html = $this->create($employee);
@@ -146,7 +117,10 @@ class DriverEmployeeController extends AccountBaseController
      */
     public function destroy(User $employee, Driver $driver)
     {
-        $this->discussion = $employee->drivers()->detach($driver->id);
+        $deletePermission = $employee->permission('delete_linked_drivers');
+        abort_403(!($deletePermission == 'all'));
+
+        $this->linkedDriver = $employee->drivers()->detach($driver->id);
 
         return Reply::success(__('messages.deleteSuccess'));
     }

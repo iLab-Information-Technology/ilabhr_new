@@ -16,6 +16,7 @@ $viewLeavePermission = user()->permission('view_leave');
 $viewDocumentPermission = user()->permission('view_documents');
 $viewAppreciationPermission = user()->permission('view_appreciation');
 $viewImmigrationPermission = user()->permission('view_immigration');
+$addLinkedDriverPermission = $employee->permission('add_link_driver');
 @endphp
 
 @php
@@ -126,9 +127,11 @@ if ($viewPermission == 'all'
                         </li>
                     @endif
                     
+                    @if ($addLinkedDriverPermission == 'all')
                     <li>
                         <x-tab :href="route('employees.show', $employee->id) . '?tab=link-drivers'" :text="__('modules.employees.linkDrivers')" ajax="false" class="link-drivers" />
                     </li>
+                    @endif
                 </ul>
             </nav>
         </div>

@@ -1,3 +1,8 @@
+@php
+    $editDriverPermission = user()->permission('edit_drivers');
+    $deleteDriverPermission = user()->permission('delete_drivers');
+@endphp
+
 <div class="task_view">
 
     <div class="dropdown">
@@ -11,16 +16,19 @@
             <a href="{{ route('drivers.show', [$id]) }}" class="dropdown-item"><i
                     class="fa fa-eye mr-2"></i>{{ __('app.view') }}</a>
 
+            @if ($editDriverPermission == 'all')
             <a class="dropdown-item openRightModal" href="{{ route('drivers.edit', [$id]) }}">
                 <i class="fa fa-edit mr-2"></i>
                 {{ trans('app.edit') }}
             </a>
+            @endif
 
+            @if ($deleteDriverPermission == 'all')
             <a class="dropdown-item delete-table-row" href="javascript:;" data-driver-id="{{ $id }}">
                 <i class="fa fa-trash mr-2"></i>
                 {{ trans('app.delete') }}
             </a>
-
+            @endif
         </div>
     </div>
 </div>

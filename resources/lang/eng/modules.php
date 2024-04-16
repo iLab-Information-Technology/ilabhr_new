@@ -1758,7 +1758,7 @@ return array(
     'module' => array(
         'drivers' => 'Drivers',
         'businesses' => 'Businesses',
-        'coordinator_reports' => 'Coordinator Reports',
+        'coordinatorReports' => 'Coordinator Reports',
         'clients' => 'Clients',
         'employees' => 'Employees',
         'projects' => 'Projects',
