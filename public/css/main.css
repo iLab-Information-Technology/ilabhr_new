@@ -15041,6 +15041,15 @@ table h5 a:hover {
      object-fit: cover;
 }
 
+.hw-50px {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.object-fit-cover { 
+  object-fit: cover !important;
+}
+
 img.taskEmployeeImg {
   width: 30px;
   height: 30px;

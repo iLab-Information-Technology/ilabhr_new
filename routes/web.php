@@ -111,6 +111,7 @@ use App\Http\Controllers\DiscussionCategoryController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\BusinessDriverController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CoordinatorReportController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\ProjectTemplateTaskController;
 use App\Http\Controllers\ProjectTimelogBreakController;
@@ -180,6 +181,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('business-ajax', [BusinessController::class, 'ajaxLoadBusiness'])->name('get.business-ajax');
     Route::get('driver-ajax', [DriverController::class, 'ajaxLoadDriver'])->name('get.driver-ajax');
     Route::resource('businesses', BusinessController::class);
+    Route::resource('coordinator-report', CoordinatorReportController::class);
 
     // employee routes
     Route::post('employees/apply-quick-action', [EmployeeController::class, 'applyQuickAction'])->name('employees.apply_quick_action');

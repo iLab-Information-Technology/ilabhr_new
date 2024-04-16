@@ -7,6 +7,15 @@
 @section('filter-section')
 
     <x-filters.filter-box>
+        <div class="py-1 px-lg-3 px-0 align-items-center d-flex">
+            <h4 class="mb-0">@lang('modules.coordinator-report.business')</h4>
+            <x-forms.select fieldId="filter_business_id" fieldName="filter_business_id">
+                @foreach ($businesses as $business)
+                <option value="{{ $business->id }}" @selected($business->id == $business_id)>{{ $business->name }}</option>
+                @endforeach
+            </x-forms.select>
+        </div>
+
         <!-- SEARCH BY TASK START -->
         <div class="task-search d-flex  py-1 px-lg-3 px-0 border-right-grey align-items-center">
             <form class="w-100 mr-1 mr-lg-0 mr-md-1 ml-md-1 ml-0 ml-lg-0">
@@ -99,7 +108,7 @@
 @endsection
 
 @php
-    $addBusinessPermission = user()->permission('add_businesses');
+    $addCoordinatorReports = user()->permission('add_coordinator_reports');
 @endphp
 
 @section('content')
@@ -110,13 +119,13 @@
 
             <div id="table-actions" class="d-block d-lg-flex align-items-center">
                 @if (checkCompanyCanAddMoreEmployees(user()->company_id))
-                @if ($addBusinessPermission == 'all')
-                    <x-forms.link-primary :link="route('businesses.create')" class="mr-3 openRightModal" icon="plus">
-                        @lang('app.addBusiness')
+                @if ($addCoordinatorReports == 'all')
+                    <x-forms.link-primary :link="route('coordinator-report.create')" class="mr-3 openRightModal" icon="plus">
+                        @lang('app.addReport')
                     </x-forms.link-primary>
                 @endif
 
-                @if ($addBusinessPermission == 'all')
+                @if ($addCoordinatorReports == 'all')
                     <x-forms.link-secondary :link="route('employees.import')" class="mr-3 openRightModal mb-2 mb-lg-0 d-none d-lg-block"
                                             icon="file-upload">
                         @lang('app.importExcel')
@@ -175,32 +184,13 @@
         lastEndDate = '{{ request("lastEndDate") }}';
         @endif
 
-        $('#businesses-table').on('preXhr.dt', function (e, settings, data) {
-            const status = $('#status').val();
-            const employee = $('#employee').val();
-            const role = $('#role').val();
-            const gender = $('#gender').val();
-            const skill = $('#skill').val();
-            const designation = $('#designation').val();
-            const department = $('#department').val();
-            const searchText = $('#search-text-field').val();
-            data['status'] = status;
-            data['employee'] = employee;
-            data['role'] = role;
-            data['gender'] = gender;
-            data['skill'] = skill;
-            data['designation'] = designation;
-            data['department'] = department;
-            data['searchText'] = searchText;
+        $('#coordinator-report-table').on('preXhr.dt', function (e, settings, data) {
+            data['business_id'] = $('#filter_business_id').val();
+            data['searchText'] = $('#search-text-field').val();
+        });
 
-            /* If any of these following filters are applied, then dashboard conditions will not work  */
-            if (status == "all" || employee == "all" || role == "all" || designation == "all" || searchText == "") {
-                data['startDate'] = startDate;
-                data['endDate'] = endDate;
-                data['lastStartDate'] = lastStartDate;
-                data['lastEndDate'] = lastEndDate;
-            }
-
+        $('#filter_business_id').on('change', function() { 
+            window.location.href = '{{ route('coordinator-report.index') }}?business_id=' + $(this).val();
         });
 
         const showTable = () => {

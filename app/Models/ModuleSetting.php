@@ -35,6 +35,8 @@ class ModuleSetting extends BaseModel
     use HasCompany;
 
     const CLIENT_MODULES = [
+            'businesses',
+            'drivers',
             'clients',
             'projects',
             'tickets',

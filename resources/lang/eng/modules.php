@@ -309,13 +309,24 @@ return array(
         'otherDocument' => 'Other Document',
         'joiningDate' => 'Joining Date'
     ),
+    'coordinator-report' => array(
+        'business' => 'Business',
+        'report' => 'Report',
+        'driver' => 'Driver',
+        'coordinatorReport' => 'Coordinator Report'
+    ),
     'businesses' => array(
+        'label' => 'Label',
         'name' => 'Name',
+        'type' => 'Type',
         'businessDetails' => 'Business Details',
+        'businessFields' => 'Business Fields',
         'business' => 'Business',
         'businessID' => 'Business ID',
         'platformID' => 'Platform ID',
-    ),
+        'required' => 'Required',
+        'adminOnly' => 'Admin Only'
+     ),
     'employees' => array(
         'addNewEmployee' => 'Add New Employee',
         'createTitle' => 'Add Employee Info',
@@ -1745,6 +1756,9 @@ return array(
     ),
     'timelogAlreadyExist' => 'Time-log already exist for this user.',
     'module' => array(
+        'drivers' => 'Drivers',
+        'businesses' => 'Businesses',
+        'coordinator_reports' => 'Coordinator Reports',
         'clients' => 'Clients',
         'employees' => 'Employees',
         'projects' => 'Projects',

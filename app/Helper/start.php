@@ -843,9 +843,12 @@ if (!function_exists('sidebar_user_perms')) {
     // @codingStandardsIgnoreLine
     function sidebar_user_perms()
     {
-        if (!session()->has('sidebar_user_perms')) {
+        if (true) {
 
             $sidebarPermissionsArray = [
+                'view_drivers',
+                'view_businesses',
+                'view_coordinator_reports',
                 'view_clients',
                 'view_lead',
                 'view_employees',

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Business;
+namespace App\Http\Requests\Admin\CoordinatorReport;
 
 use App\Http\Requests\CoreRequest;
 use App\Traits\CustomFieldsRequestTrait;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends CoreRequest
 {
@@ -27,12 +28,10 @@ class StoreRequest extends CoreRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|unique:businesses,name',
-            'fields' => 'array',
-            'fields.*.name' => 'required|string',
-            'fields.*.type' => 'required|in:TEXT,INTEGER,DOCUMENT',
-            'fields.*.required' => 'required|boolean',
-            'fields.*.admin_only' => 'required|boolean'
+            'business_id' => 'required|exists:businesses,id',
+            'driver_id' => 'required|exists:drivers,id',
+            'fields.*.field_id' => 'required|exists:business_fields,id',
+            'fields.*.value' => 'nullable'
         ];
 
         $rules = $this->customFieldRules($rules);

@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\DataTables\BusinessesDriverDataTable;
 use App\DataTables\DriversDataTable;
-use App\Enums\Salutation;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Driver\StoreRequest;
 use App\Models\Driver;
-use App\Models\LanguageSetting;
-use App\Models\BusinessDriver;
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
@@ -26,8 +23,7 @@ class DriverController extends AccountBaseController
         parent::__construct();
         $this->pageTitle = 'app.menu.drivers';
         $this->middleware(function ($request, $next) {
-            // abort_403(!in_array('driv', $this->user->modules));
-
+            abort_403(!in_array('drivers', $this->user->modules));
             return $next($request);
         });
     }
@@ -37,6 +33,9 @@ class DriverController extends AccountBaseController
      */
     public function index(DriversDataTable $dataTable)
     {
+        $viewPermission = user()->permission('view_drivers');
+        abort_403(!in_array($viewPermission, ['all']));
+
         return $dataTable->render('drivers.index', $this->data);
     }
 
@@ -45,11 +44,10 @@ class DriverController extends AccountBaseController
      */
     public function create()
     {
-        $this->pageTitle = __('app.addDriver');
-
-        $addPermission = user()->permission('add_employees');
+        $addPermission = user()->permission('add_drivers');
         abort_403(!in_array($addPermission, ['all', 'added']));
 
+        $this->pageTitle = __('app.addDriver');
         $this->countries = countries();
         $this->view = 'drivers.ajax.create';
 
@@ -67,11 +65,8 @@ class DriverController extends AccountBaseController
      */
     public function store(StoreRequest $request)
     {
-        // $addPermission = user()->permission('add_employees');
-        // abort_403(!in_array($addPermission, ['all', 'added']));
-
-        // WORKSUITESAAS
-        $company = company();
+        $addPermission = user()->permission('add_drivers');
+        abort_403(!in_array($addPermission, ['all', 'added']));
 
         DB::beginTransaction();
         try {
@@ -87,15 +82,10 @@ class DriverController extends AccountBaseController
             }
             
             Driver::create($validated);
-            // Commit Transaction
+
             DB::commit();
-
-            // WORKSUITESAAS
-            session()->forget('company');
-
         } catch (\Exception $e) {
             logger($e->getMessage());
-            // Rollback Transaction
             DB::rollback();
 
             return Reply::error('Some error occurred when inserting the data. Please try again or contact support '. $e->getMessage());
@@ -140,9 +130,6 @@ class DriverController extends AccountBaseController
 
     public function businesses()
     {
-        // $viewPermission = user()->permission('view_employee_projects');
-        // abort_403(!in_array($viewPermission, ['all']));
-
         $tab = request('tab');
         $this->activeTab = $tab ?: 'businesses';
         $this->view = 'drivers.ajax.businesses';
@@ -155,38 +142,32 @@ class DriverController extends AccountBaseController
      */
     public function show(string $id)
     {
-        $this->viewPermission = user()->permission('view_employees');
+        $this->viewPermission = user()->permission('view_drivers');
+        abort_403(!($this->viewPermission == 'all'));
 
         $this->driver = Driver::findOrFail($id);
-
-        // abort_403(in_array('client', user_roles()));
 
         $tab = request('tab');
 
         $this->pageTitle = $this->driver->name;
-        // $viewDocumentPermission = user()->permission('view_documents');
 
         switch ($tab) {
             case 'employment':
                 $this->view = 'drivers.ajax.employment';
                 break;
             case 'documents':
-                // abort_403(($viewDocumentPermission == 'none'));
                 $this->view = 'drivers.ajax.documents';
                 break;
 
             case 'locality':
-                // abort_403(($viewDocumentPermission == 'none'));
                 $this->view = 'drivers.ajax.locality';
                 $this->countries = countries();
                 break;
 
             case 'banking':
-                // abort_403(($viewDocumentPermission == 'none'));
                 $this->view = 'drivers.ajax.banking';
                 break;
             case 'businesses':
-                // abort_403(($viewDocumentPermission == 'none'));
                 return $this->businesses();
 
             default:
@@ -210,7 +191,11 @@ class DriverController extends AccountBaseController
      */
     public function edit(Driver $driver)
     {
+        $this->editPermission = user()->permission('edit_drivers');
+        abort_403(!($this->editPermission == 'all'));
+
         $this->pageTitle = __('app.update');
+
         $this->driver = $driver;
         $tab = request('tab');
 
@@ -255,6 +240,9 @@ class DriverController extends AccountBaseController
      */
     public function update(UpdateRequest $request, Driver $driver)
     {
+        $this->editPermission = user()->permission('edit_drivers');
+        abort_403(!($this->editPermission == 'all'));
+
         $validated = $request->validated();
         
         $validated['insurance_expiry_date'] = $request->insurance_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->insurance_expiry_date)->format('Y-m-d') : null;
@@ -322,11 +310,13 @@ class DriverController extends AccountBaseController
      */
     public function destroy(string $id)
     {
-        $this->discussion = Driver::findOrFail($id);
-        // $deletePermission = user()->permission('delete_project_discussions');
-        // abort_403(!($deletePermission == 'all' || ($deletePermission == 'added' && $this->discussion->added_by == user()->id)));
+        $deletePermission = user()->permission('delete_drivers');
+        abort_403(!($deletePermission == 'all'));
 
+        $this->driver = Driver::findOrFail($id);
+        
         Driver::destroy($id);
+
         return Reply::success(__('messages.deleteSuccess'));
     }
 }

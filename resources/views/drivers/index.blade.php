@@ -99,9 +99,7 @@
 @endsection
 
 @php
-    $addEmployeePermission = user()->permission('add_employees');
-    $addDesignationPermission = user()->permission('add_designation');
-    $viewDesignationPermission = user()->permission('view_designation');
+    $addDriverPermission = user()->permission('add_drivers');
 @endphp
 
 @section('content')
@@ -112,13 +110,11 @@
 
             <div id="table-actions" class="d-block d-lg-flex align-items-center">
                 @if (checkCompanyCanAddMoreEmployees(user()->company_id))
-                @if ($addEmployeePermission == 'all')
+                @if ($addDriverPermission == 'all')
                     <x-forms.link-primary :link="route('drivers.create')" class="mr-3 openRightModal" icon="plus">
                         @lang('app.addDriver')
                     </x-forms.link-primary>
-                @endif
 
-                @if ($addEmployeePermission == 'all')
                     <x-forms.link-secondary :link="route('employees.import')" class="mr-3 openRightModal mb-2 mb-lg-0 d-none d-lg-block"
                                             icon="file-upload">
                         @lang('app.importExcel')
