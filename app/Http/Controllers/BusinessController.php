@@ -107,7 +107,7 @@ class BusinessController extends AccountBaseController
         } catch (\Exception $e) {
             logger($e->getMessage());
             DB::rollback();
-            
+
             return Reply::error('Some error occurred when inserting the data. Please try again or contact support '. $e->getMessage());
         }
 
@@ -140,7 +140,7 @@ class BusinessController extends AccountBaseController
         $this->pageTitle = _('app.update');
         $this->business = $business;
         $this->view = 'businesses.ajax.edit';
-        
+
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
 
