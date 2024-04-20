@@ -6,7 +6,7 @@
         data-live-search="true"
         @endif
 
-        class="form-control select-picker" data-size="8"
+        class="form-control select-picker height-35" data-size="8"
         @if ($alignRight) data-dropdown-align-right="true" @endif
         >
         {!! $slot !!}

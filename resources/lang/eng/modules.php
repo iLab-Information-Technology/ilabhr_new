@@ -246,7 +246,7 @@ return array(
         'otherDocumentDetails' => 'Other Document Details',
         'expiryDate' => 'Expiry Date',
         'driver' => 'Driver',
-        
+
         // Personal Information
         'image' => 'Image',
         'name' => 'Name',
@@ -321,6 +321,13 @@ return array(
         'type' => 'Type',
         'businessDetails' => 'Business Details',
         'businessFields' => 'Business Fields',
+        'driverCalculation' => 'Driver Calculation',
+        'ars' => 'ARS',
+        'amount' => 'Amount',
+        'rangeFrom' => 'From',
+        'rangeTo' => 'To',
+        'equal_and_above' => 'Equal & Above',
+        'fixed' => 'Fixed',
         'business' => 'Business',
         'businessID' => 'Business ID',
         'platformID' => 'Platform ID',

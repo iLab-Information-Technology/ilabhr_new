@@ -29,4 +29,9 @@ class Business extends BaseModel
     {
         return $this->hasMany(BusinessField::class);
     }
+
+    public function driver_calculations(): HasMany
+    {
+        return $this->hasMany(DriverCalculation::class);
+    }
 }

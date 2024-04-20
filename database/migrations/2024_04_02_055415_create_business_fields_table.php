@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('business_fields', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('business_id');
+            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete()->restrictOnUpdate();
             $table->string('name');
             $table->string('type');
             $table->boolean('required')->default(true);
             $table->boolean('admin_only')->default(false);
 
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete()->restrictOnUpdate();
         });
     }
 

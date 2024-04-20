@@ -137,7 +137,7 @@ class BusinessDriverController extends AccountBaseController
      */
     public function show(string $id)
     {
-      
+
     }
 
     /**

@@ -7,7 +7,6 @@ $addDesignationPermission = user()->permission('add_designation');
 <div class="row">
     <div class="col-sm-12">
         <x-form id="save-business-data-form">
-
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
                     @lang('modules.businesses.businessDetails')
@@ -26,7 +25,6 @@ $addDesignationPermission = user()->permission('add_designation');
                     @lang('modules.businesses.businessFields')
                 </h4>
 
-                
                 <div id="newFields">
 
                 </div>
@@ -41,7 +39,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     <div class="col-md-4">
                         <x-forms.select fieldId="new_field_type" :fieldLabel="__('modules.businesses.type')"
                                     fieldName="new_field_type" fieldRequired="false">
-                            <option value="TEXT">{{ _('Text') }}</option>
+                            <option value="TEXT">{{ _('TEXT') }}</option>
                             <option value="INTEGER">{{ _('INTEGER') }}</option>
                             <option value="DOCUMENT">{{ _('DOCUMENT') }}</option>
                         </x-forms.select>
@@ -49,17 +47,17 @@ $addDesignationPermission = user()->permission('add_designation');
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-2">
-                                <x-forms.checkbox 
+                                <x-forms.checkbox
                                 fieldId="new_field_required"
                                 :fieldLabel="__('modules.businesses.required')"
-                                fieldName="new_field_required" 
+                                fieldName="new_field_required"
                                 :checked=true />
                             </div>
                             <div class="col-md-2">
-                                <x-forms.checkbox 
+                                <x-forms.checkbox
                                 fieldId="new_field_admin_only"
                                 :fieldLabel="__('modules.businesses.adminOnly')"
-                                fieldName="new_field_admin_only" 
+                                fieldName="new_field_admin_only"
                                 :checked=false />
                             </div>
                         </div>
@@ -68,6 +66,78 @@ $addDesignationPermission = user()->permission('add_designation');
                         <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4" id="add_field">{{ _('Add') }}</button>
                     </div>
                 </div>
+
+                <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
+                    @lang('modules.businesses.driverCalculation')
+                </h4>
+
+
+
+                <div id="newCalculationFields">
+                    <div class="row p-20 parent-container">
+                        {{-- Begin:: Type Field --}}
+                        <div class="col-md-3">
+                                <x-forms.select fieldId="calculation_type" :fieldLabel="__('modules.businesses.type')"
+                                fieldName="calculation_type[]" fieldRequired="false">
+                                <option value="RANGE">{{ _('RANGE') }}</option>
+                                <option value="EQUAL & ABOVE">{{ _('EQUAL & ABOVE') }}</option>
+                                <option value="FIXED">{{ _('FIXED') }}</option>
+                            </x-forms.select>
+                        </div>
+                        {{-- End:: Type Field --}}
+
+                        {{-- Begin:: Equal And Above --}}
+                        <div class="col-md-3 equal_and_above_div d-none">
+                            <x-forms.number fieldId="equal_and_above" :fieldLabel="__('modules.businesses.equal_and_above')"
+                                fieldName="equal_and_above[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.equal_and_above')">
+                            </x-forms.number>
+                        </div>
+                        {{-- End:: Equal And Above --}}
+
+                        {{-- Begin:: Fixed Field --}}
+                        <div class="col-md-3 fixed_div d-none">
+                            <x-forms.number fieldId="fixed" :fieldLabel="__('modules.businesses.fixed')"
+                                fieldName="fixed[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.fixed')">
+                            </x-forms.number>
+                        </div>
+                        {{-- End:: Fixed Field --}}
+
+                        {{-- Begin:: Range From Field --}}
+                        <div class="col-md-3 range_from_div">
+                            <x-forms.number fieldId="range_from" :fieldLabel="__('modules.businesses.rangeFrom')"
+                                fieldName="range_from[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.rangeFrom')">
+                            </x-forms.number>
+                        </div>
+                        {{-- End:: Range From Field --}}
+
+                        {{-- Begin:: Range To Field --}}
+                        <div class="col-md-3 range_to_div">
+                            <x-forms.number fieldId="range_to" :fieldLabel="__('modules.businesses.rangeTo')"
+                                fieldName="range_to[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.rangeTo')">
+                            </x-forms.number>
+                        </div>
+                        {{-- End:: Range To Field --}}
+
+                        {{-- Begin:: Amount Field --}}
+                        <div class="col-md-3">
+                            <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
+                                fieldName="amount_field[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.ars')">
+                            </x-forms.number>
+                        </div>
+                        {{-- Begin:: Amount Field --}}
+
+                        <div class="col-12">
+                            <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4" id="add_calculation_field">{{ _('Add') }}</button>
+                        </div>
+                    </div>
+                </div>
+
+
 
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
 
@@ -83,7 +153,6 @@ $addDesignationPermission = user()->permission('add_designation');
                 </x-form-actions>
             </div>
         </x-form>
-
     </div>
 </div>
 
@@ -131,16 +200,177 @@ $addDesignationPermission = user()->permission('add_designation');
                 </div>
         `;
 
+        const newCalculationFieldHtml = () => `
+                <div class="row p-20 parent-container">
+                    {{-- Begin:: Type Field --}}
+                    <div class="col-md-3">
+                            <x-forms.select fieldId="calculation_type" :fieldLabel="__('modules.businesses.type')"
+                            fieldName="calculation_type[]" fieldRequired="false">
+                            <option value="RANGE">{{ _('RANGE') }}</option>
+                            <option value="EQUAL & ABOVE">{{ _('EQUAL & ABOVE') }}</option>
+                            <option value="FIXED">{{ _('FIXED') }}</option>
+                        </x-forms.select>
+                    </div>
+                    {{-- End:: Type Field --}}
+
+                    {{-- Begin:: Equal And Above --}}
+                    <div class="col-md-3 equal_and_above_div d-none">
+                        <x-forms.number fieldId="equal_and_above" :fieldLabel="__('modules.businesses.equal_and_above')"
+                            fieldName="equal_and_above[]" fieldRequired="false"
+                            :fieldPlaceholder="__('modules.businesses.equal_and_above')">
+                        </x-forms.number>
+                    </div>
+                    {{-- End:: Equal And Above --}}
+
+                    {{-- Begin:: Fixed Field --}}
+                    <div class="col-md-3 fixed_div d-none">
+                        <x-forms.number fieldId="fixed" :fieldLabel="__('modules.businesses.fixed')"
+                            fieldName="fixed[]" fieldRequired="false"
+                            :fieldPlaceholder="__('modules.businesses.fixed')">
+                        </x-forms.number>
+                    </div>
+                    {{-- End:: Fixed Field --}}
+
+                    {{-- Begin:: Range From Field --}}
+                    <div class="col-md-3 range_from_div">
+                        <x-forms.number fieldId="range_from" :fieldLabel="__('modules.businesses.rangeFrom')"
+                            fieldName="range_from[]" fieldRequired="false"
+                            :fieldPlaceholder="__('modules.businesses.rangeFrom')">
+                        </x-forms.number>
+                    </div>
+                    {{-- End:: Range From Field --}}
+
+                    {{-- Begin:: Range To Field --}}
+                    <div class="col-md-3 range_to_div">
+                        <x-forms.number fieldId="range_to" :fieldLabel="__('modules.businesses.rangeTo')"
+                            fieldName="range_to[]" fieldRequired="false"
+                            :fieldPlaceholder="__('modules.businesses.rangeTo')">
+                        </x-forms.number>
+                    </div>
+                    {{-- End:: Range To Field --}}
+
+                    {{-- Begin:: Amount Field --}}
+                    <div class="col-md-3">
+                        <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
+                            fieldName="amount_field[]" fieldRequired="false"
+                            :fieldPlaceholder="__('modules.businesses.ars')">
+                        </x-forms.number>
+                    </div>
+                    {{-- Begin:: Amount Field --}}
+
+                    <div class="col-12">
+                        <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4" id="add_calculation_field">{{ _('Add') }}</button>
+                    </div>
+                </div>
+        `;
+
         $('#save-more-driver-project-form').click(function() {
-
             $('#add_more').val(true);
-
             const url = "{{ route('drivers.store') }}";
             var data = $('#save-business-data-form').serialize();
             saveBusiness(data, url, "#save-more-driver-project-form");
         });
 
-        $('#add_field').click(function() { 
+        $('body').on('change', '#calculation_type', function(){
+            const calculation_type = $(this).val();
+            const fixedDiv = $(this).closest('.parent-container').find('.fixed_div');
+            const equalAndAboveDiv = $(this).closest('.parent-container').find('.equal_and_above_div');
+            const rangeFromDiv = $(this).closest('.parent-container').find('.range_from_div');
+            const rangeToDiv = $(this).closest('.parent-container').find('.range_to_div');
+
+            // Validate calculation_type
+            if (calculation_type === 'RANGE') {
+                // Handle RANGE calculation type
+                fixedDiv.addClass('d-none');
+                equalAndAboveDiv.addClass('d-none');
+                rangeFromDiv.removeClass('d-none');
+                rangeToDiv.removeClass('d-none');
+            } else if (calculation_type === 'EQUAL & ABOVE') {
+                // Handle EQUAL & ABOVE calculation type
+                equalAndAboveDiv.removeClass('d-none');
+                fixedDiv.addClass('d-none');
+                rangeFromDiv.addClass('d-none');
+                rangeToDiv.addClass('d-none');
+            } else if (calculation_type === 'FIXED') {
+                // Handle FIXED calculation type
+                fixedDiv.removeClass('d-none');
+                equalAndAboveDiv.addClass('d-none');
+                rangeFromDiv.addClass('d-none');
+                rangeToDiv.addClass('d-none');
+            }
+        });
+
+        $('body').on('click', '#remove_calculation_field', function(){
+            $(this).closest('.parent-container').remove();
+        });
+
+        $('body').on('keyup', '#form-control', function(){
+                console.log($(this).val());
+                $(this).val($(this).val().replace(/[^\d.]/g, '').replace(/(\..*?)\..*/g, '$1'));
+            });
+
+        $('body').on('click', '#add_calculation_field', function() {
+            const calculation_type = $(this).closest('.parent-container').find('#calculation_type').val();
+            const rangeFrom = $(this).closest('.parent-container').find('#range_from').val();
+            const rangeTo = $(this).closest('.parent-container').find('#range_to').val();
+            const amount = $(this).closest('.parent-container').find('#amount_field').val();
+            const equalAndAbove = $(this).closest('.parent-container').find('#equal_and_above').val();
+            const fixed = $(this).closest('.parent-container').find('#fixed').val();
+
+            // Validate calculation_type
+            if (calculation_type === 'RANGE') {
+                if (!rangeFrom || !rangeTo || !amount) {
+                    alert('Error: Please fill in all fields.');
+                    return;
+                }
+
+                if (parseFloat(rangeFrom) >= parseFloat(rangeTo)) {
+                    alert('Error: "To" value should be greater than "From" value.');
+                    return;
+                }
+
+                if (parseFloat(amount) <= 0) {
+                    alert('Error: Amount value should be greater than 0.');
+                    return;
+                }
+            } else if (calculation_type === 'EQUAL & ABOVE') {
+                if (!equalAndAbove) {
+                    alert('Error: Please fill in all fields.');
+                    return;
+                }
+
+                if (parseFloat(equalAndAbove) <= 0) {
+                    alert('Error: "Equal & Above" value should be greater than 0.');
+                    return;
+                }
+
+                if (parseFloat(amount) <= 0) {
+                    alert('Error: Amount value should be greater than 0.');
+                    return;
+                }
+            } else if (calculation_type === 'FIXED') {
+                 if (!fixed || parseFloat(fixed) <= 0) {
+                    alert('Error: Amount value should be greater than 0.');
+                    return;
+                }
+
+                if (parseFloat(amount) <= 0) {
+                    alert('Error: Amount value should be greater than 0.');
+                    return;
+                }
+            }
+
+
+            $('#newCalculationFields').append(newCalculationFieldHtml());
+
+            setTimeout(() => {
+                $(this).attr('id', 'remove_calculation_field');
+                $(this).html("{{ _('Remove') }}");
+            }, 200);
+
+        });
+
+        $('#add_field').click(function() {
             const fieldName = $('#new_field_name').val();
             const fieldType = $('#new_field_type').val();
             const fieldAdminOnly = $('#new_field_admin_only').prop('checked');
@@ -190,6 +420,7 @@ $addDesignationPermission = user()->permission('add_designation');
                 file: true,
                 data: data,
                 success: function(response) {
+                    console.log(response);
                     if (response.status == 'success') {
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');

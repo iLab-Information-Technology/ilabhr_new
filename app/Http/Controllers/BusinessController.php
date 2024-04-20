@@ -5,13 +5,10 @@ namespace App\Http\Controllers;
 use App\DataTables\BusinessesDataTable;
 use App\Enums\Salutation;
 use App\Helper\Reply;
-use App\Http\Requests\Admin\Business\StoreRequest;
-use App\Http\Requests\Admin\Business\UpdateRequest;
-use App\Models\LanguageSetting;
-use App\Models\Role;
+use App\Http\Requests\Admin\Business\{StoreRequest, UpdateRequest};
+use App\Models\{LanguageSetting, DriverCalculation, Role, Business};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
-use App\Models\Business;
 use Illuminate\Support\Facades\DB;
 
 class BusinessController extends AccountBaseController
@@ -91,6 +88,7 @@ class BusinessController extends AccountBaseController
      */
     public function store(StoreRequest $request)
     {
+        // return $request->all();
         $addPermission = user()->permission('add_businesses');
         abort_403(!in_array($addPermission, ['all', 'added']));
 
@@ -102,6 +100,60 @@ class BusinessController extends AccountBaseController
 
             $business = Business::create($validated);
             $business->fields()->createMany($fields);
+
+            // Storing Driver Calculations
+            if($request->has('calculation_type')){
+                foreach($request->calculation_type as $key => $type){
+                    if($type == 'RANGE' && $request->amount_field[$key] != null && $request->range_from[$key] != null && $request->range_to[$key] != null){
+                        $business->driver_calculations()->create([
+                            'type' => $type,
+                            'amount' => $request->amount_field[$key],
+                            'from_value' => $request->range_from[$key],
+                            'to_value' => $request->range_to[$key],
+                        ]);
+                    }elseif($type == 'EQUAL & ABOVE' && $request->amount_field[$key] != null && $request->equal_and_above[$key] != null){
+                        $business->driver_calculations()->create([
+                            'type' => $type,
+                            'amount' => $request->amount_field[$key],
+                            'value' => $request->equal_and_above[$key],
+                        ]);
+                    }elseif($type == 'FIXED' && $request->amount_field[$key] != null && $request->fixed[$key] != null){
+                        $business->driver_calculations()->create([
+                            'type' => $type,
+                            'amount' => $request->amount_field[$key],
+                            'value' => $request->fixed[$key],
+                        ]);
+                    }
+                }
+            }
+
+            // if ($request->has('calculation_type')) {
+            //     foreach ($request->calculation_type as $key => $type) {
+            //         if (!is_null($request->amount_field[$key])) {
+            //             $data = [
+            //                 'type' => $type,
+            //                 'amount' => $request->amount_field[$key],
+            //             ];
+            //             switch ($type) {
+            //                 case 'RANGE':
+            //                     if (!is_null($request->range_from[$key]) && !is_null($request->range_to[$key])) {
+            //                         $data['from_value'] = $request->range_from[$key];
+            //                         $data['to_value'] = $request->range_to[$key];
+            //                         $business->driver_calculations()->create($data);
+            //                     }
+            //                     break;
+            //                 case 'EQUAL & ABOVE':
+            //                 case 'FIXED':
+            //                     $valueKey = ($type == 'EQUAL & ABOVE') ? 'equal_and_above' : 'fixed';
+            //                     if (!is_null($request->$valueKey[$key])) {
+            //                         $data['value'] = $request->$valueKey[$key];
+            //                         $business->driver_calculations()->create($data);
+            //                     }
+            //                     break;
+            //             }
+            //         }
+            //     }
+            // }
 
             DB::commit();
         } catch (\Exception $e) {
