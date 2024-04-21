@@ -1,0 +1,25 @@
+ilab-erp-live 
+
+
+name: Deploy to Live
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  Live-Deployment:
+    runs-on: ilab-erp-live
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+        with:
+           ref: 'main'
+      - name: Exclude db Connection file and htaccess
+        run: |
+          sudo rm -rf .htaccess .env
+      - name: Deploy Code to server
+        run: |
+          sudo cp -r * /www/wwwroot/erp.ilab.sa/
