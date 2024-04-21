@@ -380,8 +380,6 @@ $changeEmployeeRolePermission = user()->permission('change_employee_role');
                             fieldName="marriage_anniversary_date" :fieldPlaceholder="__('placeholders.date')"
                             :fieldValue="$employee->employeeDetail->marriage_anniversary_date ? Carbon\Carbon::parse($employee->employeeDetail->marriage_anniversary_date)->format(company()->date_format) : '' " />
                     </div>
-
-
                 </div>
 
                 <x-forms.custom-field :fields="$fields" :model="$employeeDetail"></x-forms.custom-field>
