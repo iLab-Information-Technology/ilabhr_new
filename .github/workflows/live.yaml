@@ -20,4 +20,4 @@ jobs:
       - name: Deploy Code to server
         run: |
           sudo cp -r * /www/wwwroot/erp.ilab.sa/
-          cd /www/wwwroot/erp.ilab.sa/ && composer install --prefer-dist --no-progress 
+          cd /www/wwwroot/erp.ilab.sa/ && sudo composer install --prefer-dist --no-progress 
