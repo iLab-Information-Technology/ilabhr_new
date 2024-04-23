@@ -366,7 +366,7 @@ $addDesignationPermission = user()->permission('add_designation');
             setTimeout(() => {
                 $(this).attr('id', 'remove_calculation_field');
                 $(this).html("{{ _('Remove') }}");
-            }, 200);
+            }, 10);
 
         });
 
