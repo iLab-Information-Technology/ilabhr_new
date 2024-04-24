@@ -180,6 +180,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::resource('drivers.businesses', BusinessDriverController::class);
     Route::get('business-ajax', [BusinessController::class, 'ajaxLoadBusiness'])->name('get.business-ajax');
     Route::get('driver-ajax', [DriverController::class, 'ajaxLoadDriver'])->name('get.driver-ajax');
+    Route::get('linked-driver-ajax', [DriverController::class, 'ajaxLoadLinkedDriver'])->name('get.linked-driver-ajax');
     Route::resource('businesses', BusinessController::class);
     Route::resource('coordinator-report', CoordinatorReportController::class);
 
