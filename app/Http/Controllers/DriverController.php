@@ -129,7 +129,7 @@ class DriverController extends AccountBaseController
     
     public function ajaxLoadLinkedDriver(Request $request)
     {
-        $this->linkDriverPermission = user()->permission('add_link_driver') == 'all' || user()->is_superadmin;
+        $this->linkDriverPermission = user()->permission('add_linked_drivers') == 'all' || user()->is_superadmin;
         abort_403(!($this->linkDriverPermission));
 
         $search = $request->search;
