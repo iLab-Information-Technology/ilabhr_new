@@ -20,7 +20,7 @@
   'app' => 
   array (
     'app_name' => 'worksuite-saas',
-    'name' => 'Worksuite Saas',
+    'name' => 'Linus Ltd',
     'DEFAULT_PHONE_CODE' => '+966',
     'app_configuration_mode' => 'browser',
     'non_saas_to_saas_enabled' => false,
@@ -32,17 +32,17 @@
     'short_domain_name' => false,
     'env' => 'codecanyon',
     'currency_converter_key' => NULL,
-    'debug' => false,
+    'debug' => true,
     'api_debug' => true,
     'url' => 'http://localhost',
     'main_app_url' => 'http://localhost',
     'asset_url' => NULL,
     'timezone' => 'UTC',
-    'cron_timezone' => 'UTC',
+    'cron_timezone' => 'Asia/Kolkata',
     'locale' => 'en',
     'fallback_locale' => 'eng',
     'faker_locale' => 'en_US',
-    'key' => 'base64:yT3FmsriHm8NLYYNnoIGBU+yAW6U8pu42Qt4BgKLvM0=',
+    'key' => 'base64:xtxehQJLQSSydn7cSq8BEOtBinr0vYlBJRjDcyE26Ro=',
     'cipher' => 'AES-256-CBC',
     'maintenance' => 
     array (
@@ -168,6 +168,7 @@
         0 => 'password',
       ),
     ),
+    'logo' => 'http://localhost/img/worksuite-logo.png',
   ),
   'auth' => 
   array (
@@ -344,18 +345,18 @@
   ),
   'broadcasting' => 
   array (
-    'default' => NULL,
+    'default' => 'null',
     'connections' => 
     array (
       'pusher' => 
       array (
         'driver' => 'pusher',
-        'key' => '',
-        'secret' => '',
-        'app_id' => '',
+        'key' => NULL,
+        'secret' => NULL,
+        'app_id' => NULL,
         'options' => 
         array (
-          'host' => 'api-mt1.pusher.com',
+          'host' => 'api-.pusher.com',
           'port' => 443,
           'scheme' => 'https',
           'encrypted' => true,
@@ -1398,18 +1399,18 @@
   ),
   'mail' => 
   array (
-    'default' => 'log',
+    'default' => 'smtp',
     'verified' => false,
     'mailers' => 
     array (
       'smtp' => 
       array (
         'transport' => 'smtp',
-        'host' => 'smtp.mailtrap.io',
-        'port' => '2525',
-        'encryption' => NULL,
-        'username' => NULL,
-        'password' => NULL,
+        'host' => 'smtp.gmail.com',
+        'port' => '465',
+        'encryption' => 'ssl',
+        'username' => 'myemail@gmail.com',
+        'password' => 'mypassword',
         'timeout' => NULL,
         'auth_mode' => NULL,
         'verify_peer' => false,
@@ -1444,7 +1445,7 @@
     ),
     'from' => 
     array (
-      'address' => NULL,
+      'address' => 'from@email.com',
       'name' => 'Worksuite',
     ),
     'markdown' => 
@@ -1764,8 +1765,8 @@
   ),
   'onesignal' => 
   array (
-    'app_id' => 'YOUR-APP-ID-HERE',
-    'rest_api_key' => 'YOUR-REST-API-KEY-HERE',
+    'app_id' => NULL,
+    'rest_api_key' => NULL,
     'user_auth_key' => 'YOUR-USER-AUTH-KEY',
     'guzzle_client_timeout' => 0,
   ),
@@ -1985,8 +1986,8 @@
     ),
     'onesignal' => 
     array (
-      'app_id' => 'YOUR-APP-ID-HERE',
-      'rest_api_key' => 'YOUR-REST-API-KEY-HERE',
+      'app_id' => NULL,
+      'rest_api_key' => NULL,
     ),
   ),
   'session' => 

@@ -117,43 +117,15 @@ class BusinessController extends AccountBaseController
                             'amount' => $request->amount_field[$key],
                             'value' => $request->equal_and_above[$key],
                         ]);
-                    }elseif($type == 'FIXED' && $request->amount_field[$key] != null && $request->fixed[$key] != null){
+                    }elseif($type == 'FIXED' && $request->amount_field[$key] != null){
                         $business->driver_calculations()->create([
                             'type' => $type,
                             'amount' => $request->amount_field[$key],
-                            'value' => $request->fixed[$key],
+                            'value' => 1,
                         ]);
                     }
                 }
             }
-
-            // if ($request->has('calculation_type')) {
-            //     foreach ($request->calculation_type as $key => $type) {
-            //         if (!is_null($request->amount_field[$key])) {
-            //             $data = [
-            //                 'type' => $type,
-            //                 'amount' => $request->amount_field[$key],
-            //             ];
-            //             switch ($type) {
-            //                 case 'RANGE':
-            //                     if (!is_null($request->range_from[$key]) && !is_null($request->range_to[$key])) {
-            //                         $data['from_value'] = $request->range_from[$key];
-            //                         $data['to_value'] = $request->range_to[$key];
-            //                         $business->driver_calculations()->create($data);
-            //                     }
-            //                     break;
-            //                 case 'EQUAL & ABOVE':
-            //                 case 'FIXED':
-            //                     $valueKey = ($type == 'EQUAL & ABOVE') ? 'equal_and_above' : 'fixed';
-            //                     if (!is_null($request->$valueKey[$key])) {
-            //                         $data['value'] = $request->$valueKey[$key];
-            //                         $business->driver_calculations()->create($data);
-            //                     }
-            //                     break;
-            //             }
-            //         }
-            //     }
-            // }
 
             DB::commit();
         } catch (\Exception $e) {
@@ -184,18 +156,17 @@ class BusinessController extends AccountBaseController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Business $business)
+    public function edit($id)
     {
         $this->editPermission = user()->permission('edit_businesses');
         abort_403(!($this->editPermission == 'all'));
 
         $this->pageTitle = _('app.update');
-        $this->business = $business;
+        $this->business = Business::with('driver_calculations')->find($id);
         $this->view = 'businesses.ajax.edit';
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
-
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
@@ -212,6 +183,32 @@ class BusinessController extends AccountBaseController
 
         $validated = $request->validated();
         $business->update($validated);
+        $business->driver_calculations()->delete();
+         // Storing Driver Calculations
+            if($request->has('calculation_type')){
+                foreach($request->calculation_type as $key => $type){
+                    if($type == 'RANGE' && $request->amount_field[$key] != null && $request->range_from[$key] != null && $request->range_to[$key] != null){
+                        $business->driver_calculations()->create([
+                            'type' => $type,
+                            'amount' => $request->amount_field[$key],
+                            'from_value' => $request->range_from[$key],
+                            'to_value' => $request->range_to[$key],
+                        ]);
+                    }elseif($type == 'EQUAL & ABOVE' && $request->amount_field[$key] != null && $request->equal_and_above[$key] != null){
+                        $business->driver_calculations()->create([
+                            'type' => $type,
+                            'amount' => $request->amount_field[$key],
+                            'value' => $request->equal_and_above[$key],
+                        ]);
+                    }elseif($type == 'FIXED' && $request->amount_field[$key] != null){
+                        $business->driver_calculations()->create([
+                            'type' => $type,
+                            'amount' => $request->amount_field[$key],
+                            'value' => 1,
+                        ]);
+                    }
+                }
+            }
 
         return Reply::success(__('messages.updateSuccess'));
     }
