@@ -127,6 +127,36 @@ class DriverController extends AccountBaseController
         return response()->json($response);
     }
 
+    public function ajaxLoadLinkedDriver(Request $request)
+    {
+        $this->linkDriverPermission = user()->permission('add_link_driver') == 'all' || user()->is_superadmin;
+        abort_403(!($this->linkDriverPermission));
+
+        $search = $request->search;
+
+        $drivers = (user()->is_superadmin ? Driver::all() : user()->drivers())
+            ->orderby('name')
+            ->select('drivers.id', 'drivers.name')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->take(20)
+            ->get();
+
+        $response = array();
+
+        foreach ($drivers as $driver) {
+
+            $response[] = array(
+                'id' => $driver->id,
+                'text' => $driver->name
+            );
+
+        }
+
+        return response()->json($response);
+    }
+
 
     public function businesses()
     {

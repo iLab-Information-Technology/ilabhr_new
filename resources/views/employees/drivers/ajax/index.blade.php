@@ -1,5 +1,5 @@
 @php
-$addLinkedDriverPermission = $employee->permission('add_link_driver');
+$addLinkedDriverPermission = $employee->permission('add_linked_drivers');
 @endphp
 
 <!-- ROW START -->

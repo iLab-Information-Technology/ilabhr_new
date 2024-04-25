@@ -24,12 +24,12 @@ $addDesignationPermission = user()->permission('add_designation');
                     </div>
                     
                     <div class="col-md-4">
-                        <x-forms.select fieldId="driver_id" :fieldLabel="__('modules.coordinator-report.driver')"
-                                fieldName="driver_id" fieldRequired="true">
-                            @foreach ($drivers as $driver)
-                            <option value="{{ $driver->id }}" @selected($loop->first)>{{ $driver->name }}</option>
-                            @endforeach
-                        </x-forms.select>
+
+                        <x-forms.select2-ajax fieldRequired="true" fieldId="driver_id" fieldName="driver_id"
+                                              :fieldLabel="__('modules.drivers.driver')"
+                                              :route="route('get.linked-driver-ajax')"
+                                              :placeholder="__('placeholders.searchForDrivers')"
+                        ></x-forms.select2-ajax>
                     </div>
                 </div>
 

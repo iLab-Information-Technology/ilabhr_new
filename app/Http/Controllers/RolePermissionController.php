@@ -97,7 +97,7 @@ class RolePermissionController extends AccountBaseController
 
         // Update user permission with the role
         foreach ($role->users as $roleuser) {
-            if (($role->name == 'employee' && count($roleuser->role) == 1) || $role->name != 'employee') {
+            if (($role->name == 'employee') || $role->name != 'employee') {
                 $userPermission = UserPermission::where('user_permissions.permission_id', $permissionId)
                     ->leftJoin('users', 'users.id', '=', 'user_permissions.user_id')
                     ->where('user_permissions.user_id', $roleuser->id)

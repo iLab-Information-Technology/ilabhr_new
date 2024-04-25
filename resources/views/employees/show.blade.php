@@ -16,7 +16,7 @@ $viewLeavePermission = user()->permission('view_leave');
 $viewDocumentPermission = user()->permission('view_documents');
 $viewAppreciationPermission = user()->permission('view_appreciation');
 $viewImmigrationPermission = user()->permission('view_immigration');
-$addLinkedDriverPermission = $employee->permission('add_link_driver');
+$addLinkedDriverPermission = $employee->permission('add_linked_drivers');
 @endphp
 
 @php
