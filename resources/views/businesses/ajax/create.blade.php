@@ -118,7 +118,7 @@ $addDesignationPermission = user()->permission('add_designation');
                         <div class="col-md-3">
                             <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
                                 fieldName="amount_field[]" fieldRequired="false"
-                                :fieldPlaceholder="__('modules.businesses.ars')">
+                                :fieldPlaceholder="__('modules.businesses.amount')">
                             </x-forms.number>
                         </div>
                         {{-- Begin:: Amount Field --}}
@@ -192,6 +192,8 @@ $addDesignationPermission = user()->permission('add_designation');
                 </div>
         `;
 
+
+
         const newCalculationFieldHtml = () => `
                 <div class="row p-20 parent-container">
                     {{-- Begin:: Type Field --}}
@@ -236,7 +238,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     <div class="col-md-3">
                         <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
                             fieldName="amount_field[]" fieldRequired="false"
-                            :fieldPlaceholder="__('modules.businesses.ars')">
+                            :fieldPlaceholder="__('modules.businesses.amount')">
                         </x-forms.number>
                     </div>
                     {{-- Begin:: Amount Field --}}

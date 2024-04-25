@@ -20,7 +20,7 @@
   'app' => 
   array (
     'app_name' => 'worksuite-saas',
-    'name' => 'Linus Ltd',
+    'name' => 'Worksuite',
     'DEFAULT_PHONE_CODE' => '+966',
     'app_configuration_mode' => 'browser',
     'non_saas_to_saas_enabled' => false,
@@ -30,7 +30,7 @@
     'extra_company_seed_count' => 0,
     'main_application_subdomain' => NULL,
     'short_domain_name' => false,
-    'env' => 'codecanyon',
+    'env' => 'local',
     'currency_converter_key' => NULL,
     'debug' => true,
     'api_debug' => true,
@@ -42,7 +42,7 @@
     'locale' => 'en',
     'fallback_locale' => 'eng',
     'faker_locale' => 'en_US',
-    'key' => 'base64:xtxehQJLQSSydn7cSq8BEOtBinr0vYlBJRjDcyE26Ro=',
+    'key' => 'base64:vsj3txdew26ktMBPhHBMdy9ze6bBj0I0kz4DnKGUil8=',
     'cipher' => 'AES-256-CBC',
     'maintenance' => 
     array (
@@ -670,7 +670,7 @@
   ),
   'debugbar' => 
   array (
-    'enabled' => false,
+    'enabled' => true,
     'except' => 
     array (
       0 => 'telescope*',

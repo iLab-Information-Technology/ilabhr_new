@@ -80,7 +80,7 @@ class DriverController extends AccountBaseController
             if ($request->hasFile('image')) {
                 $validated['image'] = Files::uploadLocalOrS3($request->image, 'avatar', 300);
             }
-            
+
             Driver::create($validated);
 
             DB::commit();
@@ -244,7 +244,7 @@ class DriverController extends AccountBaseController
         abort_403(!($this->editPermission == 'all'));
 
         $validated = $request->validated();
-        
+
         $validated['insurance_expiry_date'] = $request->insurance_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->insurance_expiry_date)->format('Y-m-d') : null;
         $validated['license_expiry_date'] = $request->license_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->license_expiry_date)->format('Y-m-d') : null;
         $validated['iqaama_expiry_date'] = $request->iqaama_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->iqaama_expiry_date)->format('Y-m-d') : null;
@@ -259,7 +259,7 @@ class DriverController extends AccountBaseController
 
         if ($request->hasFile('iqama'))
             $validated['iqama'] = Files::uploadLocalOrS3($request->iqama, 'iqama', 300);
-        
+
         if ($request->license_delete == 'yes') {
             Files::deleteFile($driver->license, 'license');
             $driver->license = null;
@@ -268,7 +268,7 @@ class DriverController extends AccountBaseController
 
         if ($request->hasFile('license'))
             $validated['license'] = Files::uploadLocalOrS3($request->license, 'license', 300);
-        
+
         if ($request->mobile_form_delete == 'yes') {
             Files::deleteFile($driver->mobile_form, 'mobile_form');
             $driver->mobile_form = null;
@@ -300,7 +300,7 @@ class DriverController extends AccountBaseController
 
         if ($request->hasFile('other_document'))
             $validated['other_document'] = Files::uploadLocalOrS3($request->other_document, 'other_document', 300);
-    
+
         $driver->update($validated);
         return Reply::success(__('messages.updateSuccess'));
     }
@@ -314,7 +314,7 @@ class DriverController extends AccountBaseController
         abort_403(!($deletePermission == 'all'));
 
         $this->driver = Driver::findOrFail($id);
-        
+
         Driver::destroy($id);
 
         return Reply::success(__('messages.deleteSuccess'));

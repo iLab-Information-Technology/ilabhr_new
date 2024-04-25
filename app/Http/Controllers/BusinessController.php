@@ -96,8 +96,15 @@ class BusinessController extends AccountBaseController
         try {
             $validated = $request->validated();
             $fields = $validated['fields'];
+
             unset($validated['fields']);
 
+            $fields[] = [
+                'admin_only' => '0',
+                'name' => 'Total Orders',
+                'required' => '1',
+                'type' => 'TEXT'
+            ];
             $business = Business::create($validated);
             $business->fields()->createMany($fields);
 
