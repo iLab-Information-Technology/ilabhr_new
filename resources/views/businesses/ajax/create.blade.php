@@ -95,14 +95,6 @@ $addDesignationPermission = user()->permission('add_designation');
                         </div>
                         {{-- End:: Equal And Above --}}
 
-                        {{-- Begin:: Fixed Field --}}
-                        <div class="col-md-3 fixed_div d-none">
-                            <x-forms.number fieldId="fixed" :fieldLabel="__('modules.businesses.fixed')"
-                                fieldName="fixed[]" fieldRequired="false"
-                                :fieldPlaceholder="__('modules.businesses.fixed')">
-                            </x-forms.number>
-                        </div>
-                        {{-- End:: Fixed Field --}}
 
                         {{-- Begin:: Range From Field --}}
                         <div class="col-md-3 range_from_div">
@@ -126,7 +118,7 @@ $addDesignationPermission = user()->permission('add_designation');
                         <div class="col-md-3">
                             <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
                                 fieldName="amount_field[]" fieldRequired="false"
-                                :fieldPlaceholder="__('modules.businesses.ars')">
+                                :fieldPlaceholder="__('modules.businesses.amount')">
                             </x-forms.number>
                         </div>
                         {{-- Begin:: Amount Field --}}
@@ -200,6 +192,8 @@ $addDesignationPermission = user()->permission('add_designation');
                 </div>
         `;
 
+
+
         const newCalculationFieldHtml = () => `
                 <div class="row p-20 parent-container">
                     {{-- Begin:: Type Field --}}
@@ -221,15 +215,6 @@ $addDesignationPermission = user()->permission('add_designation');
                         </x-forms.number>
                     </div>
                     {{-- End:: Equal And Above --}}
-
-                    {{-- Begin:: Fixed Field --}}
-                    <div class="col-md-3 fixed_div d-none">
-                        <x-forms.number fieldId="fixed" :fieldLabel="__('modules.businesses.fixed')"
-                            fieldName="fixed[]" fieldRequired="false"
-                            :fieldPlaceholder="__('modules.businesses.fixed')">
-                        </x-forms.number>
-                    </div>
-                    {{-- End:: Fixed Field --}}
 
                     {{-- Begin:: Range From Field --}}
                     <div class="col-md-3 range_from_div">
@@ -253,7 +238,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     <div class="col-md-3">
                         <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
                             fieldName="amount_field[]" fieldRequired="false"
-                            :fieldPlaceholder="__('modules.businesses.ars')">
+                            :fieldPlaceholder="__('modules.businesses.amount')">
                         </x-forms.number>
                     </div>
                     {{-- Begin:: Amount Field --}}
@@ -273,7 +258,6 @@ $addDesignationPermission = user()->permission('add_designation');
 
         $('body').on('change', '#calculation_type', function(){
             const calculation_type = $(this).val();
-            const fixedDiv = $(this).closest('.parent-container').find('.fixed_div');
             const equalAndAboveDiv = $(this).closest('.parent-container').find('.equal_and_above_div');
             const rangeFromDiv = $(this).closest('.parent-container').find('.range_from_div');
             const rangeToDiv = $(this).closest('.parent-container').find('.range_to_div');
@@ -281,19 +265,16 @@ $addDesignationPermission = user()->permission('add_designation');
             // Validate calculation_type
             if (calculation_type === 'RANGE') {
                 // Handle RANGE calculation type
-                fixedDiv.addClass('d-none');
                 equalAndAboveDiv.addClass('d-none');
                 rangeFromDiv.removeClass('d-none');
                 rangeToDiv.removeClass('d-none');
             } else if (calculation_type === 'EQUAL & ABOVE') {
                 // Handle EQUAL & ABOVE calculation type
                 equalAndAboveDiv.removeClass('d-none');
-                fixedDiv.addClass('d-none');
                 rangeFromDiv.addClass('d-none');
                 rangeToDiv.addClass('d-none');
             } else if (calculation_type === 'FIXED') {
                 // Handle FIXED calculation type
-                fixedDiv.removeClass('d-none');
                 equalAndAboveDiv.addClass('d-none');
                 rangeFromDiv.addClass('d-none');
                 rangeToDiv.addClass('d-none');
@@ -315,7 +296,6 @@ $addDesignationPermission = user()->permission('add_designation');
             const rangeTo = $(this).closest('.parent-container').find('#range_to').val();
             const amount = $(this).closest('.parent-container').find('#amount_field').val();
             const equalAndAbove = $(this).closest('.parent-container').find('#equal_and_above').val();
-            const fixed = $(this).closest('.parent-container').find('#fixed').val();
 
             // Validate calculation_type
             if (calculation_type === 'RANGE') {
@@ -349,12 +329,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     return;
                 }
             } else if (calculation_type === 'FIXED') {
-                 if (!fixed || parseFloat(fixed) <= 0) {
-                    alert('Error: Amount value should be greater than 0.');
-                    return;
-                }
-
-                if (parseFloat(amount) <= 0) {
+                if (parseFloat(amount) <= 0 || !amount) {
                     alert('Error: Amount value should be greater than 0.');
                     return;
                 }
