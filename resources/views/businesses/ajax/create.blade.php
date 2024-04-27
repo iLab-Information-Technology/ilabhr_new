@@ -1,5 +1,5 @@
 @php
-    $addDesignationPermission = user()->permission('add_designation');
+$addDesignationPermission = user()->permission('add_designation');
 @endphp
 
 <link rel="stylesheet" href="{{ asset('vendor/css/tagify.css') }}">
@@ -14,7 +14,8 @@
 
                 <div class="row  p-20">
                     <div class="col-md-4">
-                        <x-forms.text fieldId="name" :fieldLabel="__('modules.businesses.name')" fieldName="name" fieldRequired="true"
+                        <x-forms.text fieldId="name" :fieldLabel="__('modules.businesses.name')"
+                            fieldName="name" fieldRequired="true"
                             :fieldPlaceholder="__('modules.businesses.name')">
                         </x-forms.text>
                     </div>
@@ -24,44 +25,46 @@
                     @lang('modules.businesses.businessFields')
                 </h4>
 
-                <div class="p-20">
-                    <div id="business-fields">
-                        <div class="row business-field" id="field-wrapper-0">
-                            <div class="col-md-4">
-                                <x-forms.text fieldId="fields[0][name]" :fieldLabel="__('modules.businesses.name')" fieldName="fields[0][name]"
-                                    fieldRequired="true" :fieldPlaceholder="__('modules.businesses.name')">
-                                </x-forms.text>
-                            </div>
-                            <div class="col-md-4">
-                                <x-forms.select fieldId="fields[0][type]" :fieldLabel="__('modules.businesses.type')" fieldName="fields[0][type]"
-                                    fieldRequired="true">
-                                    <option value="TEXT">{{ _('Text') }}</option>
-                                    <option value="INTEGER">{{ _('INTEGER') }}</option>
-                                    <option value="DOCUMENT">{{ _('DOCUMENT') }}</option>
-                                </x-forms.select>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <input type="hidden" name="fields[0][required]" value="0" />
-                                        <x-forms.checkbox fieldId="fields[0][required]" :fieldLabel="__('modules.businesses.required')"
-                                            fieldName="fields[0][required]" :fieldValue="1" :checked="true" />
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="hidden" name="fields[0][admin_only]" value="0" />
-                                        <x-forms.checkbox fieldId="fields[0][admin_only]" :fieldLabel="__('modules.businesses.adminOnly')"
-                                            fieldName="fields[0][admin_only]" :fieldValue="1" />
-                                    </div>
-                                    <div class="col-md-12">
-                                        <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4"
-                                            id="add_field">{{ _('Add') }}</button>
-                                    </div>
-                                </div>
-                            </div>
+                <div id="newFields">
 
+                </div>
+
+                <div class="row p-20" id="add-new-field">
+                    <div class="col-md-4">
+                        <x-forms.text fieldId="new_field_name" :fieldLabel="__('modules.businesses.name')"
+                            fieldName="new_field_name" fieldRequired="false"
+                            :fieldPlaceholder="__('modules.businesses.name')">
+                        </x-forms.text>
+                    </div>
+                    <div class="col-md-4">
+                        <x-forms.select fieldId="new_field_type" :fieldLabel="__('modules.businesses.type')"
+                                    fieldName="new_field_type" fieldRequired="false">
+                            <option value="TEXT">{{ _('TEXT') }}</option>
+                            <option value="INTEGER">{{ _('INTEGER') }}</option>
+                            <option value="DOCUMENT">{{ _('DOCUMENT') }}</option>
+                        </x-forms.select>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <x-forms.checkbox
+                                fieldId="new_field_required"
+                                :fieldLabel="__('modules.businesses.required')"
+                                fieldName="new_field_required"
+                                :checked=true />
+                            </div>
+                            <div class="col-md-2">
+                                <x-forms.checkbox
+                                fieldId="new_field_admin_only"
+                                :fieldLabel="__('modules.businesses.adminOnly')"
+                                fieldName="new_field_admin_only"
+                                :checked=false />
+                            </div>
                         </div>
                     </div>
-
+                    <div class="col-12">
+                        <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4" id="add_field">{{ _('Add') }}</button>
+                    </div>
                 </div>
 
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
@@ -74,8 +77,8 @@
                     <div class="row p-20 parent-container">
                         {{-- Begin:: Type Field --}}
                         <div class="col-md-3">
-                            <x-forms.select fieldId="calculation_type" :fieldLabel="__('modules.businesses.type')" fieldName="calculation_type[]"
-                                fieldRequired="false">
+                                <x-forms.select fieldId="calculation_type" :fieldLabel="__('modules.businesses.type')"
+                                fieldName="calculation_type[]" fieldRequired="false">
                                 <option value="RANGE">{{ _('RANGE') }}</option>
                                 <option value="EQUAL & ABOVE">{{ _('EQUAL & ABOVE') }}</option>
                                 <option value="FIXED">{{ _('FIXED') }}</option>
@@ -85,8 +88,9 @@
 
                         {{-- Begin:: Equal And Above --}}
                         <div class="col-md-3 equal_and_above_div d-none">
-                            <x-forms.number fieldId="equal_and_above" :fieldLabel="__('modules.businesses.equal_and_above')" fieldName="equal_and_above[]"
-                                fieldRequired="false" :fieldPlaceholder="__('modules.businesses.equal_and_above')">
+                            <x-forms.number fieldId="equal_and_above" :fieldLabel="__('modules.businesses.equal_and_above')"
+                                fieldName="equal_and_above[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.equal_and_above')">
                             </x-forms.number>
                         </div>
                         {{-- End:: Equal And Above --}}
@@ -94,31 +98,33 @@
 
                         {{-- Begin:: Range From Field --}}
                         <div class="col-md-3 range_from_div">
-                            <x-forms.number fieldId="range_from" :fieldLabel="__('modules.businesses.rangeFrom')" fieldName="range_from[]"
-                                fieldRequired="false" :fieldPlaceholder="__('modules.businesses.rangeFrom')">
+                            <x-forms.number fieldId="range_from" :fieldLabel="__('modules.businesses.rangeFrom')"
+                                fieldName="range_from[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.rangeFrom')">
                             </x-forms.number>
                         </div>
                         {{-- End:: Range From Field --}}
 
                         {{-- Begin:: Range To Field --}}
                         <div class="col-md-3 range_to_div">
-                            <x-forms.number fieldId="range_to" :fieldLabel="__('modules.businesses.rangeTo')" fieldName="range_to[]"
-                                fieldRequired="false" :fieldPlaceholder="__('modules.businesses.rangeTo')">
+                            <x-forms.number fieldId="range_to" :fieldLabel="__('modules.businesses.rangeTo')"
+                                fieldName="range_to[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.rangeTo')">
                             </x-forms.number>
                         </div>
                         {{-- End:: Range To Field --}}
 
                         {{-- Begin:: Amount Field --}}
                         <div class="col-md-3">
-                            <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')" fieldName="amount_field[]"
-                                fieldRequired="false" :fieldPlaceholder="__('modules.businesses.amount')">
+                            <x-forms.number fieldId="amount_field" :fieldLabel="__('modules.businesses.amount')"
+                                fieldName="amount_field[]" fieldRequired="false"
+                                :fieldPlaceholder="__('modules.businesses.amount')">
                             </x-forms.number>
                         </div>
                         {{-- Begin:: Amount Field --}}
 
                         <div class="col-12">
-                            <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4"
-                                id="add_calculation_field">{{ _('Add') }}</button>
+                            <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4" id="add_calculation_field">{{ _('Add') }}</button>
                         </div>
                     </div>
                 </div>
@@ -131,8 +137,7 @@
                     <x-forms.button-primary id="save-business-form" class="mr-3" icon="check">
                         @lang('app.save')
                     </x-forms.button-primary>
-                    <x-forms.button-secondary class="mr-3" id="save-more-driver-project-form"
-                        icon="check-double">@lang('app.saveAddMore')
+                    <x-forms.button-secondary class="mr-3" id="save-more-driver-project-form" icon="check-double">@lang('app.saveAddMore')
                     </x-forms.button-secondary>
                     <x-forms.button-cancel class="border-0 " data-dismiss="modal">@lang('app.cancel')
                     </x-forms.button-cancel>
@@ -145,9 +150,9 @@
 
 <script>
     $(document).ready(function() {
-        let currentBusinessFieldId = 0;
+        let fieldId = 0;
         const newFieldHtml = (id) => `
-                <div class="row" id="field-wrapper-${id}">
+                <div class="row p-20" id="field-wrapper-${id}">
                     <div class="col-md-4">
                         <x-forms.text fieldId="fields[${id}][name]" :fieldLabel="__('modules.businesses.name')"
                             fieldName="fields[${id}][name]" fieldRequired="true"
@@ -169,7 +174,7 @@
                                 <x-forms.checkbox fieldId="fields[${id}][required]"
                                                 :fieldLabel="__('modules.businesses.required')"
                                                 fieldName="fields[${id}][required]"
-                                                :fieldValue="1" :checked="true" />
+                                                :fieldValue="1" />
                             </div>
                             <div class="col-md-2">
                                 <input type="hidden" name="fields[${id}][admin_only]" value="0" />
@@ -182,11 +187,12 @@
                     </div>
 
                     <div class="col-12">
-                        <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4"
-                        id="add_field">{{ _('Add') }}</button>
+                        <button type="button" class="btn-primary rounded f-14 py-2 px-4 mt-4" id="remove_field">{{ _('Remove') }}</button>
                     </div>
                 </div>
         `;
+
+
 
         const newCalculationFieldHtml = () => `
                 <div class="row p-20 parent-container">
@@ -250,7 +256,7 @@
             saveBusiness(data, url, "#save-more-driver-project-form");
         });
 
-        $('body').on('change', '#calculation_type', function() {
+        $('body').on('change', '#calculation_type', function(){
             const calculation_type = $(this).val();
             const equalAndAboveDiv = $(this).closest('.parent-container').find('.equal_and_above_div');
             const rangeFromDiv = $(this).closest('.parent-container').find('.range_from_div');
@@ -275,18 +281,17 @@
             }
         });
 
-        $('body').on('click', '#remove_calculation_field', function() {
+        $('body').on('click', '#remove_calculation_field', function(){
             $(this).closest('.parent-container').remove();
         });
 
-        $('body').on('keyup', '#form-control', function() {
-            console.log($(this).val());
-            $(this).val($(this).val().replace(/[^\d.]/g, '').replace(/(\..*?)\..*/g, '$1'));
-        });
+        $('body').on('keyup', '#form-control', function(){
+                console.log($(this).val());
+                $(this).val($(this).val().replace(/[^\d.]/g, '').replace(/(\..*?)\..*/g, '$1'));
+            });
 
         $('body').on('click', '#add_calculation_field', function() {
-            const calculation_type = $(this).closest('.parent-container').find('#calculation_type')
-                .val();
+            const calculation_type = $(this).closest('.parent-container').find('#calculation_type').val();
             const rangeFrom = $(this).closest('.parent-container').find('#range_from').val();
             const rangeTo = $(this).closest('.parent-container').find('#range_to').val();
             const amount = $(this).closest('.parent-container').find('#amount_field').val();
@@ -340,23 +345,35 @@
 
         });
 
-        $('body').on('click', '#add_field', function() {
-            const name = $(`[name="fields[${currentBusinessFieldId}][name]"`).val();
+        $('#add_field').click(function() {
+            const fieldName = $('#new_field_name').val();
+            const fieldType = $('#new_field_type').val();
+            const fieldAdminOnly = $('#new_field_admin_only').prop('checked');
+            const fieldRequired = $('#new_field_required').prop('checked');
+            const currentFieldId = fieldId++;
 
-            if (!name) {
-                alert('Error: Please fill in all fields.');
-                return;
-            }
+            if (!fieldName)
+                return alert('Please Enter Field Name.');
 
+            $('#newFields').append(newFieldHtml(currentFieldId));
+            $(`#field-wrapper-${currentFieldId} [name="fields[${currentFieldId}][type]"]`).select2();
 
-            $(this).attr('disabled', true).attr('data-field-id', currentBusinessFieldId)
-            $('#business-fields').append(newFieldHtml(++currentBusinessFieldId));
-            $(this).attr('id', 'remove_business_field').text('Remove').attr('disabled', false);
-        });
+            const fieldWrapper = $(`#field-wrapper-${currentFieldId}`)
+            fieldWrapper.find(`[name="fields[${currentFieldId}][name]"]`).val(fieldName);
+            fieldWrapper.find(`[name="fields[${currentFieldId}][type]"]`).val(fieldType).trigger('change');
+            fieldWrapper.find(`[name="fields[${currentFieldId}][required]"]`).prop('checked', fieldRequired);
+            fieldWrapper.find(`[name="fields[${currentFieldId}][admin_only]"]`).prop('checked', fieldAdminOnly);
+            fieldWrapper.find('#remove_field').click(function() {
+                fieldWrapper.remove();
+            });
 
-        $('body').on('click', '#remove_business_field', function() {
-            const fieldIdToRemove = $(this).data('field-id');
-            $(`#field-wrapper-${fieldIdToRemove}`).remove();
+            // Reset Form Fields
+            $('#add-new-field input').val('');
+            $('#new_field_required').prop('checked', true);
+            $('#new_field_admin_only').prop('checked', false);
+            $('#add-new-field select').each(function() {
+                $(this).val($(this).find('option:first').val()).trigger('change');
+            })
         });
 
         $('#save-business-form').click(function() {
@@ -383,22 +400,25 @@
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');
                             window.location.reload();
-                        } else if (response.add_more == true) {
+                        }
+                        else if(response.add_more == true) {
 
                             var right_modal_content = $.trim($(RIGHT_MODAL_CONTENT).html());
 
-                            if (right_modal_content.length) {
+                            if(right_modal_content.length) {
 
                                 $(RIGHT_MODAL_CONTENT).html(response.html.html);
                                 $('#add_more').val(false);
-                            } else {
+                            }
+                            else {
 
                                 $('.content-wrapper').html(response.html.html);
                                 init('.content-wrapper');
                                 $('#add_more').val(false);
                             }
 
-                        } else {
+                        }
+                        else {
 
                             window.location.href = response.redirectUrl;
 
