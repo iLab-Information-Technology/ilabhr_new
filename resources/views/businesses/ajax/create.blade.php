@@ -341,7 +341,7 @@
         });
 
         $('body').on('click', '#add_field', function() {
-            const name = $(`#fields[${currentBusinessFieldId}][name]`).val();
+            const name = $(`[name="fields[${currentBusinessFieldId}][name]"`).val();
 
             if (!name) {
                 alert('Error: Please fill in all fields.');
