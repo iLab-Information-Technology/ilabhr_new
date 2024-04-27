@@ -95,7 +95,7 @@ class BusinessController extends AccountBaseController
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            $fields = $validated['fields'];
+            $fields = isset($validated['fields']) ? $validated['fields'] : [];
 
             unset($validated['fields']);
 
