@@ -129,12 +129,12 @@ class DriverController extends AccountBaseController
 
     public function ajaxLoadLinkedDriver(Request $request)
     {
-        $this->linkDriverPermission = user()->permission('add_link_driver') == 'all' || user()->is_superadmin;
+        $this->linkDriverPermission = user()->permission('add_link_driver') == 'all' || in_array('admin', user_roles());
         abort_403(!($this->linkDriverPermission));
 
         $search = $request->search;
 
-        $drivers = (user()->is_superadmin ? Driver::all() : user()->drivers())
+        $drivers = (in_array('admin', user_roles()) ? Driver::all() : user()->drivers())
             ->orderby('name')
             ->select('drivers.id', 'drivers.name')
             ->when($search, function ($query) use ($search) {
