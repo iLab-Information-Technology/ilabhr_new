@@ -122,6 +122,24 @@ use App\Http\Controllers\ProjectTemplateMemberController;
 use App\Http\Controllers\ProjectTemplateSubTaskController;
 use App\Http\Controllers\EmployeeShiftChangeRequestController;
 use App\Http\Controllers\LeadContactController;
+use App\Models\Role;
+use App\Models\Permission;
+use App\Models\PermissionRole;
+use App\Http\Controllers\RolePermissionController;
+
+
+
+Route::get('/temp-reset-admin-permissions', function() { 
+    $adminRole = Role::where('name', 'admin')->first();
+    $allPermissions = Permission::whereHas('module', function ($query) {
+        $query->withoutGlobalScopes()->where('is_superadmin', '0');
+    })->get();
+    // DELETE ALL PERMISSION ROLE OF ABOVE ROLES IF ANY
+    PermissionRole::whereIn('role_id', [$adminRole->id])->delete();
+
+    $rolePermissionController = new RolePermissionController();
+    $rolePermissionController->rolePermissionInsert($allPermissions, $adminRole->id, 'all');
+});
 
 Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified'], 'prefix' => 'account'], function () {
     Route::post('image/upload', [ImageController::class, 'store'])->name('image.store');

@@ -116,6 +116,11 @@ class Module extends BaseModel
                     'allowed_permissions' => Permission::ALL_NONE,
                     'is_custom' => 0,
                     'name' => 'delete_coordinator_reports',
+                ],
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 1,
+                    'name' => 'allow_restricted_fields',
                 ]
             ]
         ],
