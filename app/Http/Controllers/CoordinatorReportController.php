@@ -181,8 +181,9 @@ class CoordinatorReportController extends AccountBaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(CoordinatorReport $coordinator_report)
     {
-       
+       $coordinator_report->delete();
+       return Reply::success(__('messages.deleteSuccess'));
     }
 }

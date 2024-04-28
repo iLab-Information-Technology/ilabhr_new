@@ -888,8 +888,8 @@ class EmployeeController extends AccountBaseController
 
     public function driverEmployees()
     {
-        $viewPermission = user()->permission('view_tickets');
-        abort_403(!(in_array($viewPermission, ['all']) && in_array('tickets', user_modules())));
+        $linkDriverPermission = user()->permission('add_linked_drivers');
+        abort_403(!(in_array($linkDriverPermission, ['all'])));
         $tab = request('tab');
         $this->activeTab = $tab ?: 'link-drivers';
         $this->view = 'employees.drivers.ajax.index';
