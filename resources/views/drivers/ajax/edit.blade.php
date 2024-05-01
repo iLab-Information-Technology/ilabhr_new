@@ -27,6 +27,16 @@ $addDesignationPermission = user()->permission('add_designation');
                         </x-forms.text>
                     </div>
 
+                     <div class="col-md-4">
+                        <x-forms.select fieldId="driver_type_id" :fieldLabel="__('modules.drivers.driver_type_id')"
+                            fieldName="driver_type_id" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.drivers.driver_type_id')">
+                            @foreach ($driver_types as $item)
+                                <option value="{{ $item->id }}" @selected($driver->driver_type_id == $item)>{{ $item->name }}</option>
+                            @endforeach
+                        </x-forms.select>
+                    </div>
+
                     <div class="col-md-4">
                         <x-forms.text fieldId="driver_id" :fieldLabel="__('modules.drivers.driverId')"
                             fieldName="driver_id" :fieldValue="$driver->driver_id" fieldRequired="true"
@@ -50,7 +60,7 @@ $addDesignationPermission = user()->permission('add_designation');
                         <x-forms.datepicker fieldId="date_of_birth" :fieldLabel="__('modules.drivers.dateOfBirth')"
                             fieldName="date_of_birth" :fieldValue="$driver->date_of_birth ? $driver->date_of_birth->format(company()->date_format) : null" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" />
                     </div>
-                   
+
                     <div class="col-md-4">
                         <x-forms.number fieldName="absher_number" :fieldValue="$driver->absher_number" fieldId="absher_number"
                         fieldLabel="{{ __('modules.drivers.absherNumber') }}" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.absherNumber')" />
@@ -79,9 +89,30 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-lg-4 col-md-6">
                         <x-forms.datepicker fieldId="insurance_expiry_date" :fieldLabel="__('modules.drivers.insuranceExpiry')"
-                            fieldName="insurance_expiry_date" :fieldValue="$driver->insurance_expiry_date ? $driver->insurance_expiry_date->format(company()->date_format) : null" fieldRequired="true" :fieldPlaceholder="__('modules.drivers.insuranceExpiry')" />
+                            fieldName="insurance_expiry_date" :fieldValue="$driver->insurance_expiry_date ? $driver->insurance_expiry_date->format(company()->date_format) : null"  fieldRequired="true" :fieldPlaceholder="__('modules.drivers.insuranceExpiry')" />
                     </div>
-                    
+
+                    <div class="col-lg-4 col-md-6 vehicle_monthly_cost_div">
+                        <x-forms.number fieldId="vehicle_monthly_cost"
+                            :fieldValue="$driver->insurance_expiry_date" :fieldLabel="__('modules.driverTypes.vehicle_monthly_cost')"
+                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.vehicle_monthly_cost')" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 mobile_data_div">
+                        <x-forms.number fieldId="mobile_data" :fieldValue="$driver->mobile_data" :fieldLabel="__('modules.driverTypes.mobile_data')"
+                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 government_cost_div">
+                        <x-forms.number fieldId="government_cost" :fieldValue="$driver->government_cost" :fieldLabel="__('modules.driverTypes.government_cost')"
+                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.government_cost')" />
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 accommodation_div">
+                        <x-forms.number fieldId="accommodation" :fieldValue="$driver->accommodation" :fieldLabel="__('modules.driverTypes.accommodation')"
+                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.accommodation')" />
+                    </div>
+
                     <div class="col-md-4">
                         <div class="form-group my-3">
                             <x-forms.textarea class="mr-0 mr-lg-2 mr-md-2" :fieldLabel="__('modules.drivers.remarks')"
@@ -119,17 +150,17 @@ $addDesignationPermission = user()->permission('add_designation');
                                 @endforeach
                             </x-forms.select>
 
-                            <input type="tel" 
-                                class="form-control height-35 f-14" 
-                                placeholder="@lang('placeholders.mobile')" 
-                                name="work_mobile_no" 
-                                id="work_mobile_no" 
+                            <input type="tel"
+                                class="form-control height-35 f-14"
+                                placeholder="@lang('placeholders.mobile')"
+                                name="work_mobile_no"
+                                id="work_mobile_no"
                                 value="{{ $driver->work_mobile_no }}">
                         </x-forms.input-group>
                     </div>
 
                 </div>
-                
+
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
 
                 <x-form-actions>
@@ -152,6 +183,27 @@ $addDesignationPermission = user()->permission('add_designation');
 @endif
 <script>
     $(document).ready(function() {
+
+
+         $('#driver_type_id').change(function(){
+            changeInputFields($(this).val());
+        });
+
+        changeInputFields($('#driver_type_id').val());
+        function changeInputFields(driver_type_id){
+            $.easyAjax({
+                url: "{{ route('drivers.get-driver-type') }}",
+                type: "GET",
+                data: {id: driver_type_id},
+                success: function(response) {
+
+                    const fields = response.fields.split(',');
+                     ['vehicle_monthly_cost', 'mobile_data', 'accommodation', 'government_cost'].forEach(field => $(`.${field}_div`).addClass('d-none'));
+                    fields.forEach(field => $(`.${field}_div`).removeClass('d-none'));
+                }
+            });
+        }
+
         datepicker('#date_of_birth', {
             position: 'bl',
             maxDate: new Date(),
