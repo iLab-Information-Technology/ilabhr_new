@@ -94,23 +94,23 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-lg-4 col-md-6 vehicle_monthly_cost_div">
                         <x-forms.number fieldId="vehicle_monthly_cost"
-                            :fieldValue="$driver->insurance_expiry_date" :fieldLabel="__('modules.driverTypes.vehicle_monthly_cost')"
-                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.vehicle_monthly_cost')" />
+                            :fieldValue="$driver->vehicle_monthly_cost" :fieldLabel="__('modules.driverTypes.vehicle_monthly_cost')"
+                            fieldName="vehicle_monthly_cost" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.vehicle_monthly_cost')" />
                     </div>
 
                     <div class="col-lg-4 col-md-6 mobile_data_div">
                         <x-forms.number fieldId="mobile_data" :fieldValue="$driver->mobile_data" :fieldLabel="__('modules.driverTypes.mobile_data')"
-                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" />
+                            fieldName="mobile_data" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" />
                     </div>
 
                     <div class="col-lg-4 col-md-6 government_cost_div">
                         <x-forms.number fieldId="government_cost" :fieldValue="$driver->government_cost" :fieldLabel="__('modules.driverTypes.government_cost')"
-                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.government_cost')" />
+                            fieldName="government_cost" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.government_cost')" />
                     </div>
 
                     <div class="col-lg-4 col-md-6 accommodation_div">
                         <x-forms.number fieldId="accommodation" :fieldValue="$driver->accommodation" :fieldLabel="__('modules.driverTypes.accommodation')"
-                            fieldName="insurance_expiry_date" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.accommodation')" />
+                            fieldName="accommodation" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.accommodation')" />
                     </div>
 
                     <div class="col-md-4">

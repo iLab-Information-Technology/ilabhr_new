@@ -72,7 +72,6 @@ class DriverController extends AccountBaseController
     {
         $addPermission = user()->permission('add_drivers');
         abort_403(!in_array($addPermission, ['all', 'added']));
-
         DB::beginTransaction();
         try {
             $validated = $request->validated();
