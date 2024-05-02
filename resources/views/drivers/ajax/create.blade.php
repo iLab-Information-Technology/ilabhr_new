@@ -97,22 +97,22 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-lg-4 col-md-6 vehicle_monthly_cost_div">
                         <x-forms.number fieldId="vehicle_monthly_cost" :fieldLabel="__('modules.driverTypes.vehicle_monthly_cost')"
-                            fieldName="vehicle_monthly_cost" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.vehicle_monthly_cost')" />
+                            fieldName="vehicle_monthly_cost" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.vehicle_monthly_cost')" fieldValue="1247"/>
                     </div>
 
                     <div class="col-lg-4 col-md-6 mobile_data_div">
                         <x-forms.number fieldId="mobile_data" :fieldLabel="__('modules.driverTypes.mobile_data')"
-                            fieldName="mobile_data" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" />
+                            fieldName="mobile_data" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" fieldValue="100"/>
                     </div>
 
                     <div class="col-lg-4 col-md-6 government_cost_div">
                         <x-forms.number fieldId="government_cost" :fieldLabel="__('modules.driverTypes.government_cost')"
-                            fieldName="mobile_data" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.government_cost')" />
+                            fieldName="government_cost" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.government_cost')" fieldValue="880"/>
                     </div>
 
                     <div class="col-lg-4 col-md-6 accommodation_div">
                         <x-forms.number fieldId="accommodation" :fieldLabel="__('modules.driverTypes.accommodation')"
-                            fieldName="mobile_data" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.accommodation')" />
+                            fieldName="accommodation" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.accommodation')" fieldValue="200"/>
                     </div>
 
                     <div class="col-md-4">
