@@ -6,7 +6,7 @@ use App\DataTables\BusinessesDriverDataTable;
 use App\DataTables\DriversDataTable;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Driver\StoreRequest;
-use App\Models\Driver;
+use App\Models\{Driver, DriverType};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
@@ -26,6 +26,10 @@ class DriverController extends AccountBaseController
             abort_403(!in_array('drivers', $this->user->modules));
             return $next($request);
         });
+    }
+
+    public function getDriverType(Request $request){
+        return DriverType::find($request->id);
     }
 
     /**
@@ -50,6 +54,7 @@ class DriverController extends AccountBaseController
         $this->pageTitle = __('app.addDriver');
         $this->countries = countries();
         $this->view = 'drivers.ajax.create';
+        $this->driver_types = DriverType::all();
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
@@ -67,7 +72,6 @@ class DriverController extends AccountBaseController
     {
         $addPermission = user()->permission('add_drivers');
         abort_403(!in_array($addPermission, ['all', 'added']));
-
         DB::beginTransaction();
         try {
             $validated = $request->validated();
@@ -227,6 +231,8 @@ class DriverController extends AccountBaseController
         $this->pageTitle = __('app.update');
 
         $this->driver = $driver;
+        $this->driver_types = DriverType::all();
+
         $tab = request('tab');
 
         switch($tab) {

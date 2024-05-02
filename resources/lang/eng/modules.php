@@ -224,6 +224,7 @@ return array(
     ),
     'drivers' => array(
         'personalDetails' => 'Personal Details',
+        'driver_type_id' => 'Driver Type Id',
         'bankDetails' => 'Bank Details',
         'contact' => 'Contact',
         'employment' => 'Employment',
@@ -252,6 +253,7 @@ return array(
         'name' => 'Name',
         'driverId' => 'Driver ID',
         'nameInfo' => 'Driver name',
+        'nameTypeInfo' => 'Driver Type name',
         'iqamaNumber' => 'Iqama Number',
         'dateOfBirth' => 'Date of Birth',
         'nationality' => 'Nationality',
@@ -308,6 +310,13 @@ return array(
         'medical' => 'Medical',
         'otherDocument' => 'Other Document',
         'joiningDate' => 'Joining Date'
+    ),
+    'driverTypes' => array(
+        'personalDetails' => 'Driver Type Details',
+        'vehicle_monthly_cost' => 'Vehicle Monthly Cost',
+        'mobile_data' => 'Mobile Data',
+        'government_cost' => 'Government Cost',
+        'accommodation' => 'Accommodation',
     ),
     'coordinator-report' => array(
         'business' => 'Business',
