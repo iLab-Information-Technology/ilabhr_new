@@ -47,22 +47,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize"
-                       for="usr">@lang('modules.employees.role')</label>
-                <div class="select-filter mb-4">
-                    <div class="select-others">
-                        <select class="form-control select-picker" name="role" id="role" data-container="body">
-                            <option value="all">@lang('app.all')</option>
-                            {{-- @foreach ($roles as $role) --}}
-                                    {{-- <option value="{{ $role->id }}">{{ $role->display_name }}</option>
-                            @endforeach --}}
-                        </select>
-                    </div>
-                </div>
-            </div>
-
         </x-filters.more-filter-box>
         <!-- MORE FILTERS END -->
     </x-filters.filter-box>
