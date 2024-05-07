@@ -209,6 +209,7 @@ class User extends BaseModel
     use CausesActivity;
 
     const ALL_ADDED_BOTH = ['all', 'added', 'both'];
+    protected $ignoreLogAttributes = [ 'last_login', 'updated_at' ];
 
     public static function boot()
     {

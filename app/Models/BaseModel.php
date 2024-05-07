@@ -22,6 +22,7 @@ class BaseModel extends ApiModel
 
     // It will be override
     protected $dates = [];
+    protected $ignoreLogAttributes = [];
 
     public static function options($items, $group = null, $columnName = null): string
     {
@@ -75,6 +76,8 @@ class BaseModel extends ApiModel
     {
         return LogOptions::defaults()
             ->logAll()
-            ->logOnlyDirty();
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->dontLogIfAttributesChangedOnly($this->ignoreLogAttributes);
     }
 }
