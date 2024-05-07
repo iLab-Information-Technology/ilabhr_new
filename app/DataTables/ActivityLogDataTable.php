@@ -36,7 +36,8 @@ class ActivityLogDataTable extends DataTable
     public function query(Activity $model): QueryBuilder
     {
         $query = $model->newQuery()
-            ->with('causer:id,email');
+            ->with('causer:id,email')
+            ->where('company_id', company()->id);
 
         if ($this->request()->searchText != '') {
             $search = $this->request()->searchText;
