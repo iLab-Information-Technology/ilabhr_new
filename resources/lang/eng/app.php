@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'event' => 'Event',
     'addUnit' => 'Add New Unit',
     'units' => 'Units',
     'check' => 'Check',
@@ -128,6 +129,7 @@ return array(
         'December' => 'December',
     ),
     'menu' => array(
+        'activity' => 'Activity',
         'units' => 'Units',
         'employment' => 'Employment',
         'locality' => 'Locality',

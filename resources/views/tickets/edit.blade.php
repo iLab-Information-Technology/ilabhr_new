@@ -552,7 +552,7 @@ $canEditTicket = ($editTicketPermission == 'all' || ($editTicketPermission == 'o
                             <div class="ticket-activity ticket-overflow position-relative h-100" data-menu-vertical="1" data-menu-scroll="1"
                                 data-menu-dropdown-timeout="500" id="ticketActivity">
                                 <div class="recent-ticket-inner position-relative">
-                                    @foreach ($ticket->activities as $activity)
+                                    @foreach ($ticket->ticket_activities as $activity)
                                         <div class="r-t-items d-flex">
                                             <div class="r-t-items-left text-lightest f-21">
                                                 <i class="fa fa-ticket-alt"></i>

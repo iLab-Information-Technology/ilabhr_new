@@ -9,17 +9,17 @@ class BusinessObserver
     /**
      * Handle the Business "creating" event.
      */
-    public function creating(Business $driverProject): void
+    public function creating(Business $business): void
     {
         if (company()) {
-            $driverProject->company_id = company()->id;
+            $business->company_id = company()->id;
         }
     }
 
     /**
      * Handle the Business "created" event.
      */
-    public function created(Business $driverProject): void
+    public function created(Business $business): void
     {
         //
     }
@@ -27,7 +27,7 @@ class BusinessObserver
     /**
      * Handle the Business "updated" event.
      */
-    public function updated(Business $driverProject): void
+    public function updated(Business $business): void
     {
         //
     }
@@ -35,7 +35,7 @@ class BusinessObserver
     /**
      * Handle the Business "deleted" event.
      */
-    public function deleted(Business $driverProject): void
+    public function deleted(Business $business): void
     {
         //
     }
@@ -43,7 +43,7 @@ class BusinessObserver
     /**
      * Handle the Business "restored" event.
      */
-    public function restored(Business $driverProject): void
+    public function restored(Business $business): void
     {
         //
     }
@@ -51,7 +51,7 @@ class BusinessObserver
     /**
      * Handle the Business "force deleted" event.
      */
-    public function forceDeleted(Business $driverProject): void
+    public function forceDeleted(Business $business): void
     {
         //
     }

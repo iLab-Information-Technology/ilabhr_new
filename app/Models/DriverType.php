@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DriverType extends Model
+class DriverType extends BaseModel
 {
     use HasFactory;
 

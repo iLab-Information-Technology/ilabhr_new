@@ -109,6 +109,7 @@ use App\Http\Controllers\ContractDiscussionController;
 use App\Http\Controllers\DealNoteController;
 use App\Http\Controllers\DiscussionCategoryController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DriverTypeController;
 use App\Http\Controllers\BusinessDriverController;
 use App\Http\Controllers\BusinessController;
@@ -197,6 +198,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     // DMS
     Route::resource('driver-types', DriverTypeController::class);
     Route::get('get-driver-type', [DriverController::class, 'getDriverType'])->name('drivers.get-driver-type');
+    Route::resource('activity-log', ActivityLogController::class);
     Route::resource('drivers', DriverController::class);
     Route::resource('drivers.businesses', BusinessDriverController::class);
     Route::get('business-ajax', [BusinessController::class, 'ajaxLoadBusiness'])->name('get.business-ajax');

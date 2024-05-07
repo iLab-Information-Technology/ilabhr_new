@@ -175,7 +175,7 @@ class Ticket extends BaseModel
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function activities(): HasMany
+    public function ticket_activities(): HasMany
     {
         return $this->hasMany(TicketActivity::class, 'ticket_id')->latest();
     }

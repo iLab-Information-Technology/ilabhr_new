@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Trebol\Entrust\Traits\EntrustUserTrait;
+use Spatie\Activitylog\Traits\CausesActivity;
 
 /**
  * App\Models\User
@@ -205,6 +206,7 @@ class User extends BaseModel
     use Notifiable, EntrustUserTrait, HasFactory, TwoFactorAuthenticatable;
     use HasCompany;
     use HasMaskImage;
+    use CausesActivity;
 
     const ALL_ADDED_BOTH = ['all', 'added', 'both'];
 

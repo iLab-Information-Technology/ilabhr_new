@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Froiden\RestAPI\ApiModel;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * App\Models\BaseModel
@@ -15,6 +18,7 @@ use Froiden\RestAPI\ApiModel;
  */
 class BaseModel extends ApiModel
 {
+    use LogsActivity;
 
     // It will be override
     protected $dates = [];
@@ -60,4 +64,17 @@ class BaseModel extends ApiModel
         return array_unique(array_merge($this->dates, $defaults));
     }
 
+    public function tapActivity(Activity $activity, string $eventName)
+    {
+        $company = company();
+
+        $activity->company_id = $company ? $company->id : null;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty();
+    }
 }
