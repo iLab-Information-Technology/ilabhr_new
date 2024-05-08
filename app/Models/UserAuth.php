@@ -61,6 +61,7 @@ class UserAuth extends BaseModel implements AuthenticatableContract, Authorizabl
     protected $fillable = ['email', 'password', 'remember_token', 'email_verification_code', 'email_verified_at', 'email_code_expires_at'];
     protected $hidden = ['password'];
     public $dates = ['two_factor_expires_at', 'email_code_expires_at'];
+    protected $ignoreLogAttributes = [ 'remember_token', 'updated_at' ];
 
     public function users(): HasMany
     {
@@ -246,6 +247,11 @@ class UserAuth extends BaseModel implements AuthenticatableContract, Authorizabl
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));
+    }
+
+    protected function shouldLogEvent(string $eventName): bool
+    {
+        return false;
     }
 
 }

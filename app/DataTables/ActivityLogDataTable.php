@@ -24,7 +24,9 @@ class ActivityLogDataTable extends DataTable
             ->addColumn('old_properties', function ($activity) {
                 return isset($activity->changes['old']) ? json_encode($activity->changes['old']) : '-';
             })
-            ->addColumn('new_properties', fn ($activity) => json_encode($activity->changes['attributes']))
+            ->addColumn('new_properties', function ($activity) {
+                return isset($activity->changes['attributes']) ? json_encode($activity->changes['attributes']) : '-';
+            })
             ->addColumn('created_at', fn ($activity) => $activity->created_at->format('d-m-Y H:i:s'))
             ->orderColumn('created_at', fn ($q, $order) => $q->orderBy('created_at', $order))
             ->orderColumn('causer', fn ($q, $order) => $q->orderBy('created_at', $order));
