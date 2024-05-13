@@ -109,6 +109,7 @@ use App\Http\Controllers\ContractDiscussionController;
 use App\Http\Controllers\DealNoteController;
 use App\Http\Controllers\DiscussionCategoryController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\DriverPayrollController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DriverTypeController;
 use App\Http\Controllers\BusinessDriverController;
@@ -206,6 +207,10 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('linked-driver-ajax', [DriverController::class, 'ajaxLoadLinkedDriver'])->name('get.linked-driver-ajax');
     Route::resource('businesses', BusinessController::class);
     Route::resource('coordinator-report', CoordinatorReportController::class);
+
+    Route::group([ 'prefix' => 'dms', 'as' => 'dms.' ], function() { 
+        Route::resource('payroll', DriverPayrollController::class);
+    });
 
     // employee routes
     Route::post('employees/apply-quick-action', [EmployeeController::class, 'applyQuickAction'])->name('employees.apply_quick_action');
