@@ -70,6 +70,7 @@ class BaseModel extends ApiModel
         $company = company();
 
         $activity->company_id = $company ? $company->id : null;
+        $activity->ip_address = request()->getClientIp() ?? null;
     }
 
     public function getActivitylogOptions(): LogOptions

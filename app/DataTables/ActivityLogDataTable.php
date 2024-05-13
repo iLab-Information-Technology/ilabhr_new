@@ -88,6 +88,8 @@ class ActivityLogDataTable extends DataTable
             Column::make('event'),
             Column::make('old_properties'),
             Column::make('new_properties'),
+            Column::make('ip_address')
+                ->title('IP Address'),
             Column::make('created_at'),
         ];
     }
