@@ -5,13 +5,12 @@
 @endpush
 
 @section('filter-section')
-
     <x-filters.filter-box>
         <div class="py-1 px-lg-3 px-0 align-items-center d-flex">
             <h4 class="mb-0">@lang('modules.coordinator-report.business')</h4>
             <x-forms.select fieldId="filter_business_id" fieldName="filter_business_id">
                 @foreach ($businesses as $business)
-                <option value="{{ $business->id }}" @selected($business->id == $business_id)>{{ $business->name }}</option>
+                    <option value="{{ $business->id }}" @selected($business->id == $business_id)>{{ $business->name }}</option>
                 @endforeach
             </x-forms.select>
         </div>
@@ -20,7 +19,8 @@
         <div class="select-box d-flex pr-2 border-right-grey border-right-grey-sm-0">
             <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('app.duration')</p>
             <div class="select-status d-flex">
-                <input type="text" class="position-relative text-dark form-control border-0 p-2 text-left f-14 f-w-500 border-additional-grey"
+                <input type="text"
+                    class="position-relative text-dark form-control border-0 p-2 text-left f-14 f-w-500 border-additional-grey"
                     id="datatableRange" placeholder="@lang('placeholders.dateRange')">
             </div>
         </div>
@@ -36,7 +36,7 @@
                         </span>
                     </div>
                     <input type="text" class="form-control f-14 p-1 border-additional-grey" id="search-text-field"
-                           placeholder="@lang('app.startTyping')">
+                        placeholder="@lang('app.startTyping')">
                 </div>
             </form>
         </div>
@@ -56,8 +56,7 @@
                 <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.department')</label>
                 <div class="select-filter mb-4">
                     <div class="select-others">
-                        <select class="form-control select-picker" name="department" data-container="body"
-                                id="department">
+                        <select class="form-control select-picker" name="department" data-container="body" id="department">
                             <option value="all">@lang('app.all')</option>
                             {{-- @foreach ($departments as $department)
                                 <option value="{{ $department->id }}">{{ $department->team_name }}</option>
@@ -68,14 +67,13 @@
             </div>
 
             <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize"
-                       for="usr">@lang('modules.employees.role')</label>
+                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('modules.employees.role')</label>
                 <div class="select-filter mb-4">
                     <div class="select-others">
                         <select class="form-control select-picker" name="role" id="role" data-container="body">
                             <option value="all">@lang('app.all')</option>
                             {{-- @foreach ($roles as $role) --}}
-                                    {{-- <option value="{{ $role->id }}">{{ $role->display_name }}</option>
+                            {{-- <option value="{{ $role->id }}">{{ $role->display_name }}</option>
                             @endforeach --}}
                         </select>
                     </div>
@@ -114,7 +112,6 @@
         </x-filters.more-filter-box>
         <!-- MORE FILTERS END -->
     </x-filters.filter-box>
-
 @endsection
 
 @php
@@ -162,32 +159,64 @@
 
         </div>
         <!-- Task Box End -->
+
+        {{-- Documents Preview Modal::Start --}}
+        <div class="modal" tabindex="-1" id="documents-preview-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Click on image to Preview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex flex-column">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="$('#documents-preview-modal').modal('hide')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Documents Preview Modal::End --}}
     </div>
     <!-- CONTENT WRAPPER END -->
-
 @endsection
 
 @push('scripts')
     @include('sections.datatable_js')
 
     <script>
+        $('#coordinator-report-table').on('click', '[data-documents]', function() {
+            const documents = $(this).data('documents');
+            const documentsPreviewModal = $('#documents-preview-modal');
+            documentsPreviewModal.find('.modal-body').html(documents.map((d, index) => {
+                const url = `{{ asset_url_local_s3("coordinator-reports/") }}/${d}`;
+
+                return `
+                    <div class="mb-4">
+                        <h4>Document ${index + 1}</h4>
+                        <a href="${url}" target="_blank"><img class="w-100 object-fit-cover" style="height: 120px" src="${url}" /></a>
+                    </div>`;
+            }).join('\n'));
+            documentsPreviewModal.modal('show');
+        })
 
         var startDate = null;
         var endDate = null;
         var lastStartDate = null;
         var lastEndDate = null;
 
-        @if(request('startDate') != '' && request('endDate') != '' )
-            startDate = '{{ request("startDate") }}';
-        endDate = '{{ request("endDate") }}';
+        @if (request('startDate') != '' && request('endDate') != '')
+            startDate = '{{ request('startDate') }}';
+            endDate = '{{ request('endDate') }}';
         @endif
 
-            @if(request('lastStartDate') !=='' && request('lastEndDate') !=='' )
-            lastStartDate = '{{ request("lastStartDate") }}';
-        lastEndDate = '{{ request("lastEndDate") }}';
+        @if (request('lastStartDate') !== '' && request('lastEndDate') !== '')
+            lastStartDate = '{{ request('lastStartDate') }}';
+            lastEndDate = '{{ request('lastEndDate') }}';
         @endif
 
-        $('#coordinator-report-table').on('preXhr.dt', function (e, settings, data) {
+        $('#coordinator-report-table').on('preXhr.dt', function(e, settings, data) {
             const dateRangePicker = $('#datatableRange').data('daterangepicker');
             let startDate = null;
             let endDate = null;
@@ -203,7 +232,7 @@
             data['endDate'] = endDate;
         });
 
-        $('#filter_business_id').on('change', function() { 
+        $('#filter_business_id').on('change', function() {
             window.location.href = '{{ route('coordinator-report.index') }}?business_id=' + $(this).val();
         });
 
@@ -212,7 +241,7 @@
         }
 
         $('#datatableRange, #searchText').on('change',
-            function () {
+            function() {
                 if ($('#datatableRange').val() !== "") {
                     $('#reset-filters').removeClass('d-none');
                 } else if ($('#searchText').val() != "") {
@@ -224,14 +253,14 @@
                 showTable();
             });
 
-        $('#search-text-field').on('keyup', function () {
+        $('#search-text-field').on('keyup', function() {
             if ($('#search-text-field').val() != "") {
                 $('#reset-filters').removeClass('d-none');
                 showTable();
             }
         });
 
-        $('#reset-filters, #reset-filters-2').click(function () {
+        $('#reset-filters, #reset-filters-2').click(function() {
             $('#filter-form')[0].reset();
             $('.filter-box .select-picker').selectpicker("refresh");
             $('#reset-filters').addClass('d-none');
@@ -239,7 +268,7 @@
         });
 
 
-        $('#quick-action-type').change(function () {
+        $('#quick-action-type').change(function() {
             const actionValue = $(this).val();
             if (actionValue != '') {
                 $('#quick-action-apply').removeAttr('disabled');
@@ -256,7 +285,7 @@
             }
         });
 
-        $('#quick-action-apply').click(function () {
+        $('#quick-action-apply').click(function() {
             const actionValue = $('#quick-action-type').val();
             if (actionValue == 'delete') {
                 Swal.fire({
@@ -287,7 +316,7 @@
             }
         });
 
-        $('body').on('click', '.delete-table-row', function () {
+        $('body').on('click', '.delete-table-row', function() {
             var id = $(this).data('driver-project-id');
             Swal.fire({
                 title: "@lang('messages.sweetAlertTitle')",
@@ -321,7 +350,7 @@
                             '_token': token,
                             '_method': 'DELETE'
                         },
-                        success: function (response) {
+                        success: function(response) {
                             if (response.status == "success") {
                                 showTable();
                             }
@@ -332,7 +361,7 @@
         });
 
         const applyQuickAction = () => {
-            var rowdIds = $("#employees-table input:checkbox:checked").map(function () {
+            var rowdIds = $("#employees-table input:checkbox:checked").map(function() {
                 return $(this).val();
             }).get();
 
@@ -346,7 +375,7 @@
                 buttonSelector: "#quick-action-apply",
                 data: $('#quick-action-form').serialize(),
                 blockUI: true,
-                success: function (response) {
+                success: function(response) {
                     if (response.status == 'success') {
                         showTable();
                         resetActionButtons();
@@ -358,7 +387,7 @@
         };
 
 
-        $('body').on('change', '.assign_role', function () {
+        $('body').on('change', '.assign_role', function() {
             var id = $(this).data('user-id');
             var role = $(this).val();
             var token = "{{ csrf_token() }}";
@@ -374,7 +403,7 @@
                         userId: id,
                         _token: token
                     },
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status == "success") {
                             window.LaravelDataTables["employees-table"].draw(false);
                         }
@@ -384,13 +413,13 @@
 
         });
 
-        $('#designation-setting').click(function () {
+        $('#designation-setting').click(function() {
             const url = "{{ route('designations.create') }}";
             $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
             $.ajaxModal(MODAL_LG, url);
         })
 
-        $('.department-setting').click(function () {
+        $('.department-setting').click(function() {
             const url = "{{ route('departments.create') }}";
             $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
             $.ajaxModal(MODAL_LG, url);

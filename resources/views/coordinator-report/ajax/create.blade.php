@@ -98,10 +98,10 @@ $addDesignationPermission = user()->permission('add_designation');
                 return `
                     <div class="col-md-4" id="field-wrapper-${field.id}">
                         <input type="hidden" name="fields[${field.id}][field_id]" value="${field.id}" />
-                        <x-forms.file class="mr-0 mr-lg-2 mr-md-2"
-                                    fieldLabel="${field.name}" fieldName="fields[${field.id}][value]"
+                        <x-forms.file-multiple class="mr-0 mr-lg-2 mr-md-2"
+                                    fieldLabel="${field.name}" fieldName="fields[${field.id}][value][]"
                                     fieldId="fields[${field.id}][value]">
-                        </x-forms.file>
+                        </x-forms.file-multiple>
                     </div>`;
             }).join('\n');
 

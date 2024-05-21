@@ -104,7 +104,12 @@ class CoordinatorReportController extends AccountBaseController
                 $dbField = $dbFields->where('id', $field['field_id'])->first()->toArray();
 
                 if ($dbField['type'] == 'DOCUMENT' && $field['value']) {
-                    $field['value'] = Files::uploadLocalOrS3($field['value'], 'coordinator-reports', 300);
+                    $fieldValue = [];
+                    foreach ($field['value'] as $file) {
+                        $fieldValue[] = Files::uploadLocalOrS3($file, 'coordinator-reports', 300);
+                    }
+
+                    $field['value'] = json_encode($fieldValue);
                 };
 
                 return $field;
