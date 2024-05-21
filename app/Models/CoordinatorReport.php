@@ -11,6 +11,10 @@ class CoordinatorReport extends BaseModel
 {
     use HasFactory;
 
+    protected $casts = [ 
+        'report_date' => 'datetime',
+    ];
+
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);

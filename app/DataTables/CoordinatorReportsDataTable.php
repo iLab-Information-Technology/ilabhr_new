@@ -39,7 +39,7 @@ class CoordinatorReportsDataTable extends DataTable
             });
         }
 
-        $dataTable->addColumn('created_at', fn ($report) => $report->created_at->format('d/m/Y'));
+        $dataTable->addColumn('report_date', fn ($report) => $report->report_date->format('d/m/Y'));
         $dataTable->addColumn('action', 'coordinator-report.datatable.action')
             ->setRowId('id')
             ->rawColumns($rawColumns);
@@ -52,7 +52,14 @@ class CoordinatorReportsDataTable extends DataTable
      */
     public function query(CoordinatorReport $model): QueryBuilder
     {
-        return $model->where('business_id', $this->business_id)->with([ 'driver', 'field_values'])->newQuery();
+        $request = $this->request();
+
+        return $model
+            ->with([ 'driver', 'field_values'])
+            ->where('business_id', $this->business_id)
+            ->when($request->startDate, fn ($q) => $q->whereDate('created_at', '>=', $request->startDate))
+            ->when($request->endDate, fn ($q) => $q->whereDate('created_at', '<=', $request->endDate))
+            ->newQuery();
     }
 
     /**
@@ -60,7 +67,7 @@ class CoordinatorReportsDataTable extends DataTable
      */
     public function html(): HtmlBuilder
     {
-        return $this->builder()
+        $dataTable = $this->builder()
                     ->setTableId('coordinator-report-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
@@ -73,7 +80,18 @@ class CoordinatorReportsDataTable extends DataTable
                         Button::make('print'),
                         Button::make('reset'),
                         Button::make('reload')
+                    ])
+                    ->parameters([
+                        'initComplete' => 'function () {
+                            window.LaravelDataTables["coordinator-report-table"].buttons().container()
+                            .appendTo("#table-actions")
+                        }',
                     ]);
+
+        $dataTable->buttons(Button::make(['extend' => 'excel', 'text' => '<i class="fa fa-file-export"></i> ' . trans('app.exportExcel')]));
+
+
+        return $dataTable;
     }
 
     /**
@@ -89,7 +107,7 @@ class CoordinatorReportsDataTable extends DataTable
         return array_merge([
             Column::make('driver.name')
         ], $businessFields, [
-            Column::make('created_at'),
+            Column::make('report_date'),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)

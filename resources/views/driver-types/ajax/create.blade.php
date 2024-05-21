@@ -16,10 +16,12 @@ $addDesignationPermission = user()->permission('add_designation');
 
                 <div class="row  p-20">
                     <div class="col-md-4">
-                        <x-forms.text fieldId="name" :fieldLabel="__('modules.drivers.name')"
-                            fieldName="name" fieldRequired="true"
-                            :fieldPlaceholder="__('modules.drivers.nameTypeInfo')">
-                        </x-forms.text>
+                        <x-forms.select fieldId="name" :fieldLabel="__('modules.drivers.name')"
+                                        fieldName="name" fieldRequired="true">
+                            @foreach (\App\Enums\DriverType::cases() as $type)
+                                <option value="{{ $type }}">{{ $type->label() }}</option>
+                            @endforeach
+                        </x-forms.select>
 
                         <x-forms.checkbox
                             :fieldLabel="__('modules.driverTypes.vehicle_monthly_cost')"

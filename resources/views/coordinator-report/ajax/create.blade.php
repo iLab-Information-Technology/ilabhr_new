@@ -31,6 +31,14 @@ $addDesignationPermission = user()->permission('add_designation');
                                               :placeholder="__('placeholders.searchForDrivers')"
                         ></x-forms.select2-ajax>
                     </div>
+
+                    <div class="col-md-4">
+                        <x-forms.datepicker fieldId="report_date" :fieldLabel="__('modules.coordinator-report.date')"
+                            fieldName="report_date" 
+                            fieldRequired="true" 
+                            :fieldPlaceholder="__('modules.coordinator-report.date')"
+                            :fieldValue="\Carbon\Carbon::now()->format(company()->date_format)" />
+                    </div>
                 </div>
 
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
@@ -63,6 +71,11 @@ $addDesignationPermission = user()->permission('add_designation');
     $(document).ready(function() {
         let businesses = @json($businesses);
         
+        datepicker('#report_date', {
+            ...datepickerConfig,
+            position: 'bl'
+        });
+
         const businessFieldsHtml = (fields) => {
             const documentFields = fields.filter(f => f.type === 'DOCUMENT');
             const otherFields = fields.filter(f => f.type !== 'DOCUMENT');

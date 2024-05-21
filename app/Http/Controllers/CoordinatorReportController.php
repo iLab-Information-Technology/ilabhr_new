@@ -84,12 +84,22 @@ class CoordinatorReportController extends AccountBaseController
         DB::beginTransaction();
         try {
             $validated = $request->validated();
+
+            $validated['report_date'] = Carbon::createFromFormat($this->company->date_format, $request->report_date)->format('Y-m-d');
             $fields = $validated['fields'];
+            $fields = array_filter($fields, fn ($f) => isset($f['value']) && !empty($f['value']));
             unset($validated['fields']);
 
             $report = CoordinatorReport::create($validated);
 
+            $fieldIds = array_column($fields, 'field_id');
             $dbFields = Business::find($request->business_id)->fields()->where('admin_only', '<>', true)->get();
+            foreach ($dbFields as $dbField) {
+                if ($dbField->required && !in_array($dbField->id, $fieldIds)) {
+                    return Reply::error($dbField->name . ' is required.');
+                }
+            }
+
             $fields = array_map(function ($field) use ($dbFields) {
                 $dbField = $dbFields->where('id', $field['field_id'])->first()->toArray();
 

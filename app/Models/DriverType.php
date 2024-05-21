@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,5 +11,9 @@ class DriverType extends BaseModel
     use HasFactory;
 
     protected $guarded = ['id', '_token', '_method'];
+
+    protected $casts = [
+        'name' => \App\Enums\DriverType::class
+    ];
 
 }

@@ -1234,6 +1234,10 @@ return array(
         'engaged' => 'Engaged',
         'unmarried' => 'Unmarried'
     ),
+    'driverType' => array(
+        'freelancer' => 'Free Lancer',
+        'iqaama' => 'Iqaama',
+    ),
     'sku' => 'SKU',
     'taxName' => 'Tax Name',
 );

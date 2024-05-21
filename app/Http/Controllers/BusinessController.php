@@ -105,6 +105,24 @@ class BusinessController extends AccountBaseController
                 'required' => '1',
                 'type' => 'TEXT'
             ];
+            $fields[] = [
+                'admin_only' => '0',
+                'name' => 'Bonus',
+                'required' => '0',
+                'type' => 'INTEGER'
+            ];
+            $fields[] = [
+                'admin_only' => '0',
+                'name' => 'Tip',
+                'required' => '0',
+                'type' => 'INTEGER'
+            ];
+            $fields[] = [
+                'admin_only' => '0',
+                'name' => 'Other Tip',
+                'required' => '0',
+                'type' => 'INTEGER'
+            ];
             $business = Business::create($validated);
             $business->fields()->createMany($fields);
 

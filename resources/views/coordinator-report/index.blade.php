@@ -16,6 +16,16 @@
             </x-forms.select>
         </div>
 
+        <!-- DATE START -->
+        <div class="select-box d-flex pr-2 border-right-grey border-right-grey-sm-0">
+            <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('app.duration')</p>
+            <div class="select-status d-flex">
+                <input type="text" class="position-relative text-dark form-control border-0 p-2 text-left f-14 f-w-500 border-additional-grey"
+                    id="datatableRange" placeholder="@lang('placeholders.dateRange')">
+            </div>
+        </div>
+        <!-- DATE END -->
+
         <!-- SEARCH BY TASK START -->
         <div class="task-search d-flex  py-1 px-lg-3 px-0 border-right-grey align-items-center">
             <form class="w-100 mr-1 mr-lg-0 mr-md-1 ml-md-1 ml-0 ml-lg-0">
@@ -118,20 +128,13 @@
         <div class="d-flex justify-content-between action-bar">
 
             <div id="table-actions" class="d-block d-lg-flex align-items-center">
-                @if (checkCompanyCanAddMoreEmployees(user()->company_id))
                 @if ($addCoordinatorReports == 'all')
                     <x-forms.link-primary :link="route('coordinator-report.create')" class="mr-3 openRightModal" icon="plus">
                         @lang('app.addReport')
                     </x-forms.link-primary>
                 @endif
-
-                @if ($addCoordinatorReports == 'all')
-                    <x-forms.link-secondary :link="route('employees.import')" class="mr-3 openRightModal mb-2 mb-lg-0 d-none d-lg-block"
-                                            icon="file-upload">
-                        @lang('app.importExcel')
-                    </x-forms.link-secondary>
-                @endif
-                @endif
+                <div id="table-actions" class="flex-grow-1 align-items-center mt-4">
+                </div>
             </div>
 
             <x-datatable.actions>
@@ -185,8 +188,19 @@
         @endif
 
         $('#coordinator-report-table').on('preXhr.dt', function (e, settings, data) {
+            const dateRangePicker = $('#datatableRange').data('daterangepicker');
+            let startDate = null;
+            let endDate = null;
+
+            if ($('#datatableRange').val() !== '') {
+                startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
+                endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
+            }
+
             data['business_id'] = $('#filter_business_id').val();
             data['searchText'] = $('#search-text-field').val();
+            data['startDate'] = startDate;
+            data['endDate'] = endDate;
         });
 
         $('#filter_business_id').on('change', function() { 
@@ -194,26 +208,19 @@
         });
 
         const showTable = () => {
-            window.LaravelDataTables["businesses-table"].draw(false);
+            window.LaravelDataTables['coordinator-report-table'].draw(false);
         }
 
-        $('#employee, #status, #role, #gender, #skill, #designation, #department').on('change keyup',
+        $('#datatableRange, #searchText').on('change',
             function () {
-                if ($('#status').val() != "all") {
+                if ($('#datatableRange').val() !== "") {
                     $('#reset-filters').removeClass('d-none');
-                } else if ($('#employee').val() != "all") {
-                    $('#reset-filters').removeClass('d-none');
-                } else if ($('#role').val() != "all") {
-                    $('#reset-filters').removeClass('d-none');
-                } else if ($('#gender').val() != "all") {
-                    $('#reset-filters').removeClass('d-none');
-                } else if ($('#designation').val() != "all") {
-                    $('#reset-filters').removeClass('d-none');
-                } else if ($('#department').val() != "all") {
+                } else if ($('#searchText').val() != "") {
                     $('#reset-filters').removeClass('d-none');
                 } else {
                     $('#reset-filters').addClass('d-none');
                 }
+
                 showTable();
             });
 

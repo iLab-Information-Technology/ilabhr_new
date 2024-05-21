@@ -27,11 +27,14 @@ class StoreRequest extends CoreRequest
      */
     public function rules()
     {
+        $setting = company();
+
         $rules = [
             'business_id' => 'required|exists:businesses,id',
             'driver_id' => 'required|exists:drivers,id',
             'fields.*.field_id' => 'required|exists:business_fields,id',
-            'fields.*.value' => 'nullable'
+            'fields.*.value' => 'nullable',
+            'report_date' => 'required|date_format:"' . $setting->date_format . '"',
         ];
 
         $rules = $this->customFieldRules($rules);

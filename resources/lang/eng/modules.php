@@ -322,6 +322,7 @@ return array(
         'business' => 'Business',
         'report' => 'Report',
         'driver' => 'Driver',
+        'date' => 'Date',
         'coordinatorReport' => 'Coordinator Report'
     ),
     'businesses' => array(
