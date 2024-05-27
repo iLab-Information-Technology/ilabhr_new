@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\DriverEmployeeDataTable;
+use App\DataTables\BranchEmployeeDataTable;
 use App\DataTables\EmployeesDataTable;
 use App\DataTables\LeaveDataTable;
 use App\DataTables\ProjectsDataTable;
@@ -60,7 +60,7 @@ class EmployeeController extends AccountBaseController
 {
     use ImportExcel;
 
-    public function __construct(private DriverEmployeeDataTable $driverEmployeeDataTable)
+    public function __construct(private BranchEmployeeDataTable $branchEmployeeDataTable)
     {
         parent::__construct();
         $this->pageTitle = 'app.menu.employees';
@@ -747,8 +747,10 @@ class EmployeeController extends AccountBaseController
             $this->view = 'employees.ajax.immigration';
             break;
 
-        case 'link-drivers':
-            return $this->driverEmployees();
+        case 'link-branch':
+            $linkBranchPermission = $this->employee->permission('link_to_branch');
+            abort_403(!(in_array($linkBranchPermission, ['all', 'owned', 'both'])));
+            return $this->branchEmployee();
 
         default:
             $this->view = 'employees.ajax.profile';
@@ -886,14 +888,12 @@ class EmployeeController extends AccountBaseController
 
     }
 
-    public function driverEmployees()
+    public function branchEmployee()
     {
-        $linkDriverPermission = user()->permission('add_linked_drivers');
-        abort_403(!(in_array($linkDriverPermission, ['all'])));
         $tab = request('tab');
-        $this->activeTab = $tab ?: 'link-drivers';
-        $this->view = 'employees.drivers.ajax.index';
-        $dataTable = $this->driverEmployeeDataTable->with('employee_id', $this->employee->id)->with('employee', $this->employee);
+        $this->activeTab = $tab ?: 'link-branch';
+        $this->view = 'employees.branches.ajax.index';
+        $dataTable = $this->branchEmployeeDataTable->with('employee_id', $this->employee->id)->with('employee', $this->employee);
 
         return $dataTable->render('employees.show', $this->data);
 

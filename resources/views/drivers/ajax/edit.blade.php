@@ -21,6 +21,13 @@ $addDesignationPermission = user()->permission('add_designation');
 
                 <div class="row  p-20">
                     <div class="col-md-4">
+                        <x-forms.select2-ajax  fieldId="branch_id" fieldName="branch_id"
+                            :fieldLabel="__('modules.drivers.branch')" :route="route('get.branch-ajax')" 
+                            :placeholder="__('placeholders.searchForBranches')">
+                        </x-forms.select2-ajax>
+                    </div>
+
+                    <div class="col-md-4">
                         <x-forms.text fieldId="name" :fieldLabel="__('modules.drivers.name')"
                             fieldName="name" :fieldValue="$driver->name" fieldRequired="true"
                             :fieldPlaceholder="__('modules.drivers.nameInfo')">
@@ -32,7 +39,7 @@ $addDesignationPermission = user()->permission('add_designation');
                             fieldName="driver_type_id" fieldRequired="true"
                             :fieldPlaceholder="__('modules.drivers.driver_type_id')">
                             @foreach ($driver_types as $item)
-                                <option value="{{ $item->id }}" @selected($driver->driver_type_id == $item)>{{ $item->name }}</option>
+                                <option value="{{ $item->id }}" @selected($driver->driver_type_id == $item->id)>{{ $item->name }}</option>
                             @endforeach
                         </x-forms.select>
                     </div>
@@ -257,6 +264,12 @@ $addDesignationPermission = user()->permission('add_designation');
             $('#country_phonecode').val(phonecode);
             $('.select-picker').selectpicker('refresh');
         });
+
+        const driverBranch = @json($driver->branch()->first([ 'id', 'name' ]));
+        if (driverBranch) { 
+            const option = new Option(driverBranch.name, driverBranch.id, true, true);
+            $('#branch_id').append(option).val(driverBranch.id).trigger('change');
+        }
 
 
         init(RIGHT_MODAL);

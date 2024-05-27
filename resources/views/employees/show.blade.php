@@ -16,7 +16,7 @@ $viewLeavePermission = user()->permission('view_leave');
 $viewDocumentPermission = user()->permission('view_documents');
 $viewAppreciationPermission = user()->permission('view_appreciation');
 $viewImmigrationPermission = user()->permission('view_immigration');
-$addLinkedDriverPermission = $employee->permission('add_linked_drivers');
+$linkToBranchPermission = $employee->permission('link_to_branch');
 @endphp
 
 @php
@@ -127,9 +127,9 @@ if ($viewPermission == 'all'
                         </li>
                     @endif
                     
-                    @if ($addLinkedDriverPermission == 'all')
+                    @if (in_array($linkToBranchPermission, ['all', 'owned', 'both']))
                     <li>
-                        <x-tab :href="route('employees.show', $employee->id) . '?tab=link-drivers'" :text="__('modules.employees.linkDrivers')" ajax="false" class="link-drivers" />
+                        <x-tab :href="route('employees.show', $employee->id) . '?tab=link-branch'" :text="__('modules.employees.linkBranch')" ajax="false" class="link-branch" />
                     </li>
                     @endif
                 </ul>

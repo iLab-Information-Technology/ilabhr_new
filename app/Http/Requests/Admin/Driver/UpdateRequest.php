@@ -30,6 +30,7 @@ class UpdateRequest extends CoreRequest
         $setting = company();
 
         $rules = [
+            'branch_id' => 'required|exists:branches,id',
             'nationality_id' => 'nullable|exists:countries,id',
             'address' => 'nullable',
             'insurance_expiry_date' => 'nullable',

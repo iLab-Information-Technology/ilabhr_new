@@ -186,15 +186,15 @@ class DriversPayrollDataTable extends DataTable
         $columns = array_merge($columns, [
             Column::make('iqaama_number'),
             Column::make('name'),
-            Column::make('nationality'),
+            // Column::make('nationality'),
             Column::make('contract_type'),
             Column::make('working_days'),
         ]);
 
-        $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name']), $businesses->toArray()));
-        $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_bonus'), $businesses->toArray()));
-        $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_tip'), $businesses->toArray()));
-        $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_other_tip'), $businesses->toArray()));
+        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name']), $businesses->toArray()));
+        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_bonus'), $businesses->toArray()));
+        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_tip'), $businesses->toArray()));
+        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_other_tip'), $businesses->toArray()));
 
         $columns = array_merge($columns, [
             Column::make('total_orders'),
@@ -202,9 +202,9 @@ class DriversPayrollDataTable extends DataTable
             Column::make('commission_amount'),
             Column::make('base_salary'),
             Column::make('salary'),
-            Column::make('stc_pay'),
-            Column::make('bank_name'),
-            Column::make('iban'),
+            // Column::make('stc_pay'),
+            // Column::make('bank_name'),
+            // Column::make('iban'),
         ]);
         return $columns;
     }

@@ -28,8 +28,11 @@ class UpdateRequest extends CoreRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|unique:businesses,name',
-
+            'name' => 'required|unique:businesses,name,' . $this->business->id,
+            'fields' => 'array',
+            'fields.*.name' => 'required|string',
+            'fields.*.required' => 'required|boolean',
+            'fields.*.admin_only' => 'required|boolean'
         ];
 
         $rules = $this->customFieldRules($rules);

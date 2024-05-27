@@ -22,6 +22,44 @@ $addDesignationPermission = user()->permission('add_designation');
                     </div>
                 </div>
 
+                <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
+                    @lang('modules.businesses.businessFields')
+                </h4>
+
+
+                <div class="row p-20" id="add-new-field">
+                    @foreach ($business->fields->whereNotIn('name', \App\Models\Business::$presetFields) as $field)
+                    <div class="col-md-4">
+                        <x-forms.text fieldId="fields[{{ $field->id}}][name]" :fieldLabel="__('modules.businesses.name')"
+                            fieldName="fields[{{ $field->id}}][name]" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.businesses.name')" :fieldValue="$field->name">
+                        </x-forms.text>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="hidden" name="fields[{{ $field->id}}][required]" value="0" />
+                                <x-forms.checkbox
+                                fieldId="fields[{{ $field->id}}][required]"
+                                :fieldLabel="__('modules.businesses.required')"
+                                fieldName="fields[{{ $field->id}}][required]"
+                                :checked="$field->required"
+                                :fieldValue="1" />
+                            </div>
+                            <div class="col-md-2">
+                                <input type="hidden" name="fields[{{ $field->id}}][admin_only]" value="0" />
+                                <x-forms.checkbox
+                                fieldId="fields[{{ $field->id}}][admin_only]"
+                                :fieldLabel="__('modules.businesses.adminOnly')"
+                                fieldName="fields[{{ $field->id}}][admin_only]"
+                                :checked="$field->admin_only"
+                                :fieldValue="1" />
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
 
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">

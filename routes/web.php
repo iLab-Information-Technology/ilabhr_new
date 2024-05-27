@@ -24,7 +24,6 @@ use App\Http\Controllers\SubTaskController;
 use App\Http\Controllers\TimelogController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\DriverEmployeeController;
 use App\Http\Controllers\EstimateController;
 use App\Http\Controllers\LeadFileController;
 use App\Http\Controllers\LeadNoteController;
@@ -108,9 +107,11 @@ use App\Http\Controllers\KnowledgeBaseFileController;
 use App\Http\Controllers\ContractDiscussionController;
 use App\Http\Controllers\DealNoteController;
 use App\Http\Controllers\DiscussionCategoryController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DriverPayrollController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\BranchEmployeeController;
 use App\Http\Controllers\DriverTypeController;
 use App\Http\Controllers\BusinessDriverController;
 use App\Http\Controllers\BusinessController;
@@ -197,6 +198,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::resource('clientSubCategory', ClientSubCategoryController::class);
 
     // DMS
+    Route::resource('branches', BranchController::class);
     Route::resource('driver-types', DriverTypeController::class);
     Route::get('get-driver-type', [DriverController::class, 'getDriverType'])->name('drivers.get-driver-type');
     Route::resource('activity-log', ActivityLogController::class);
@@ -204,6 +206,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::resource('drivers.businesses', BusinessDriverController::class);
     Route::get('business-ajax', [BusinessController::class, 'ajaxLoadBusiness'])->name('get.business-ajax');
     Route::get('driver-ajax', [DriverController::class, 'ajaxLoadDriver'])->name('get.driver-ajax');
+    Route::get('branch-ajax', [BranchController::class, 'ajaxLoadBranches'])->name('get.branch-ajax');
     Route::get('linked-driver-ajax', [DriverController::class, 'ajaxLoadLinkedDriver'])->name('get.linked-driver-ajax');
     Route::resource('businesses', BusinessController::class);
     Route::resource('coordinator-report', CoordinatorReportController::class);
@@ -226,7 +229,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::post('employees/send-invite', [EmployeeController::class, 'sendInvite'])->name('employees.send_invite');
     Route::post('employees/create-link', [EmployeeController::class, 'createLink'])->name('employees.create_link');
     Route::resource('employees', EmployeeController::class);
-    Route::resource('employees.drivers', DriverEmployeeController::class);
+    Route::resource('employees.branches', BranchEmployeeController::class);
     Route::resource('passport', PassportController::class);
     Route::resource('employee-visa', EmployeeVisaController::class);
 

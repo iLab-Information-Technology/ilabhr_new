@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'update' => 'Update',
     'event' => 'Event',
     'addUnit' => 'Add New Unit',
     'units' => 'Units',
@@ -129,6 +130,7 @@ return array(
         'December' => 'December',
     ),
     'menu' => array(
+        'branches' => 'Branches',
         'activity' => 'Activity',
         'units' => 'Units',
         'employment' => 'Employment',
@@ -1025,6 +1027,7 @@ return array(
     'addLanguage' => 'Add Language',
     'addEmployee' => 'Add Employee',
     'addDriver' => 'Add Driver',
+    'addBranch' => 'Add Branch',
     'addDriverType' => 'Add Driver Type',
     'addClientNote' => 'Add Client Note',
     'addLeadNote' => 'Add Lead Note',
@@ -1238,7 +1241,14 @@ return array(
         'freelancer' => 'Free Lancer',
         'iqaama' => 'Iqaama',
     ),
+    'branch' => array(
+        'jubail' => 'Jubail',
+        'jeddah' => 'Jeddah',
+        'riyadh' => 'Riyadh',
+        'alhasa' => 'Alhasa',
+    ),
     'sku' => 'SKU',
     'taxName' => 'Tax Name',
+    'addBranch' => 'Add Branch'
 );
 

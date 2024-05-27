@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\DriverEmployee;
+use App\Models\Branch;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -10,7 +10,7 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class DriverEmployeeDataTable extends DataTable
+class BranchesDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -20,7 +20,8 @@ class DriverEmployeeDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', fn ($driverEmployee) => view('employees.drivers.datatable.action', array_merge($driverEmployee->toArray(), [ 'employee' => $this->employee])))
+            ->addColumn('action', 'branches.datatable.action')
+            ->addColumn('registration_date', fn ($branch) => $branch->registration_date->format('d/m/Y'))
             ->setRowId('id')
             ->rawColumns([ 'action' ]);
     }
@@ -28,13 +29,11 @@ class DriverEmployeeDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(DriverEmployee $model): QueryBuilder
+    public function query(Branch $model): QueryBuilder
     {
         return $model
             ->newQuery()
-            ->with(['driver'])
-            ->select('driver_employee.*')
-            ->when($this->employee_id, fn ($q) => $q->where('employee_id', $this->employee_id));
+            ->select('branches.*');
     }
 
     /**
@@ -43,7 +42,7 @@ class DriverEmployeeDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('driver_employee-table')
+                    ->setTableId('branches-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     //->dom('Bfrtip')
@@ -65,9 +64,8 @@ class DriverEmployeeDataTable extends DataTable
     {
         return [
             Column::make('id'),
-            Column::make('name')
-                ->name('driver.name')
-                ->data('driver.name'),
+            Column::make('name'),
+            Column::make('registration_date'),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
@@ -81,6 +79,6 @@ class DriverEmployeeDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Drivers_' . date('YmdHis');
+        return 'Branches_' . date('YmdHis');
     }
 }

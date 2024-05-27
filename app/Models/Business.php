@@ -13,6 +13,14 @@ class Business extends BaseModel
 {
     use CustomFieldsTrait, HasCompany;
 
+    public static $presetFields = [ 
+        'Total Orders',
+        'Bonus',
+        'Tip',
+        'Other Tip',
+        'Total Earnings',
+    ];
+
     protected $table = 'businesses';
 
     protected $appends = [  ];

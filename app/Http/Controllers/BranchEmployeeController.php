@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Helper\Reply;
-use App\Http\Requests\Admin\DriverEmployee\StoreRequest;
+use App\Http\Requests\Admin\BranchEmployee\StoreRequest;
+use App\Models\Branch;
 use App\Models\Driver;
 use App\Models\Business;
 use App\Models\User;
 use App\Traits\ImportExcel;
 use Illuminate\Support\Facades\DB;
 
-class DriverEmployeeController extends AccountBaseController
+class BranchEmployeeController extends AccountBaseController
 {
     use ImportExcel;
 
@@ -38,12 +39,12 @@ class DriverEmployeeController extends AccountBaseController
      */
     public function create(User $employee)
     {
-        $addPermission = $employee->permission('add_linked_drivers');
-        abort_403(!in_array($addPermission, ['all', 'added']));
+        $addPermission = $employee->permission('link_to_branch');
+        abort_403(!in_array($addPermission, ['all', 'owned', 'both']));
 
-        $this->pageTitle = __('app.addDriver');
+        $this->pageTitle = __('app.addBranch');
         $this->employee = $employee;
-        $this->view = 'employees.drivers.ajax.create';
+        $this->view = 'employees.branches.ajax.create';
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
@@ -51,7 +52,7 @@ class DriverEmployeeController extends AccountBaseController
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
-        return view('employees.drivers.create', $this->data);
+        return view('employees.branches.create', $this->data);
     }
 
     /**
@@ -59,17 +60,20 @@ class DriverEmployeeController extends AccountBaseController
      */
     public function store(StoreRequest $request, User $employee)
     {
-        $addPermission = $employee->permission('add_linked_drivers');
-        abort_403(!in_array($addPermission, ['all', 'added']));
+        $linkBranchPermission = $employee->permission('link_to_branch');
+        abort_403(!in_array($linkBranchPermission, ['all', 'owned', 'both']));
 
-        if ($employee->drivers()->where('driver_employee.driver_id', $request->driver_id)->exists()) {
-            return Reply::error(__('messages.driverExists'));
+        if ($linkBranchPermission !== 'all' && count($request->branch_ids) > 1)
+            return Reply::error(__('messages.onlyOneBranchCanBeLinked'));
+
+        if ($employee->branches()->whereIn('branch_employee.branch_id', $request->branch_ids)->exists()) {
+            return Reply::error(__('messages.branchExists'));
         }
 
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            $employee->drivers()->attach($validated['driver_id']);
+            $employee->branches()->attach($validated['branch_ids']);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -85,7 +89,7 @@ class DriverEmployeeController extends AccountBaseController
             return Reply::successWithData(__('messages.recordSaved'), ['html' => $html, 'add_more' => true]);
         }
 
-        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => route('employees.show', $employee->id) . '?tab=link-drivers']);
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => route('employees.show', $employee->id) . '?tab=link-branch']);
     }
 
     /**
@@ -115,12 +119,12 @@ class DriverEmployeeController extends AccountBaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $employee, Driver $driver)
+    public function destroy(User $employee, Branch $branch)
     {
-        $deletePermission = $employee->permission('delete_linked_drivers');
-        abort_403(!($deletePermission == 'all'));
+        $linkToBranchPermission = $employee->permission('link_to_branch');
+        abort_403(!(in_array($linkToBranchPermission, [ 'all', 'owned', 'both' ])));
 
-        $this->linkedDriver = $employee->drivers()->detach($driver->id);
+        $this->linkedDriver = $employee->branches()->detach($branch->id);
 
         return Reply::success(__('messages.deleteSuccess'));
     }

@@ -6,7 +6,7 @@ use App\DataTables\BusinessesDataTable;
 use App\Enums\Salutation;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Business\{StoreRequest, UpdateRequest};
-use App\Models\{LanguageSetting, DriverCalculation, Role, Business};
+use App\Models\{LanguageSetting, DriverCalculation, Role, Business, BusinessField};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -207,7 +207,21 @@ class BusinessController extends AccountBaseController
         abort_403(!($this->editPermission == 'all'));
 
         $validated = $request->validated();
+        $fields = $validated['fields'];
+        unset($validated['fields']);
+
         $business->update($validated);
+
+        if ($request->has('fields')) {
+            foreach ($request->fields as $id => $field) {
+                BusinessField::where('id', $id)->update([ 
+                    'name' => $field['name'],
+                    'required' => $field['required'],
+                    'admin_only' => $field['admin_only']
+                ]);
+            }
+        }
+
         $business->driver_calculations()->delete();
          // Storing Driver Calculations
             if($request->has('calculation_type')){

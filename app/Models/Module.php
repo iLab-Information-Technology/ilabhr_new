@@ -45,6 +45,31 @@ class Module extends BaseModel
 
     const MODULE_LIST = [
         [
+            'module_name' => 'branches',
+            'permissions' => [ 
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 0,
+                    'name' => 'add_branches',
+                ],
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 0,
+                    'name' => 'view_branches',
+                ],
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 0,
+                    'name' => 'edit_branches',
+                ],
+                [
+                    'allowed_permissions' => Permission::ALL_NONE,
+                    'is_custom' => 0,
+                    'name' => 'delete_branches',
+                ]
+            ]
+        ],
+        [
             'module_name' => 'drivers',
             'permissions' => [ 
                 [
@@ -247,14 +272,9 @@ class Module extends BaseModel
                     'name' => 'delete_employees',
                 ],
                 [
-                    'allowed_permissions' => Permission::ALL_NONE,
+                    'allowed_permissions' => Permission::ALL_4_OWNED_2_NONE_5,
                     'is_custom' => 1,
-                    'name' => 'add_linked_drivers',
-                ],
-                [
-                    'allowed_permissions' => Permission::ALL_NONE,
-                    'is_custom' => 1,
-                    'name' => 'delete_linked_drivers',
+                    'name' => 'link_to_branch',
                 ],
                 [
                     'allowed_permissions' => Permission::ALL_NONE,

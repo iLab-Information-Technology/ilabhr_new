@@ -222,7 +222,16 @@ return array(
         'addContact' => 'Add Contact',
         'contactName' => 'Contact Name',
     ),
+    'branches' => array(
+        'branchDetails' => 'Branch Details',
+        'branchName' => 'Branch Name',
+        'name' => 'Name',
+        'registrationDate' => 'Registration Date',
+        'isActive' => 'Is Active',
+        'drivers' => 'Drivers',
+    ),
     'drivers' => array(
+        'branch' => 'Branch',
         'personalDetails' => 'Personal Details',
         'driver_type_id' => 'Driver Type Id',
         'bankDetails' => 'Bank Details',
@@ -407,7 +416,7 @@ return array(
         'marriageAnniversaryDate' => 'Marriage Anniversary Date',
         'employmentType' => 'Employment Type',
         'immigration' => 'Immigration',
-        'linkDrivers' => 'Link Drivers',
+        'linkBranch' => 'Link Branch',
         'passportDetails' => 'Passport Details',
         'passportNumber' => 'Passport Number',
         'visaNumber' => 'Visa Number',
@@ -1773,6 +1782,7 @@ return array(
     ),
     'timelogAlreadyExist' => 'Time-log already exist for this user.',
     'module' => array(
+        'branches' => 'Branches',
         'drivers' => 'Drivers',
         'businesses' => 'Businesses',
         'coordinatorReports' => 'Coordinator Reports',

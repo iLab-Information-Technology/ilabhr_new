@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\DriverEmployee;
+namespace App\Http\Requests\Admin\BranchEmployee;
 
 use App\Http\Requests\CoreRequest;
 use App\Traits\CustomFieldsRequestTrait;
@@ -29,7 +29,8 @@ class StoreRequest extends CoreRequest
     {
         $setting = company();
         $rules = [
-            'driver_id' => 'required',
+            'branch_ids' => 'required|array',
+            'branch_ids.*' => 'required|exists:branches,id',
         ];
 
         $rules = $this->customFieldRules($rules);

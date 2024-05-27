@@ -75,4 +75,9 @@ class Driver extends BaseModel
     public function businesses(): BelongsToMany {
         return $this->belongsToMany(Business::class)->withPivot('platform_id');
     }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

@@ -375,9 +375,9 @@ class User extends BaseModel
         return $this->belongsTo(UserAuth::class, 'user_auth_id');
     }
 
-    public function drivers(): BelongsToMany
+    public function branches(): BelongsToMany
     {
-        return $this->belongsToMany(Driver::class, 'driver_employee', 'employee_id', 'driver_id');
+        return $this->belongsToMany(Branch::class, 'branch_employee', 'employee_id', 'branch_id');
     }
 
     public function lead(): HasOne

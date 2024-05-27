@@ -1,5 +1,5 @@
 @php
-$addLinkedDriverPermission = $employee->permission('add_linked_drivers');
+$linkToBranchPermission = $employee->permission('link_to_branch');
 @endphp
 
 <!-- ROW START -->
@@ -9,11 +9,10 @@ $addLinkedDriverPermission = $employee->permission('add_linked_drivers');
         <div class="d-flex justify-content-between action-bar mt-2">
 
             <div id="table-actions" class="d-flex align-items-center">
-
-                @if ($addLinkedDriverPermission == 'all')
-                    <x-forms.link-primary :link="route('employees.drivers.create', $employee->id)"
+            @if ($linkToBranchPermission == 'all' || ($linkToBranchPermission == 'owned' && $employee->branches()->count()  == 0))
+                    <x-forms.link-primary :link="route('employees.branches.create', $employee->id)"
                         class="mr-3 openRightModal" icon="plus" data-redirect-url="{{ url()->full() }}">
-                        @lang('app.addDriver')
+                        @lang('app.addBranch')
                     </x-forms.link-primary>
                 @endif
             </div>
@@ -55,7 +54,7 @@ $addLinkedDriverPermission = $employee->permission('add_linked_drivers');
 
 <script>
     const showTable = () => {
-        window.LaravelDataTables["driver_employee-table"].draw(false);
+        window.LaravelDataTables["branch_employee-table"].draw(false);
     }
 
     $('#quick-action-type').change(function() {
@@ -107,7 +106,7 @@ $addLinkedDriverPermission = $employee->permission('add_linked_drivers');
     });
 
     $('body').on('click', '.delete-table-row', function() {
-        var id = $(this).data('driver-business-id');
+        var id = $(this).data('branch-employee-id');
         Swal.fire({
             title: "@lang('messages.sweetAlertTitle')",
             text: "@lang('messages.recoverRecord')",
@@ -127,7 +126,7 @@ $addLinkedDriverPermission = $employee->permission('add_linked_drivers');
             buttonsStyling: false
         }).then((result) => {
             if (result.isConfirmed) {
-                var url = "{{ route('employees.drivers.destroy', [ $employee->id, ':id' ]) }}";
+                var url = "{{ route('employees.branches.destroy', [ $employee->id, ':id' ]) }}";
                 url = url.replace(':id', id);
 
                 var token = "{{ csrf_token() }}";
@@ -141,7 +140,7 @@ $addLinkedDriverPermission = $employee->permission('add_linked_drivers');
                     },
                     success: function(response) {
                         if (response.status == "success") {
-                            showTable();
+                            window.location.reload();
                         }
                     }
                 });

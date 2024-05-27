@@ -6,30 +6,37 @@ $addDesignationPermission = user()->permission('add_designation');
 
 <div class="row">
     <div class="col-sm-12">
-        <x-form id="save-driver-employee-data-form">
+        <x-form id="save-driver-business-data-form">
 
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
-                    @lang('modules.drivers.driverDetails')
+                    @lang('modules.businesses.businessDetails')
                 </h4>
 
                 <div class="row  p-20">
                     <div class="col-md-6">
-                        <x-forms.select2-ajax fieldRequired="true" fieldId="driver_id" fieldName="driver_id"
-                                              :fieldLabel="__('modules.drivers.driver')"
-                                              :route="route('get.driver-ajax')"
-                                              :placeholder="__('placeholders.searchForDrivers')"
+                        <x-forms.select2-ajax fieldRequired="true" fieldId="business_id" fieldName="business_id"
+                                              :fieldLabel="__('modules.businesses.business')"
+                                              :route="route('get.business-ajax')"
+                                              :placeholder="__('placeholders.searchForBusinesses')"
                         ></x-forms.select2-ajax>
+                    </div>
+
+                    <div class="col-md-6">
+                        <x-forms.text fieldId="platform_id" :fieldLabel="__('modules.businesses.platformID')"
+                            fieldName="platform_id" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.businesses.platformID')">
+                        </x-forms.text>
                     </div>
                 </div>
 
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
 
                 <x-form-actions>
-                    <x-forms.button-primary id="save-driver-employee-form" class="mr-3" icon="check">
+                    <x-forms.button-primary id="save-driver-business-form" class="mr-3" icon="check">
                         @lang('app.save')
                     </x-forms.button-primary>
-                    <x-forms.button-secondary class="mr-3" id="save-more-driver-employee-form" icon="check-double">@lang('app.saveAddMore')
+                    <x-forms.button-secondary class="mr-3" id="save-more-driver-business-form" icon="check-double">@lang('app.saveAddMore')
                     </x-forms.button-secondary>
                     <x-forms.button-cancel class="border-0 " data-dismiss="modal">@lang('app.cancel')
                     </x-forms.button-cancel>
@@ -45,29 +52,29 @@ $addDesignationPermission = user()->permission('add_designation');
 <script>
     $(document).ready(function() {
 
-        $('#save-more-driver-employee-form').click(function() {
+        $('#save-more-driver-business-form').click(function() {
 
             $('#add_more').val(true);
 
-            const url = "{{ route('employees.drivers.store', $employee->id) }}";
-            var data = $('#save-driver-employee-data-form').serialize();
-            saveDriver(data, url, "#save-more-driver-employee-form");
+            const url = "{{ route('drivers.businesses.store', $driver->id) }}";
+            var data = $('#save-driver-business-data-form').serialize();
+            saveDriver(data, url, "#save-more-driver-business-form");
 
 
         });
 
-        $('#save-driver-employee-form').click(function() {
+        $('#save-driver-business-form').click(function() {
 
-            const url = "{{ route('employees.drivers.store', $employee->id) }}";
-            var data = $('#save-driver-employee-data-form').serialize();
-            saveDriver(data, url, "#save-driver-employee-form");
+            const url = "{{ route('drivers.businesses.store', $driver->id) }}";
+            var data = $('#save-driver-business-data-form').serialize();
+            saveDriver(data, url, "#save-driver-business-form");
 
         });
 
         function saveDriver(data, url, buttonSelector) {
             $.easyAjax({
                 url: url,
-                container: '#save-driver-employee-data-form',
+                container: '#save-driver-business-data-form',
                 type: "POST",
                 disableButton: true,
                 blockUI: true,

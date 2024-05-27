@@ -21,6 +21,13 @@ $addDesignationPermission = user()->permission('add_designation');
 
                 <div class="row  p-20">
                     <div class="col-md-4">
+                        <x-forms.select2-ajax  fieldId="branch_id" fieldName="branch_id"
+                            :fieldLabel="__('modules.drivers.branch')" :route="route('get.branch-ajax')" 
+                            :placeholder="__('placeholders.searchForBranches')" fieldRequired="true">
+                        </x-forms.select2-ajax>
+                    </div>
+
+                    <div class="col-md-4">
                         <x-forms.text fieldId="name" :fieldLabel="__('modules.drivers.name')"
                             fieldName="name" fieldRequired="true"
                             :fieldPlaceholder="__('modules.drivers.nameInfo')">

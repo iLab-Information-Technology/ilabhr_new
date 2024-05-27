@@ -139,6 +139,7 @@ return array(
     'searchForProjects' => 'Search for projects',
     'searchForBusinesses' => 'Search for businesses',
     'searchForDrivers' => 'Search for drivers',
+    'searchForBranches' => 'Search for branches',
     'min' => 'Min',
     'max' => 'Max',
     'consent_description' => 'consent description',

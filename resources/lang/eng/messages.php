@@ -1,6 +1,7 @@
 <?php
 
 return array(
+    'onlyOneBranchCanBeLinked' => 'Only one branch can be linked.',
     'fetchChat' => 'Fetching chat detail.',
     'confirm' => 'Confirm',
     'projectCodeRequired' => 'Project short code field is required.',
@@ -13,6 +14,7 @@ return array(
     'quantityNumber' => 'Quantity should be a number',
     'businessExists' => 'Business already exists.',
     'driverExists' => 'Driver already exists.',
+    'branchExists' => 'Branch already exists.',
     'unitPriceNumber' => 'Unit price should be a number',
     'amountNumber' => 'Amount should be a number.',
     'itemBlank' => 'Item name cannot be blank.',

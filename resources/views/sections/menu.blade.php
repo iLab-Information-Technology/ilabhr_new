@@ -119,8 +119,8 @@
     </x-slot>
     <div class="accordionItemContent pb-2">
 
+        <x-sub-menu-item :link="route('branches.index')" :text="__('app.menu.branches')" />
         <x-sub-menu-item :link="route('driver-types.index')" :text="__('app.menu.driver_types')" />
-
         @if (in_array('drivers', user_modules()) && $sidebarUserPermissions['view_drivers'] != 5 && $sidebarUserPermissions['view_drivers'] != 'none')
             <x-sub-menu-item :link="route('drivers.index')" :text="__('app.menu.drivers')" />
         @endif
