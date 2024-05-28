@@ -133,7 +133,7 @@ use App\Http\Controllers\RolePermissionController;
 
 
 
-Route::get('/temp-reset-admin-permissions', function() { 
+Route::get('/temp-reset-admin-permissions', function() {
     $adminRole = Role::where('name', 'admin')->first();
     $allPermissions = Permission::whereHas('module', function ($query) {
         $query->withoutGlobalScopes()->where('is_superadmin', '0');
@@ -211,7 +211,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::resource('businesses', BusinessController::class);
     Route::resource('coordinator-report', CoordinatorReportController::class);
 
-    Route::group([ 'prefix' => 'dms', 'as' => 'dms.' ], function() { 
+    Route::group([ 'prefix' => 'dms', 'as' => 'dms.' ], function() {
         Route::resource('payroll', DriverPayrollController::class);
     });
 
@@ -228,6 +228,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('employees/import/exception/{name}', [ImportController::class, 'getQueueException'])->name('import.process.exception');
     Route::post('employees/send-invite', [EmployeeController::class, 'sendInvite'])->name('employees.send_invite');
     Route::post('employees/create-link', [EmployeeController::class, 'createLink'])->name('employees.create_link');
+    Route::post('employees/change-password', [EmployeeController::class, 'changePassword'])->name('employees.change-password');
     Route::resource('employees', EmployeeController::class);
     Route::resource('employees.branches', BranchEmployeeController::class);
     Route::resource('passport', PassportController::class);

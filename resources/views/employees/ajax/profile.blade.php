@@ -320,6 +320,25 @@ $viewAppreciationPermission = user()->permission('view_appreciation');
                                         </x-cards.data>
                                     </div>
                                 @endif
+                                @php
+                                    $showButton = true; // or false, depending on your condition
+                                @endphp
+                                <div class="col-md-12 mb-4">
+                                    <x-cards.data :title="__('app.menu.change_password')" padding="false">
+                                      <form method="POST" id="save-employee-data-form">
+                                        @csrf
+                                        <input type="hidden" name="email" value="{{$employee->email}}">
+                                        <div class="col-lg-12 mb-2">
+                                        <x-forms.text fieldId="password" :fieldLabel="__('app.menu.new_password')"
+                                                fieldName="password" fieldRequired="true" :fieldPlaceholder="__('placeholders.password')"
+                                                :fieldValue="old('password')" :showButton="$showButton">
+                                            </x-forms.text>
+                                            <div class="col-lg-12 mb-2">
+                                                <button type="button" id="changePassowrdForm" class="btn btn-primary btn-block">Change Password</button>
+                                            </div>
+                                      </form>
+                                    </x-cards.data>
+                                </div>
                             </div>
                         @endif
 
@@ -332,3 +351,63 @@ $viewAppreciationPermission = user()->permission('view_appreciation');
         <!-- ROW END -->
     </div>
 </div>
+<script>
+    $(document).ready(function(){
+        $('#changePassowrdForm').click(function() {
+
+const url = "{{ route('employees.change-password') }}";
+var data = $('#save-employee-data-form').serialize();
+saveEmployee(data, url, "#changePassowrdForm");
+
+});
+
+function saveEmployee(data, url, buttonSelector) {
+$.easyAjax({
+    url: url,
+    container: '#save-employee-data-form',
+    type: "POST",
+    disableButton: true,
+    blockUI: true,
+    buttonSelector: buttonSelector,
+    file: true,
+    data: data,
+    success: function(response) {
+        if (response.status == 'success') {
+            if ($(MODAL_XL).hasClass('show')) {
+                $(MODAL_XL).modal('hide');
+                window.location.reload();
+            }
+            else if(response.add_more == true) {
+
+                var right_modal_content = $.trim($(RIGHT_MODAL_CONTENT).html());
+
+                if(right_modal_content.length) {
+
+                    $(RIGHT_MODAL_CONTENT).html(response.html.html);
+                    $('#add_more').val(false);
+                }
+                else {
+
+                    $('.content-wrapper').html(response.html.html);
+                    init('.content-wrapper');
+                    $('#add_more').val(false);
+                }
+
+            }
+            else {
+
+                window.location.href = response.redirectUrl;
+
+            }
+
+            if (typeof showTable !== 'undefined' && typeof showTable === 'function') {
+                showTable();
+            }
+
+        }
+
+    }
+});
+}
+    });
+</script>

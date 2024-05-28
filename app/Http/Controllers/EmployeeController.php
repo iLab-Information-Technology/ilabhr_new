@@ -23,6 +23,7 @@ use App\Helper\Reply;
 use App\Http\Requests\Admin\Employee\ImportProcessRequest;
 use App\Http\Requests\Admin\Employee\ImportRequest;
 use App\Http\Requests\Admin\Employee\StoreRequest;
+use App\Http\Requests\Admin\Employee\ChangePasswordRequest;
 use App\Http\Requests\Admin\Employee\UpdateRequest;
 use App\Http\Requests\User\CreateInviteLinkRequest;
 use App\Http\Requests\User\InviteEmailRequest;
@@ -55,7 +56,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\UserAuth;
 use Symfony\Component\Mailer\Exception\TransportException;
 use App\Models\PackageUpdateNotify;
-
+use Illuminate\Support\Facades\Hash;
 class EmployeeController extends AccountBaseController
 {
     use ImportExcel;
@@ -211,9 +212,9 @@ class EmployeeController extends AccountBaseController
                 $user->login = $request->login;
             }
 
-            if ($request->has('email_notifications')) {
-                $user->email_notifications = $request->email_notifications ? 1 : 0;
-            }
+            // if ($request->has('email_notifications')) {
+            //     $user->email_notifications = $request->email_notifications ? 1 : 0;
+            // }
 
             if ($request->hasFile('image')) {
                 Files::deleteFile($user->image, 'avatar');
@@ -1071,6 +1072,15 @@ class EmployeeController extends AccountBaseController
         }
 
         $this->userRole = $userRole;
+    }
+
+    public function changePassword(ChangePasswordRequest $request){
+
+        $userAuth = UserAuth::where('email',$request->email)->first();
+        $userAuth->password = Hash::make($request->password);
+        $userAuth->save();
+        return Reply::successWithData(__('messages.passwordChanged'), ['html' => '', 'add_more' => true]);
+
     }
 
 }

@@ -78,6 +78,16 @@ $addDesignationPermission = user()->permission('add_designation');
                             :fieldLabel="__('modules.profile.profilePicture')" fieldName="image" fieldId="image"
                             fieldHeight="119" :popover="__('messages.fileFormat.ImageFile')" />
                     </div>
+                    @php
+                        $showButton = true; // or false, depending on your condition
+                    @endphp
+
+                    <div class="col-lg-3">
+                        <x-forms.text fieldId="password" :fieldLabel="__('modules.employees.password')"
+                            fieldName="password" fieldRequired="true" :fieldPlaceholder="__('placeholders.password')"
+                            :fieldValue="old('password')" :showButton="$showButton">
+                        </x-forms.text>
+                    </div>
                     <div class="col-lg-3 col-md-6">
                         <x-forms.select fieldId="country" :fieldLabel="__('app.country')" fieldName="country"
                             search="true">
