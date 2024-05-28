@@ -7,6 +7,7 @@ return array(
     'changeLeaveStatusConfirmation' => 'Do you want to change leave status.',
     'updateSuccess' => 'Updated successfully.',
     'recordSaved' => 'Record saved successfully',
+    'passwordChanged' => 'Password Changed successfully',
     'deleteSuccess' => 'Deleted successfully.',
     'checkDayHoliday' => 'Choose at-least 1.',
     'addItem' => 'Add at-least 1 item.',

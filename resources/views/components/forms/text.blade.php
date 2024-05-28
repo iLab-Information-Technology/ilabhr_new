@@ -1,10 +1,40 @@
-<div {{ $attributes->merge(['class' => 'form-group my-3']) }}>
-    <x-forms.label :fieldId="$fieldId" :fieldLabel="$fieldLabel" :fieldRequired="$fieldRequired" :popover="$popover"></x-forms.label>
+@props([
+    'fieldId',
+    'fieldLabel',
+    'fieldRequired' => false,
+    'popover' => '',
+    'fieldPlaceholder' => '',
+    'fieldValue' => '',
+    'fieldName',
+    'fieldReadOnly' => false,
+    'fieldHelp' => '',
+    'showButton' => false
+])
 
-    <input type="text" class="form-control height-35 f-14" placeholder="{{ $fieldPlaceholder }}"
+<div {{ $attributes->merge(['class' => 'form-group my-3']) }}>
+    <div class="d-flex justify-content-between align-items-center">
+        <x-forms.label :fieldId="$fieldId" :fieldLabel="$fieldLabel" :fieldRequired="$fieldRequired" :popover="$popover" class="mb-0"></x-forms.label>
+        @if ($showButton)
+            <button type="button" class="btn btn-primary btn-xs" onclick="generatePassword('{{ $fieldId }}')">Generate Password</button>
+        @endif
+    </div>
+
+    <input type="text" class="form-control height-35 f-14 mt-2" placeholder="{{ $fieldPlaceholder }}"
         value="{{ $fieldValue }}" name="{{ $fieldName }}" id="{{ $fieldId }}" @if ($fieldReadOnly == 'true') readonly @endif >
 
     @if ($fieldHelp)
         <small id="{{ $fieldId }}Help" class="form-text text-muted">{{ $fieldHelp }}</small>
     @endif
 </div>
+
+<script>
+    function generatePassword(fieldId) {
+        var length = 8,
+            charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+            password = "";
+        for (var i = 0, n = charset.length; i < length; ++i) {
+            password += charset.charAt(Math.floor(Math.random() * n));
+        }
+        document.getElementById(fieldId).value = password;
+    }
+</script>

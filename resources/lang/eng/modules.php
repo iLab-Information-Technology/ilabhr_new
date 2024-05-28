@@ -366,6 +366,8 @@ return array(
         'employeeIdHelp' => '<p>Unique ID you use to identify employees in your organization.</p><p>For employees created through <b>Invite</b>, an employee id is automatically generated, which you can change later.</p>',
         'totalHours' => 'Total Hours',
         'totalMinutes' => 'Total Minutes',
+        'password' => 'Password',
+
         'memo' => 'Memo',
         'slackUsername' => 'Slack Member ID',
         'joiningDate' => 'Joining Date',

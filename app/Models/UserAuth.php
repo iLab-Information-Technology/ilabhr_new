@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Fortify\TwoFactorAuthenticationProvider;
 use Trebol\Entrust\Traits\EntrustUserTrait;
 use App\Notifications\ResetPassword;
-
+use Illuminate\Support\Facades\Hash;
 /**
  * App\Models\UserAuth
  *
@@ -125,7 +125,7 @@ class UserAuth extends BaseModel implements AuthenticatableContract, Authorizabl
             }
 
             $verifiedAt = user() ? now() : null;
-            $checkAuth = UserAuth::create(['email' => $email, 'password' => bcrypt($password), 'email_verified_at' => $verifiedAt]);
+            $checkAuth = UserAuth::create(['email' => $email, 'password' => Hash::make($password), 'email_verified_at' => $verifiedAt]);
             session(['auth_pass' => $password]);
 
         }
