@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::table('drivers', function (Blueprint $table) {
             $table->unsignedInteger('branch_id');
 
-            $table->foreign('branch_id')->references('id')->on('branches')->cascadeOnDelete()->restrictOnUpdate();
+            // TODO: Add foreign key
+            // $table->foreign('branch_id')->references('id')->on('branches')->cascadeOnDelete()->restrictOnUpdate();
         });
     }
 
