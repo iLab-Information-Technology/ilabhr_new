@@ -22,64 +22,64 @@ class DatabaseSeeder extends Seeder
         // This is required to stop notification in installation
         config(['app.seeding' => true]);
 
-        // Artisan::call('key:generate');
+        Artisan::call('key:generate');
 
-        // $this->call(CountriesTableSeeder::class);
-        // $this->call(SmtpSettingsSeeder::class);
-        // $this->call(CoreDatabaseSeeder::class);
-        // // WORKSUITESAAS
-        // $this->call(CoreSuperAdminDatabaseSeeder::class);
+        $this->call(CountriesTableSeeder::class);
+        $this->call(SmtpSettingsSeeder::class);
+        $this->call(CoreDatabaseSeeder::class);
+        // WORKSUITESAAS
+        $this->call(CoreSuperAdminDatabaseSeeder::class);
         $this->call(ModulePermissionSeeder::class);
 
-        // $this->call(OrganisationSettingsTableSeeder::class);
+        $this->call(OrganisationSettingsTableSeeder::class);
 
-        // $this->call(PackageTableSeeder::class);
-        // $this->call(FrontSeeder::class);
-        // $this->call(GlobalCurrencyFormatSetting::class);
+        $this->call(PackageTableSeeder::class);
+        $this->call(FrontSeeder::class);
+        $this->call(GlobalCurrencyFormatSetting::class);
 
         // WORKSUITESAAS
-        // $this->call(SuperAdminRoleTableSeeder::class);
+        $this->call(SuperAdminRoleTableSeeder::class);
 
-        // if (!App::environment('codecanyon')) {
+        if (!App::environment('codecanyon')) {
 
-        //     // WORKSUITESAAS
-        //     $this->call(SuperAdminUsersTableSeeder::class);
+            // WORKSUITESAAS
+            $this->call(SuperAdminUsersTableSeeder::class);
 
-        //     $companies = Company::select('id')->get();
+            $companies = Company::select('id')->get();
 
-        //     foreach ($companies as $company) {
-        //         $this->command->info('Seeding company: ' . ($company->id));
-        //         $this->call(DepartmentTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(UsersTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(BankAccountSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ProjectCategorySeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ProjectSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(EstimateSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ExpenseSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(TicketSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(RoleSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(LeaveSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(NoticesTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(EventTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(LeadSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(TaxTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ProductTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ContractTypeTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ContractTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(LeadsTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(MessageSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(ShiftSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(AttendanceTableSeeder::class, false, ['companyId' => $company->id]);
-        //         $this->call(AppreciationSeeder::class, false, ['companyId' => $company->id]);
+            foreach ($companies as $company) {
+                $this->command->info('Seeding company: ' . ($company->id));
+                $this->call(DepartmentTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(UsersTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(BankAccountSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ProjectCategorySeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ProjectSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(EstimateSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ExpenseSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(TicketSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(RoleSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(LeaveSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(NoticesTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(EventTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(LeadSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(TaxTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ProductTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ContractTypeTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ContractTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(LeadsTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(MessageSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(ShiftSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(AttendanceTableSeeder::class, false, ['companyId' => $company->id]);
+                $this->call(AppreciationSeeder::class, false, ['companyId' => $company->id]);
 
-        //         $this->call(EmployeePermissionSeeder::class, false, ['companyId' => $company->id]);
-        //     }
+                $this->call(EmployeePermissionSeeder::class, false, ['companyId' => $company->id]);
+            }
 
-        // }
+        }
 
-        // if (!App::environment('codecanyon')) {
-        //     Artisan::call('sync-user-permissions all');
-        // }
+        if (!App::environment('codecanyon')) {
+            Artisan::call('sync-user-permissions all');
+        }
 
         config(['app.seeding' => false]);
 
