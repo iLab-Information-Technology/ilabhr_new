@@ -33,7 +33,6 @@ class BranchController extends AccountBaseController
     public function index()
     {
         $viewPermission = user()->permission('view_branches');
-        return $viewPermission;
         abort_403(!in_array($viewPermission, ['all']));
 
         return $this->branchesDataTable->render('branches.index', $this->data);
