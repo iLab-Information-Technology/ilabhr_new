@@ -45,6 +45,8 @@ class UpdateRequest extends CoreRequest
             'mobile_data' => 'sometimes',
             'accommodation' => 'sometimes',
             'government_cost' => 'sometimes',
+            'fuel' => 'sometimes',
+            'gprs' => 'sometimes',
             'joining_date' => 'nullable|date_format:"' . $setting->date_format . '"',
             'basic_salary' => 'nullable|numeric',
             'housing_allowance' => 'nullable|numeric',

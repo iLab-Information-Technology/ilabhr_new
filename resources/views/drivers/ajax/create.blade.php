@@ -105,6 +105,16 @@ $addDesignationPermission = user()->permission('add_designation');
                             fieldName="mobile_data" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" fieldValue="100"/>
                     </div>
 
+                    <div class="col-lg-4 col-md-6 fuel_div">
+                        <x-forms.number fieldId="fuel" :fieldLabel="__('modules.driverTypes.fuel')"
+                            fieldName="fuel" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" fieldValue="100"/>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 gprs_div">
+                        <x-forms.number fieldId="gprs" :fieldLabel="__('modules.driverTypes.gprs')"
+                            fieldName="gprs" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.mobile_data')" fieldValue="100"/>
+                    </div>
+
                     <div class="col-lg-4 col-md-6 government_cost_div">
                         <x-forms.number fieldId="government_cost" :fieldLabel="__('modules.driverTypes.government_cost')"
                             fieldName="government_cost" fieldRequired="true" :fieldPlaceholder="__('modules.driverTypes.government_cost')" fieldValue="880"/>
