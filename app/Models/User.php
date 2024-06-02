@@ -923,7 +923,7 @@ class User extends BaseModel
                 ->where('permissions.name', $permission)
                 ->where('user_permissions.user_id', $this->id)
                 ->first();
-            return $permissionType ? $permissionType->name : false;
+            return $permissionType;
 
         return Cache::rememberForever('permission-' . $permission . '-' . $this->id, function () use ($permission) {
             $permissionType = UserPermission::join('permissions', 'user_permissions.permission_id', '=', 'permissions.id')
