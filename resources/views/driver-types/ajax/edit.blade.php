@@ -62,6 +62,28 @@ $addDesignationPermission = user()->permission('add_designation');
                             >
                         </x-forms.checkbox>
 
+                        <x-forms.checkbox
+
+                            :fieldLabel="__('modules.driverTypes.fuel')"
+                            fieldName="fields[]"
+                            fieldRequired="true"
+                            fieldValue="fuel"
+                            fieldId="fuel"
+                            checked="{{ in_array('fuel', $fields) }}"
+                            >
+                        </x-forms.checkbox>
+
+                        <x-forms.checkbox
+
+                            :fieldLabel="__('modules.driverTypes.gprs')"
+                            fieldName="fields[]"
+                            fieldRequired="true"
+                            fieldValue="gprs"
+                            fieldId="gprs"
+                            checked="{{ in_array('gprs', $fields) }}"
+                            >
+                        </x-forms.checkbox>
+
                     </div>
 
                 </div>

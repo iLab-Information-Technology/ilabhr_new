@@ -55,7 +55,6 @@ class DriverController extends AccountBaseController
         $this->countries = countries();
         $this->view = 'drivers.ajax.create';
         $this->driver_types = DriverType::all();
-
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
 

@@ -44,6 +44,8 @@ class StoreRequest extends CoreRequest
             'mobile_data' => 'sometimes',
             'accommodation' => 'sometimes',
             'government_cost' => 'sometimes',
+            'fuel' => 'sometimes',
+            'gprs' => 'sometimes',
             'work_mobile_country_code' => 'required',
             'insurance_expiry_date' => 'required|date_format:"' . $setting->date_format . '"',
             'license_expiry_date' => 'required|date_format:"' . $setting->date_format . '"',

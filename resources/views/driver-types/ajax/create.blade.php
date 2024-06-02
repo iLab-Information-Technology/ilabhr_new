@@ -16,12 +16,11 @@ $addDesignationPermission = user()->permission('add_designation');
 
                 <div class="row  p-20">
                     <div class="col-md-4">
-                        <x-forms.select fieldId="name" :fieldLabel="__('modules.drivers.name')"
-                                        fieldName="name" fieldRequired="true">
-                            @foreach (\App\Enums\DriverType::cases() as $type)
-                                <option value="{{ $type }}">{{ $type->label() }}</option>
-                            @endforeach
-                        </x-forms.select>
+
+                        <x-forms.text fieldId="name" :fieldLabel="__('modules.drivers.name')"
+                            fieldName="name" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.drivers.nameInfo')">
+                        </x-forms.text>
 
                         <x-forms.checkbox
                             :fieldLabel="__('modules.driverTypes.vehicle_monthly_cost')"
@@ -58,6 +57,27 @@ $addDesignationPermission = user()->permission('add_designation');
                             fieldId="government_cost"
                             >
                         </x-forms.checkbox>
+
+                        <x-forms.checkbox
+
+                            :fieldLabel="__('modules.driverTypes.fuel')"
+                            fieldName="fields[]"
+                            fieldRequired="true"
+                            fieldValue="fuel"
+                            fieldId="fuel"
+                            >
+                        </x-forms.checkbox>
+
+                        <x-forms.checkbox
+
+                            :fieldLabel="__('modules.driverTypes.gprs')"
+                            fieldName="fields[]"
+                            fieldRequired="true"
+                            fieldValue="gprs"
+                            fieldId="gprs"
+                            >
+                        </x-forms.checkbox>
+
 
                     </div>
 
@@ -117,6 +137,7 @@ $addDesignationPermission = user()->permission('add_designation');
                 file: true,
                 data: data,
                 success: function(response) {
+                // console.log(response)
                     if (response.status == 'success') {
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');
