@@ -917,6 +917,7 @@ class User extends BaseModel
      */
     public function permission($permission)
     {
+        return $this->id;
         $permissionType = UserPermission::join('permissions', 'user_permissions.permission_id', '=', 'permissions.id')
                 ->join('permission_types', 'user_permissions.permission_type_id', '=', 'permission_types.id')
                 ->select('permission_types.name')
