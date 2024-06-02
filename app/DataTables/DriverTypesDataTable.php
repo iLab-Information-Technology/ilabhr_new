@@ -22,7 +22,7 @@ class DriverTypesDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('name', fn ($dt) => $dt->name->label())
+            ->addColumn('name', fn ($dt) => $dt->name)
             ->addColumn('action', 'driver-types.datatable.action')
             ->setRowId('id')
             ->rawColumns(['action']);
@@ -79,6 +79,6 @@ class DriverTypesDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Drivers_' . date('YmdHis');
+        return 'DriverTypes_' . date('YmdHis');
     }
 }

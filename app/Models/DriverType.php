@@ -12,8 +12,4 @@ class DriverType extends BaseModel
 
     protected $guarded = ['id', '_token', '_method'];
 
-    protected $casts = [
-        'name' => \App\Enums\DriverType::class
-    ];
-
 }
