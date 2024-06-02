@@ -69,7 +69,7 @@ class BranchController extends AccountBaseController
         abort_403(!in_array($addPermission, ['all', 'added']));
         DB::beginTransaction();
         try {
-            $validated = $request->validated();          
+            $validated = $request->validated();
             $validated['registration_date'] = Carbon::createFromFormat($this->company->date_format, $request->registration_date)->format('Y-m-d');
 
             $branch = Branch::create($validated);
@@ -136,7 +136,7 @@ class BranchController extends AccountBaseController
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
-        
+
             return view($this->view, $this->data);
         }
 
@@ -151,7 +151,7 @@ class BranchController extends AccountBaseController
         $this->editPermission = user()->permission('edit_branches');
         abort_403(!($this->editPermission == 'all'));
 
-        $validated = $request->validated();          
+        $validated = $request->validated();
         $validated['registration_date'] =  Carbon::createFromFormat($this->company->date_format, $request->registration_date)->format('Y-m-d');
 
         $branch->update($validated);
@@ -159,7 +159,7 @@ class BranchController extends AccountBaseController
         if (isset($validated['driver_ids'])) {
             Driver::whereIn('id', $validated['driver_ids'])->update(['branch_id' => $branch->id]);
         }
-        
+
         return Reply::success(__('messages.updateSuccess'));
     }
 
