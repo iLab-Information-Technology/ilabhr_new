@@ -15,11 +15,11 @@
 
                 <div class="row  p-20">
                     <div class="col-md-6">
-                        <x-forms.select2-ajax 
-                            fieldId="branch_id" 
-                            fieldName="branch_ids[]" 
+                        <x-forms.select2-ajax
+                            fieldId="branch_id"
+                            fieldName="branch_ids[]"
                             :fieldLabel="__('modules.drivers.branch')"
-                            :route="route('get.branch-ajax')" :placeholder="__('placeholders.searchForBranches')" 
+                            :route="route('get.branch-ajax')" :placeholder="__('placeholders.searchForBranches')"
                             fieldRequired="true"
                             :multiple="$employee->permission('link_to_branch') == 'all'">
                         </x-forms.select2-ajax>

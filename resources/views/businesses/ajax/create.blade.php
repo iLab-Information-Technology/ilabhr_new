@@ -395,7 +395,6 @@ $addDesignationPermission = user()->permission('add_designation');
                 file: true,
                 data: data,
                 success: function(response) {
-                    console.log(response);
                     if (response.status == 'success') {
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');
