@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\Driver;
 use App\Models\Driver;
 use App\Http\Requests\CoreRequest;
 use App\Traits\CustomFieldsRequestTrait;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends CoreRequest
 {
@@ -58,7 +59,10 @@ class UpdateRequest extends CoreRequest
             'driver_id' => 'nullable',
             'image' => 'nullable|image',
             'name' => 'nullable',
-            'iqaama_number' => 'nullable',
+            'iqaama_number' => [
+                'required',
+                Rule::unique('drivers', 'iqaama_number')->ignore($this->driver->id),
+            ],
             'absher_number' => 'nullable',
             'sponsorship' => 'nullable',
             'sponsorship_id' => 'nullable',

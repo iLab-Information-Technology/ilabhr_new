@@ -11,7 +11,9 @@ class CoordinatorReport extends BaseModel
 {
     use HasFactory;
 
-    protected $casts = [ 
+    protected $guarded = ['id', '_token', '_method'];
+
+    protected $casts = [
         'report_date' => 'datetime',
     ];
 

@@ -3,6 +3,10 @@
 return array(
     'dashboard' => array(
         'totalClients' => 'Total Clients',
+        'totalRevenue' => 'Total Revenue',
+        'totalCost' => 'Total Cost',
+        'totalOrders' => 'Total Orders',
+        'grossProfit' => 'Gross Profit',
         'newClients' => 'New Clients',
         'totalEmployees' => 'Total Employees',
         'totalProjects' => 'Total Projects',
@@ -340,8 +344,19 @@ return array(
         'coordinatorReport' => 'Coordinator Report'
     ),
     'businesses' => array(
-        'label' => 'Label',
+        'businessId' => 'Business Id',
+        'iqaamaNumber' => 'Iqaama Number',
+        'totalOrders' => 'Total Orders',
+        'cashPaidAtRestaurant' => 'Cash Paid at Restaurant',
+        'cashCollectedByDriver' => 'Cash Collected by Driver',
+        'netCashReceivedAtBranch' => 'Net Cash Received at Branch',
+        'balanceInWallet' => 'Balance In Wallet',
+        'fuelAmount' => 'Fuel Amount',
+        'bonous' => 'Bonous',
+        'tip' => 'Tip',
+        'other_tip' => 'Other Tip',
         'name' => 'Name',
+        'date' => 'Date',
         'type' => 'Type',
         'businessDetails' => 'Business Details',
         'businessFields' => 'Business Fields',

@@ -21,7 +21,7 @@ class CoordinatorReportsDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $business = Business::find($this->business_id);
-        
+
         $dataTable = (new EloquentDataTable($query));
         $rawColumns = [ 'action' ];
         $rawColumns = array_merge(['action'], array_map(fn ($f) => $f['name'], $business->fields->toArray()));

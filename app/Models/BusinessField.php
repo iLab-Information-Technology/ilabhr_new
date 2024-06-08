@@ -12,6 +12,8 @@ class BusinessField extends BaseModel
 
     public $timestamps = false;
 
+    protected $guarded = ['id', '_token', '_method'];
+
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);

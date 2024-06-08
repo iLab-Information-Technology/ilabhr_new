@@ -7,6 +7,10 @@ use App\Enums\Salutation;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\CoordinatorReport\StoreRequest;
 use App\Http\Requests\Admin\CoordinatorReport\UpdateRequest;
+use App\Http\Requests\Admin\CoordinatorReport\ImportRequest;
+use App\Http\Requests\Admin\CoordinatorReport\ImportProcessRequest;
+use App\Imports\CoordinatorReportImport;
+use App\Jobs\ImportCoordinatorReportJob;
 use App\Models\Driver;
 use App\Models\LanguageSetting;
 use App\Models\Role;
@@ -45,9 +49,7 @@ class CoordinatorReportController extends AccountBaseController
         $this->businesses = Business::select([ 'id', 'name' ])->get();
         $this->business_id = request()->business_id ?? $this->businesses->first()?->id;
 
-        if (!$this->business_id)
-            return redirect()->route('businesses.index');
-
+        if (!$this->business_id) return redirect()->route('businesses.index');
         return $dataTable->with('business_id', $this->business_id)->render('coordinator-report.index', $this->data);
     }
 
@@ -71,6 +73,44 @@ class CoordinatorReportController extends AccountBaseController
         }
 
         return view('coordinator-report.create', $this->data);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function importReportView()
+    {
+        $addPermission = user()->permission('add_coordinator_reports');
+        abort_403(!in_array($addPermission, ['all', 'added']));
+
+        $this->pageTitle = __('app.importReport');
+        $this->businesses = Business::select([ 'id', 'name' ])->with([ 'fields' => fn ($q) => $q->where('admin_only', '<>', true) ])->get();
+        $this->drivers = Driver::get();
+        $this->view = 'coordinator-report.ajax.import';
+
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        return view('coordinator-report.import', $this->data);
+    }
+
+    public function importStore(ImportRequest $request)
+    {
+        $this->importFileProcess($request, CoordinatorReportImport::class);
+
+        $view = view('coordinator-report.ajax.import_progress', $this->data)->render();
+
+        return Reply::successWithData(__('messages.importUploadSuccess'), ['view' => $view]);
+    }
+
+    public function importProcess(ImportProcessRequest $request)
+    {
+        $batch = $this->importJobProcess($request, CoordinatorReportImport::class, ImportCoordinatorReportJob::class);
+
+        return Reply::successWithData(__('messages.importProcessStart'), ['batch' => $batch]);
     }
 
     /**
@@ -154,7 +194,7 @@ class CoordinatorReportController extends AccountBaseController
         $this->coordinator_report = $coordinator_report;
         $this->fields = $coordinator_report->business->fields->where('admin_only', true);
         $this->view = 'coordinator-report.ajax.edit';
-        
+
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
 

@@ -135,6 +135,7 @@
         @foreach ($worksuitePlugins as $item)
             @includeIf(strtolower($item) . '::sections.hr.sidebar')
         @endforeach
+        <x-sub-menu-item :link="route('dms.revenue-reporting.index')" :text="__('app.menu.revenue_reporting')" />
     </div>
 </x-menu-item>
 @endif

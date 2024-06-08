@@ -110,6 +110,7 @@ use App\Http\Controllers\DiscussionCategoryController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DriverPayrollController;
+use App\Http\Controllers\DriverRevenueReportingController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchEmployeeController;
 use App\Http\Controllers\DriverTypeController;
@@ -209,10 +210,15 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('branch-ajax', [BranchController::class, 'ajaxLoadBranches'])->name('get.branch-ajax');
     Route::get('linked-driver-ajax', [DriverController::class, 'ajaxLoadLinkedDriver'])->name('get.linked-driver-ajax');
     Route::resource('businesses', BusinessController::class);
+
+    Route::get('coordinator-report/import-view', [CoordinatorReportController::class, 'importReportView'])->name('coordinator-report.import-view');
+    Route::post('coordinator-report/import', [CoordinatorReportController::class, 'importStore'])->name('coordinator-report.import');
+    Route::post('coordinator-report/import/process', [CoordinatorReportController::class, 'importProcess'])->name('coordinator-report.import.process');
     Route::resource('coordinator-report', CoordinatorReportController::class);
 
     Route::group([ 'prefix' => 'dms', 'as' => 'dms.' ], function() {
         Route::resource('payroll', DriverPayrollController::class);
+        Route::resource('revenue-reporting', DriverRevenueReportingController::class);
     });
 
     // employee routes

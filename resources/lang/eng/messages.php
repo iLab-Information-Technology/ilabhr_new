@@ -363,6 +363,8 @@ return array(
     'invalidData' => 'Invalid Data : ',
     'invalidDate' => 'Invalid Date Format : ',
     'duplicateEntryForEmail' => 'Duplicate Entry for Email : ',
+    'businessNotFound' => 'Business Not Found For Id : ',
+    'iqaamaNumberNotFound' => 'Driver Not Found For Iqaama Number : ',
     'duplicateEntryForEmployeeId' => 'Duplicate Entry for Employee ID : ',
     'employeeNotFound' => 'Employee not found',
     'dragDropScreenInfo' => 'Drag and drop will work on desktop devices only.',
