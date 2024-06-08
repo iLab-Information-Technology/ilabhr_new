@@ -74,26 +74,26 @@ class DriversPayrollDataTable extends DataTable
                 DB::raw('SUM(CASE WHEN bf.name = "Tip" THEN crfv.value ELSE 0 END) AS total_tip_amount'),
                 DB::raw('SUM(CASE WHEN bf.name = "Other Tip" THEN crfv.value ELSE 0 END) AS total_other_tip_amount'),
                 DB::raw('
-                    ROUND(CASE 
-                        WHEN 
-                            dt.name = "FREELANCER" 
-                        THEN 
+                    ROUND(CASE
+                        WHEN
+                            dt.name = "FREELANCER"
+                        THEN
                             (' . $BASE_SALARY_PER_MONTH / $WORKING_DAYS_PER_MONTH . ') * LEAST(COUNT(coordinator_reports.id), ' . $WORKING_DAYS_PER_MONTH . ')
                         ELSE
-                            ' . $BASE_SALARY_PER_MONTH . ' 
+                            ' . $BASE_SALARY_PER_MONTH . '
                     END, 2) as base_salary
                 '),
                     DB::raw('
-                    CASE 
-                        WHEN 
-                            dt.name = "FREELANCER" 
-                        THEN 
+                    CASE
+                        WHEN
+                            dt.name = "FREELANCER"
+                        THEN
                             (' . $BASE_ORDER_LIMIT_PER_MONTH / $WORKING_DAYS_PER_MONTH . ') * LEAST(COUNT(coordinator_reports.id), ' . $WORKING_DAYS_PER_MONTH . ')
                         ELSE
-                            ' . $BASE_ORDER_LIMIT_PER_MONTH . ' 
+                            ' . $BASE_ORDER_LIMIT_PER_MONTH . '
                     END as base_order_limit
                 '),
-            ], $businessOrders, $businessBonus, $businessTips, $businessOtherTips)) 
+            ], $businessOrders, $businessBonus, $businessTips, $businessOtherTips))
             ->leftJoin('drivers AS d', 'd.id', '=', 'coordinator_reports.driver_id')
             ->leftJoin('driver_types AS dt', 'd.driver_type_id', '=', 'dt.id')
             ->leftJoin('countries AS c', 'd.nationality_id', '=', 'c.id')
@@ -105,11 +105,11 @@ class DriversPayrollDataTable extends DataTable
             ->groupBy('coordinator_reports.driver_id');
 
         return $model->newQuery()->from(DB::raw("({$payrollReport->toSql()}) as payroll_report"))
-                ->select([ 
+                ->select([
                     'payroll_report.*',
                     DB::raw('
-                        CASE 
-                            WHEN 
+                        CASE
+                            WHEN
                                 payroll_report.total_orders > payroll_report.base_order_limit
                             THEN
                                 (payroll_report.total_orders - payroll_report.base_order_limit) * ' . $COMMISSION_RATE . '
@@ -118,8 +118,8 @@ class DriversPayrollDataTable extends DataTable
                         END as commission_amount
                     '),
                     DB::raw('
-                        CASE 
-                            WHEN 
+                        CASE
+                            WHEN
                                 payroll_report.total_orders <= payroll_report.base_order_limit
                             THEN
                                 (payroll_report.base_salary / payroll_report.base_order_limit) * (payroll_report.base_order_limit - payroll_report.total_orders)
@@ -131,8 +131,8 @@ class DriversPayrollDataTable extends DataTable
                         ROUND((base_salary + (
                             payroll_report.total_bonus + payroll_report.total_tip_amount + payroll_report.total_other_tip_amount
                         ) + (
-                            CASE 
-                                WHEN 
+                            CASE
+                                WHEN
                                     payroll_report.total_orders > payroll_report.base_order_limit
                                 THEN
                                     (payroll_report.total_orders - payroll_report.base_order_limit) * ' . $COMMISSION_RATE . '
@@ -140,8 +140,8 @@ class DriversPayrollDataTable extends DataTable
                                     0
                             END
                         )) - (
-                            CASE 
-                                WHEN 
+                            CASE
+                                WHEN
                                     payroll_report.total_orders <= payroll_report.base_order_limit
                                 THEN
                                     (payroll_report.base_salary / payroll_report.base_order_limit) * (payroll_report.base_order_limit - payroll_report.total_orders)

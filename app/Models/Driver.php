@@ -7,6 +7,7 @@ use App\Traits\HasCompany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Driver extends BaseModel
@@ -14,6 +15,8 @@ class Driver extends BaseModel
     use CustomFieldsTrait, HasCompany;
 
     protected $table = 'drivers';
+
+    protected $guarded = ['id', '_token', '_method'];
 
     protected $appends = [ 'image_url', 'work_mobile_with_phone_code' ];
 
@@ -79,5 +82,20 @@ class Driver extends BaseModel
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function driver_type(): BelongsTo
+    {
+        return $this->belongsTo(DriverType::class);
+    }
+
+    /**
+     * Get all of the coordinator_reports for the Driver
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function coordinator_reports(): HasMany
+    {
+        return $this->hasMany(CoordinatorReport::class);
     }
 }

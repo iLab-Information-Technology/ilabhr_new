@@ -13,7 +13,7 @@ class Business extends BaseModel
 {
     use CustomFieldsTrait, HasCompany;
 
-    public static $presetFields = [ 
+    public static $presetFields = [
         'Total Orders',
         'Bonus',
         'Tip',
@@ -41,5 +41,10 @@ class Business extends BaseModel
     public function driver_calculations(): HasMany
     {
         return $this->hasMany(DriverCalculation::class);
+    }
+
+    public function coordinator_reports(): HasMany
+    {
+        return $this->hasMany(CoordinatorReport::class);
     }
 }

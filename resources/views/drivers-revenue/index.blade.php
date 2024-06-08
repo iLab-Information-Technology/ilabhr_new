@@ -69,7 +69,7 @@
 
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('employees.index') }}">
-                        <x-cards.widget :title="__('modules.dashboard.totalCost')" :value="10"
+                        <x-cards.widget :title="__('modules.dashboard.totalCost')" :value="number_format($total_cost)"
                             icon="user">
                         </x-cards.widget>
                     </a>
@@ -86,7 +86,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('invoices.index') . '?status=pending' }}">
                         <x-cards.widget :title="__('modules.dashboard.totalOrders')"
-                            :value="10" icon="file-invoice">
+                            :value="number_format($total_orders)" icon="file-invoice">
                         </x-cards.widget>
                     </a>
                 </div>
@@ -96,15 +96,14 @@
 
 
                 @foreach ($businesses as $business)
-                <div class="col-xl-3 col-lg-6 col-md-6">
-                    <a href="{{ route('time-log-report.index') }}">
-                        <x-cards.widget :title="$business->name" :value="10"
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-2">
+                    <a href="javascript:;">
+                        <x-cards.widget :title="$business->name" :value="$business->total_orders"
                             icon="clock">
                         </x-cards.widget>
                     </a>
                 </div>
                 @endforeach
-
         </div>
         <!-- Task Box Start -->
         <div class="d-flex flex-column w-tables rounded mt-3 bg-white table-responsive">

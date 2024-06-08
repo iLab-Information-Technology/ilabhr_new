@@ -32,6 +32,7 @@ class UpdateRequest extends CoreRequest
 
         $rules = [
             'branch_id' => 'required|exists:branches,id',
+            'driver_type_id' => 'required|exists:driver_types,id',
             'nationality_id' => 'nullable|exists:countries,id',
             'address' => 'nullable',
             'insurance_expiry_date' => 'nullable',
