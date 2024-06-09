@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\BusinessesDriverDataTable;
-use App\DataTables\DriversRevenueReportDataTable;
+use App\DataTables\{BusinessesDriverDataTable, DriversRevenueReportDataTable};
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Driver\StoreRequest;
-use App\Models\{Driver, DriverType, Business};
+use App\Models\{Driver, DriverType, Business, BusinessField};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
@@ -31,47 +30,39 @@ class DriverRevenueReportingController extends AccountBaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // $viewPermission = user()->permission('view_drivers');
         // abort_403(!in_array($viewPermission, ['all']));
 
-        $now = now();
-        $this->year = $now->format('Y');
-        $this->month = $now->format('m');
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+        $currentDate = Carbon::now();
+        $startDate = $request->startDate ? Carbon::parse($request->startDate)->toDateString() : $currentDate->startOfMonth()->toDateString();
+        $endDate = $request->endDate ? Carbon::parse($request->endDate)->toDateString() : Carbon::today()->toDateString();
 
-        $this->businesses = Business::with([
-            'coordinator_reports' => function($query) use ($currentMonth, $currentYear) {
-                $query
-                    // Uncomment these lines if you want to filter by current month and year
-                    // ->whereMonth('report_date', $currentMonth)
-                    // ->whereYear('report_date', $currentYear)
-                    ->with(['field_values' => function($query) {
-                        $query->where('field_id', 1);
-                    }]);
-            }
-        ])->get();
+        // Calculate the difference in days between the start date and end date
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $daysDifference = $start->diffInDays($end) + 1;
 
+
+        $this->businesses = Business::with('coordinator_reports.field_values')->get();
         foreach ($this->businesses as $business) {
+            $fieldId = BusinessField::where(['business_id' => $business->id, 'name' => 'Total Orders'])->pluck('id')->first();
             $totalSum = 0;
             foreach ($business->coordinator_reports as $report) {
-                $totalSum += $report->field_values->sum('value');
+                $totalSum += $report->field_values->where('field_id', $fieldId)->sum('value');
             }
             $business->total_orders = $totalSum;
         }
 
-        $drivers = Driver::with([
+
+        $drivers = Driver::has('coordinator_reports')->with([
             'branch',
             'driver_type',
-            'coordinator_reports' => function($query) use ($currentMonth, $currentYear) {
-                $query
-                    // ->whereMonth('report_date', $currentMonth)
-                    // ->whereYear('report_date', $currentYear)
-                    ->with(['field_values' => function($query) {
-                        $query->where('field_id', 1);
-                    }]);
+            'coordinator_reports' => function($query) use ($request, $startDate, $endDate) {
+                $query->with('field_values')
+                      ->when($request->startDate, fn ($q) => $q->where('report_date', '>=', $startDate))
+                      ->when($request->endDate, fn ($q) => $q->where('report_date', '<=', $endDate));
             }
         ])->get([
             'id',
@@ -88,32 +79,72 @@ class DriverRevenueReportingController extends AccountBaseController
         ]);
         $this->total_cost = 0;
         $this->total_orders = 0;
+        $this->total_revenue = 0;
         foreach ($drivers as $driver) {
             $totalSum = 0;
+            $business_reports = [];
             foreach ($driver->coordinator_reports as $report) {
-                $totalSum += $report->field_values->sum('value');
+                $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                $reportSum = $report->field_values->where('field_id', $fieldId)->sum('value');
+                $totalSum += $reportSum;
+
+                // Aggregating total field_values for each business_id
+                $business_id = $report->business_id;
+                if (!isset($business_reports[$business_id])) {
+                    $business_reports[$business_id] = [
+                        'business_id' => $business_id,
+                        'total_orders' => 0,
+                    ];
+                }
+                $business_reports[$business_id]['total_orders'] += $reportSum;
+
             }
             $driver->total_orders = $totalSum;
+            $driver->business_reports = array_values($business_reports);
+
+            foreach ($driver->business_reports as $business_report) {
+                $businessCalculations = Business::with('driver_calculations')->find($business_report['business_id']);
+
+                if ($businessCalculations && $businessCalculations->driver_calculations) {
+                    foreach ($businessCalculations->driver_calculations as $calculation) {
+                        if ($calculation->type == 'RANGE' &&
+                            $business_report['total_orders'] >= $calculation->from_value &&
+                            $business_report['total_orders'] <= $calculation->to_value) {
+
+                            $this->total_revenue += $business_report['total_orders'] * $calculation->amount;
+                            break; // Assuming each total_orders fits only one range, you can break the loop once matched
+                        }
+                        if($calculation->type == 'FIXED'){
+                            $this->total_revenue += $business_report['total_orders'] * $calculation->amount;
+                        }
+                    }
+                }
+            }
 
             // Sum of specific fields from the driver
-            $driver->per_month_orders = 250;
-            $driver->per_month_salary = 400;
-            $driver->per_day_orders = 250 / 26;
-            $driver->per_day_salary = 400 / 26;
             $driver->total_salary =  $this->calculate_driver_order_price($driver->total_orders, 26, true);
             $total_coordinate_days = $driver->coordinator_reports->count();
-            $total_gprs = $driver->gprs / $total_coordinate_days;
-            $total_fuel = $driver->fuel / $total_coordinate_days;
-            $total_government_cost = $driver->government_cost / $total_coordinate_days;
-            $total_accommodation = $driver->accommodation / $total_coordinate_days;
-            $total_vehicle_monthly_cost = $driver->vehicle_monthly_cost / $total_coordinate_days;
-            $total_mobile_data = $driver->mobile_data / $total_coordinate_days;
+            $total_gprs = $daysDifference ? ($driver->gprs / 30) * $daysDifference : 0;
+            $total_fuel =  $daysDifference ? ($driver->fuel / 30) * $daysDifference: 0;
+            $total_government_cost = $daysDifference ? ($driver->government_cost / 30) * $daysDifference: 0;
+            $total_accommodation = $daysDifference ? ($driver->accommodation / 30) * $daysDifference: 0;
+            $total_vehicle_monthly_cost = $daysDifference ? ($driver->vehicle_monthly_cost / 30) * $daysDifference: 0;
+            $total_mobile_data = $daysDifference ? ($driver->mobile_data / 30) * $daysDifference: 0;
 
             $driver->total_cost = $driver->total_salary + $total_gprs + $total_fuel + $total_government_cost + $total_accommodation + $total_vehicle_monthly_cost + $total_mobile_data;
             $this->total_cost += $driver->total_cost;
             $this->total_orders += $driver->total_orders;
         }
+        $this->gross_profile = $this->total_revenue - $this->total_cost;
+
         // return $drivers;
+        // Get Company Revenue As Per Business
+        // 1. Get Driver Total Orders By Company
+        // 2. Get Company's Driver Calculations
+        // 3. Implement Logic For Multiple Each Order In Range and Fixed
+
+
+
         return $this->driverRevenueReportDataTable->render('drivers-revenue.index', $this->data);
     }
 

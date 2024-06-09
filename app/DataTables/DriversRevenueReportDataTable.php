@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Driver;
+use App\Models\{Driver, BusinessField, Business};
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
@@ -13,14 +13,25 @@ use Yajra\DataTables\Services\DataTable;
 
 class DriversRevenueReportDataTable extends DataTable
 {
-    /**
+     /**
      * Build the DataTable class.
      *
      * @param QueryBuilder $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
+        $request = $this->request();
+        $currentDate = Carbon::now();
+        $startDate = $request->startDate ? Carbon::parse($request->startDate)->toDateString() : $currentDate->startOfMonth()->toDateString();
+        $endDate = $request->endDate ? Carbon::parse($request->endDate)->toDateString() : Carbon::today()->toDateString();
+
+        // Calculate the difference in days between the start date and end date
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $daysDifference = $start->diffInDays($end);
+
         return (new EloquentDataTable($query))
+            ->with('daysDifference', $daysDifference)
             ->addColumn('branch', function ($row) {
                 return $row->branch->name ?? '';
             })
@@ -29,43 +40,109 @@ class DriversRevenueReportDataTable extends DataTable
             })
             ->addColumn('total_orders', function ($row) {
                 $totalSum = $row->coordinator_reports->sum(function ($report) {
-                    return $report->field_values->sum('value');
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    return $report->field_values->where('field_id', $fieldId)->sum('value');
                 });
                 return number_format($totalSum);
             })
-            ->addColumn('total_cost', function ($row) {
-                $totalSum = $row->coordinator_reports->sum(function ($report) {
-                    return $report->field_values->sum('value');
-                });
-                $total_salary = $this->calculate_driver_order_price($totalSum, 26, true);
-                $total_coordinate_days = $row->coordinator_reports->count();
-                $total_gprs = $row->gprs / $total_coordinate_days;
-                $total_fuel = $row->fuel / $total_coordinate_days;
-                $total_government_cost = $row->government_cost / $total_coordinate_days;
-                $total_accommodation = $row->accommodation / $total_coordinate_days;
-                $total_vehicle_monthly_cost = $row->vehicle_monthly_cost / $total_coordinate_days;
-                $total_mobile_data = $row->mobile_data / $total_coordinate_days;
+            ->addColumn('total_revenue', function ($row) {
+                $business_reports = $row->coordinator_reports->groupBy('business_id')->map(function ($reports, $business_id) {
+                    $fieldId = BusinessField::where(['business_id' => $business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $total_orders = $reports->sum(function ($report) use ($fieldId) {
+                        return $report->field_values->where('field_id', $fieldId)->sum('value');
+                    });
 
-                return number_format($total_salary + $total_gprs + $total_fuel + $total_government_cost + $total_accommodation + $total_vehicle_monthly_cost + $total_mobile_data);
+                    return [
+                        'business_id' => $business_id,
+                        'total_orders' => $total_orders,
+                    ];
+                });
+
+                $total_revenue = $business_reports->sum(function ($business_report) {
+                    $businessCalculations = Business::with('driver_calculations')->find($business_report['business_id']);
+                    $total_orders = $business_report['total_orders'];
+                    $total_revenue = 0;
+
+                    if ($businessCalculations && $businessCalculations->driver_calculations) {
+                        foreach ($businessCalculations->driver_calculations as $calculation) {
+                            if ($calculation->type == 'RANGE' && $total_orders >= $calculation->from_value && $total_orders <= $calculation->to_value) {
+                                $total_revenue += $total_orders * $calculation->amount;
+                                break;
+                            } else if ($calculation->type == 'FIXED') {
+                                $total_revenue += $total_orders * $calculation->amount;
+                            }
+                        }
+                    }
+
+                    return $total_revenue;
+                });
+
+                return number_format($total_revenue);
             })
-            ->addColumn('profit_loss', function ($row) {
+            ->addColumn('total_cost', function ($row) use ($daysDifference) {
                 $totalSum = $row->coordinator_reports->sum(function ($report) {
-                    return $report->field_values->sum('value');
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    return $report->field_values->where('field_id', $fieldId)->sum('value');
                 });
-                $total_salary = $this->calculate_driver_order_price($totalSum, 26, true);
-                $total_coordinate_days = $row->coordinator_reports->count();
-                $total_gprs = $row->gprs / $total_coordinate_days;
-                $total_fuel = $row->fuel / $total_coordinate_days;
-                $total_government_cost = $row->government_cost / $total_coordinate_days;
-                $total_accommodation = $row->accommodation / $total_coordinate_days;
-                $total_vehicle_monthly_cost = $row->vehicle_monthly_cost / $total_coordinate_days;
-                $total_mobile_data = $row->mobile_data / $total_coordinate_days;
-
+                $calculated_salary = $this->calculate_driver_order_price($totalSum, 26, true);
+                $total_salary = $calculated_salary > 0 ? $calculated_salary : 0;
+                $total_gprs = ($row->gprs / 30) * $daysDifference;
+                $total_fuel = ($row->fuel / 30) * $daysDifference;
+                $total_government_cost = ($row->government_cost / 30) * $daysDifference;
+                $total_accommodation = ($row->accommodation / 30) * $daysDifference;
+                $total_vehicle_monthly_cost = ($row->vehicle_monthly_cost / 30) * $daysDifference;
+                $total_mobile_data = ($row->mobile_data / 30) * $daysDifference;
                 $total_cost = $total_salary + $total_gprs + $total_fuel + $total_government_cost + $total_accommodation + $total_vehicle_monthly_cost + $total_mobile_data;
+                return number_format($total_cost, 2);
+            })
+            ->addColumn('profit_loss', function ($row) use ($daysDifference) {
+                $totalSum = $row->coordinator_reports->sum(function ($report) {
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    return $report->field_values->where('field_id', $fieldId)->sum('value');
+                });
 
-                // Placeholder for revenue calculation
-                $revenue = 50000; // Replace with actual revenue calculation if needed
-                return number_format($revenue - $total_cost);
+                $business_reports = $row->coordinator_reports->groupBy('business_id')->map(function ($reports, $business_id) {
+                    $fieldId = BusinessField::where(['business_id' => $business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $total_orders = $reports->sum(function ($report) use ($fieldId) {
+                        return $report->field_values->where('field_id', $fieldId)->sum('value');
+                    });
+
+                    return [
+                        'business_id' => $business_id,
+                        'total_orders' => $total_orders,
+                    ];
+                });
+
+                $total_revenue = $business_reports->sum(function ($business_report) {
+                    $businessCalculations = Business::with('driver_calculations')->find($business_report['business_id']);
+                    $total_orders = $business_report['total_orders'];
+                    $total_revenue = 0;
+
+                    if ($businessCalculations && $businessCalculations->driver_calculations) {
+                        foreach ($businessCalculations->driver_calculations as $calculation) {
+                            if ($calculation->type == 'RANGE' && $total_orders >= $calculation->from_value && $total_orders <= $calculation->to_value) {
+                                $total_revenue += $total_orders * $calculation->amount;
+                                break;
+                            } else if ($calculation->type == 'FIXED') {
+                                $total_revenue += $total_orders * $calculation->amount;
+                            }
+                        }
+                    }
+
+                    return $total_revenue;
+                });
+
+                $calculated_salary = $this->calculate_driver_order_price($totalSum, 26, true);
+                $total_salary = $calculated_salary > 0 ? $calculated_salary : 0;
+                $total_gprs = ($row->gprs / 30) * $daysDifference;
+                $total_fuel = ($row->fuel / 30) * $daysDifference;
+                $total_government_cost = ($row->government_cost / 30) * $daysDifference;
+                $total_accommodation = ($row->accommodation / 30) * $daysDifference;
+                $total_vehicle_monthly_cost = ($row->vehicle_monthly_cost / 30) * $daysDifference;
+                $total_mobile_data = ($row->mobile_data / 30) * $daysDifference;
+                $total_cost = $total_salary + $total_gprs + $total_fuel + $total_government_cost + $total_accommodation + $total_vehicle_monthly_cost + $total_mobile_data;
+                $gross_profit = $total_revenue - $total_cost;
+                return number_format($gross_profit, 2);
             });
     }
 
@@ -74,19 +151,23 @@ class DriversRevenueReportDataTable extends DataTable
      */
     public function query(Driver $model): QueryBuilder
     {
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+        $request = $this->request();
+        $currentDate = Carbon::now();
+        $startDate = $request->startDate ? Carbon::parse($request->startDate)->toDateString() : $currentDate->startOfMonth()->toDateString();
+        $endDate = $request->endDate ? Carbon::parse($request->endDate)->toDateString() : Carbon::today()->toDateString();
 
-        return $model->with([
+        // Calculate the difference in days between the start date and end date
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $daysDifference = $start->diffInDays($end);
+
+        return $model->has('coordinator_reports')->with([
             'branch',
             'driver_type',
-            'coordinator_reports' => function ($query) use ($currentMonth, $currentYear) {
-                $query
-                    // ->whereMonth('report_date', $currentMonth)
-                    // ->whereYear('report_date', $currentYear)
-                    ->with(['field_values' => function ($query) {
-                          $query->where('field_id', 1);
-                    }]);
+            'coordinator_reports' => function($query) use ($request, $startDate, $endDate) {
+                $query->with('field_values')
+                      ->when($request->startDate, fn ($q) => $q->where('report_date', '>=', $startDate))
+                      ->when($request->endDate, fn ($q) => $q->where('report_date', '<=', $endDate));
             }
         ])->select([
             'id',
@@ -134,6 +215,7 @@ class DriversRevenueReportDataTable extends DataTable
             Column::make('branch'),
             Column::make('contract'),
             Column::make('total_orders'),
+            Column::make('total_revenue'),
             Column::make('total_cost'),
             Column::make('profit_loss')->title('Profit/Loss'),
         ];
@@ -147,18 +229,41 @@ class DriversRevenueReportDataTable extends DataTable
         return 'DriversRevenueReport_' . date('YmdHis');
     }
 
-    /**
-     * Calculate the driver's order price.
-     *
-     * @param float $totalOrders
-     * @param int $days
-     * @param bool $someFlag
-     * @return float
-     */
-    protected function calculate_driver_order_price($totalOrders, $days, $someFlag)
-    {
-        // Implement your calculation logic here
-        // For example:
-        return $totalOrders * 10; // Replace with actual calculation logic
+    private function calculate_base_salary($working_days, $freelancer, $BASE_SALARY_PER_MONTH, $WORKING_DAYS_PER_MONTH) {
+        if ($freelancer) {
+            return ($BASE_SALARY_PER_MONTH / $WORKING_DAYS_PER_MONTH) * min($working_days, $WORKING_DAYS_PER_MONTH);
+        }
+        return $BASE_SALARY_PER_MONTH;
+    }
+
+    private function calculate_base_order_limit($working_days, $freelancer, $BASE_ORDER_LIMIT_PER_MONTH, $WORKING_DAYS_PER_MONTH) {
+        if ($freelancer) {
+            return ($BASE_ORDER_LIMIT_PER_MONTH / $WORKING_DAYS_PER_MONTH) * min($working_days, $WORKING_DAYS_PER_MONTH);
+        }
+        return $BASE_ORDER_LIMIT_PER_MONTH;
+    }
+
+    public function calculate_driver_order_price($total_order, $working_days, $freelancer) {
+        $WORKING_DAYS_PER_MONTH = 26;
+        $BASE_SALARY_PER_MONTH = 400;
+        $BASE_ORDER_LIMIT_PER_MONTH = 250;
+        $COMMISSION_RATE = 9;
+
+        $base_salary = $this->calculate_base_salary($working_days, $freelancer, $BASE_SALARY_PER_MONTH, $WORKING_DAYS_PER_MONTH);
+        $base_order_limit = $this->calculate_base_order_limit($working_days, $freelancer, $BASE_ORDER_LIMIT_PER_MONTH, $WORKING_DAYS_PER_MONTH);
+        $per_order_base_salary = $base_salary / $base_order_limit;
+
+        if ($total_order <= $base_order_limit) {
+            $base_salary = $per_order_base_salary * $total_order;
+            $deductions = $per_order_base_salary * ($base_order_limit - $total_order);
+            $commission_amount = 0;
+        } else {
+            $deductions = 0;
+            $commission_amount = ($total_order - $base_order_limit) * $COMMISSION_RATE;
+        }
+
+        $final_salary = ($base_salary + $commission_amount) - $deductions;
+
+        return $final_salary;
     }
 }

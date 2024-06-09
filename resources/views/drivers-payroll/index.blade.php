@@ -40,7 +40,7 @@
             </x-forms.button-secondary>
         </div>
         <!-- RESET END -->
-        
+
 
     </x-filters.filter-box>
 

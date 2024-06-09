@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('clients.index') }}">
-                        <x-cards.widget :title="__('modules.dashboard.totalRevenue')" :value="10"
+                        <x-cards.widget :title="__('modules.dashboard.totalRevenue')" :value="number_format($total_revenue, 2)"
                             icon="users">
                         </x-cards.widget>
                     </a>
@@ -69,7 +69,7 @@
 
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('employees.index') }}">
-                        <x-cards.widget :title="__('modules.dashboard.totalCost')" :value="number_format($total_cost)"
+                        <x-cards.widget :title="__('modules.dashboard.totalCost')" :value="number_format($total_cost, 2)"
                             icon="user">
                         </x-cards.widget>
                     </a>
@@ -77,7 +77,7 @@
 
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('projects.index'). '?projects=all' }}">
-                        <x-cards.widget :title="__('modules.dashboard.grossProfit')" :value="10"
+                        <x-cards.widget :title="__('modules.dashboard.grossProfit')" :value="number_format($gross_profile, 2)"
                             icon="layer-group">
                         </x-cards.widget>
                     </a>
@@ -96,7 +96,7 @@
 
 
                 @foreach ($businesses as $business)
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-2">
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="javascript:;">
                         <x-cards.widget :title="$business->name" :value="$business->total_orders"
                             icon="clock">
@@ -119,7 +119,7 @@
     @include('sections.datatable_js')
 
     <script>
-        $('#drivers-payroll-table').on('preXhr.dt', function (e, settings, data) {
+        $('#drivers-revenue-report-table').on('preXhr.dt', function (e, settings, data) {
             const dateRangePicker = $('#datatableRange').data('daterangepicker');
             let startDate = null;
             let endDate = null;
@@ -136,7 +136,7 @@
         });
 
         const showTable = () => {
-            window.LaravelDataTables["drivers-payroll-table"].draw(false);
+            window.LaravelDataTables["drivers-revenue-report-table"].draw(false);
         }
 
         $('#searchText, #datatableRange').on('change',
