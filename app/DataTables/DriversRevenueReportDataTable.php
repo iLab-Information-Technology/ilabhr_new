@@ -177,6 +177,9 @@ class DriversRevenueReportDataTable extends DataTable
                     });
             }
         ])
+        ->when($request->driver_id, function ($q) use ($request) {
+            $q->where('id', $request->driver_id);
+        })
         ->select([
             'id',
             'name',

@@ -54,7 +54,7 @@ class DriverRevenueReportingController extends AccountBaseController
         }
 
 
-        $drivers = Driver::has('coordinator_reports')->with([
+        $this->drivers = Driver::has('coordinator_reports')->with([
             'branch',
             'driver_type',
             'coordinator_reports' => function($query) use ($request, $startDate, $endDate) {
@@ -78,7 +78,7 @@ class DriverRevenueReportingController extends AccountBaseController
         $this->total_cost = 0;
         $this->total_orders = 0;
         $this->total_revenue = 0;
-        foreach ($drivers as $driver) {
+        foreach ($this->drivers as $driver) {
             $totalSum = 0;
             $business_reports = [];
             foreach ($driver->coordinator_reports as $report) {
@@ -162,6 +162,9 @@ class DriverRevenueReportingController extends AccountBaseController
             $query->whereBetween('report_date', [$startDate, $endDate])
                   ->when($request->business_id, function ($q) use ($request) {
                       $q->where('business_id', $request->business_id);
+                  })
+                  ->when($request->driver_id, function ($q) use ($request) {
+                      $q->where('driver_id', $request->driver_id);
                   });
         }, 'coordinator_reports.field_values'])->get();
 
@@ -175,7 +178,7 @@ class DriverRevenueReportingController extends AccountBaseController
         }
 
 
-        $drivers = Driver::whereHas('coordinator_reports', function ($query) use ($request, $startDate, $endDate) {
+        $this->drivers = Driver::whereHas('coordinator_reports', function ($query) use ($request, $startDate, $endDate) {
             $query->when($startDate, function ($q) use ($startDate) {
                     $q->where('report_date', '>=', $startDate);
                 })
@@ -202,6 +205,9 @@ class DriverRevenueReportingController extends AccountBaseController
                       });
             }
         ])
+        ->when($request->driver_id, function ($q) use ($request) {
+            $q->where('id', $request->driver_id);
+        })
         ->get([
             'id',
             'name',
@@ -222,7 +228,7 @@ class DriverRevenueReportingController extends AccountBaseController
         $this->total_cost = 0;
         $this->total_orders = 0;
         $this->total_revenue = 0;
-        foreach ($drivers as $driver) {
+        foreach ($this->drivers as $driver) {
             $totalSum = 0;
             $business_reports = [];
             foreach ($driver->coordinator_reports as $report) {
