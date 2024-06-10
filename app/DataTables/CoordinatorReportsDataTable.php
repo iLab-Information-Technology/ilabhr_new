@@ -32,13 +32,16 @@ class CoordinatorReportsDataTable extends DataTable
 
                 if ($field->type == 'DOCUMENT' && $fieldValue) {
                     $documents = json_decode($fieldValue->value, true);
-                    $url = asset_url_local_s3("coordinator-reports/" . $documents[0]);
+                    if($documents){
+                        $url = asset_url_local_s3("coordinator-reports/" . $documents[0]);
                     $html = '<img src="' . $url . '" class="hw-50px object-fit-cover" data-documents=\'' . $fieldValue->value . '\' />';
                     if (count($documents) > 1) {
                         $html =  $html . '&nbsp;+' . (count($documents) - 1) . ' more';
                     }
 
                     return $html;
+                    }
+
                 }
 
                 return $fieldValue ? $fieldValue->value : '-';
