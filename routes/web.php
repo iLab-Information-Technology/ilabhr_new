@@ -218,6 +218,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
 
     Route::group([ 'prefix' => 'dms', 'as' => 'dms.' ], function() {
         Route::resource('payroll', DriverPayrollController::class);
+        Route::get('revenue-reporting/get-content', [DriverRevenueReportingController::class, 'getContent'])->name('revenue-reporting.get-content');
         Route::resource('revenue-reporting', DriverRevenueReportingController::class);
     });
 

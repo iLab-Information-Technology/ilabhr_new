@@ -13,11 +13,6 @@ use Yajra\DataTables\Services\DataTable;
 
 class DriversRevenueReportDataTable extends DataTable
 {
-     /**
-     * Build the DataTable class.
-     *
-     * @param QueryBuilder $query Results from query() method.
-     */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $request = $this->request();
@@ -28,7 +23,7 @@ class DriversRevenueReportDataTable extends DataTable
         // Calculate the difference in days between the start date and end date
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
-        $daysDifference = $start->diffInDays($end);
+        $daysDifference = $start->diffInDays($end) + 1;
 
         return (new EloquentDataTable($query))
             ->with('daysDifference', $daysDifference)
@@ -155,21 +150,34 @@ class DriversRevenueReportDataTable extends DataTable
         $currentDate = Carbon::now();
         $startDate = $request->startDate ? Carbon::parse($request->startDate)->toDateString() : $currentDate->startOfMonth()->toDateString();
         $endDate = $request->endDate ? Carbon::parse($request->endDate)->toDateString() : Carbon::today()->toDateString();
-
-        // Calculate the difference in days between the start date and end date
-        $start = Carbon::parse($startDate);
-        $end = Carbon::parse($endDate);
-        $daysDifference = $start->diffInDays($end);
-
-        return $model->has('coordinator_reports')->with([
+        return $model->whereHas('coordinator_reports', function ($query) use ($request, $startDate, $endDate) {
+            $query->when($startDate, function ($q) use ($startDate) {
+                    $q->where('report_date', '>=', $startDate);
+                })
+                ->when($endDate, function ($q) use ($endDate) {
+                    $q->where('report_date', '<=', $endDate);
+                })
+                ->when($request->business_id, function ($q) use ($request) {
+                    $q->where('business_id', $request->business_id);
+                });
+        })
+        ->with([
             'branch',
             'driver_type',
-            'coordinator_reports' => function($query) use ($request, $startDate, $endDate) {
+            'coordinator_reports' => function ($query) use ($request, $startDate, $endDate) {
                 $query->with('field_values')
-                      ->when($request->startDate, fn ($q) => $q->where('report_date', '>=', $startDate))
-                      ->when($request->endDate, fn ($q) => $q->where('report_date', '<=', $endDate));
+                    ->when($startDate, function ($q) use ($startDate) {
+                        return $q->where('report_date', '>=', $startDate);
+                    })
+                    ->when($endDate, function ($q) use ($endDate) {
+                        return $q->where('report_date', '<=', $endDate);
+                    })
+                    ->when($request->business_id, function ($q) use ($request) {
+                        return $q->where('business_id', $request->business_id);
+                    });
             }
-        ])->select([
+        ])
+        ->select([
             'id',
             'name',
             'iqaama_number',

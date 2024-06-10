@@ -7,22 +7,15 @@
 @section('filter-section')
 
     <x-filters.filter-box>
-        <!-- SEARCH BY TASK START -->
-        <div class="task-search d-flex  py-1 px-lg-3 px-0 border-right-grey align-items-center">
-            <form class="w-100 mr-1 mr-lg-0 mr-md-1 ml-md-1 ml-0 ml-lg-0">
-                <div class="input-group bg-grey rounded">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text border-0 bg-additional-grey">
-                            <i class="fa fa-search f-13 text-dark-grey"></i>
-                        </span>
-                    </div>
-                    <input type="text" class="form-control f-14 p-1 border-additional-grey" id="search-text-field"
-                           placeholder="@lang('app.startTyping')">
-                </div>
-            </form>
-        </div>
-        <!-- SEARCH BY TASK END -->
+        <div class="py-1 px-lg-3 px-0 align-items-center d-flex">
+            <h4 class="mb-0">Filters</h4>
+            <select name="business_id" id="business_id" class="form-control ml-1">
+                @foreach ($businesses as $business)
+                    <option value="{{ $business->id }}">{{ $business->name }}</option>
+                @endforeach
+            </select>
 
+        </div>
         <!-- DATE START -->
         <div class="select-box d-flex pr-2 border-right-grey border-right-grey-sm-0">
             <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('app.duration')</p>
@@ -61,7 +54,7 @@
                 </div>
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('clients.index') }}">
-                        <x-cards.widget :title="__('modules.dashboard.totalRevenue')" :value="number_format($total_revenue, 2)"
+                        <x-cards.widget :title="__('modules.dashboard.totalRevenue')" :widgetId="$totalRevenue = 'totalRevenue'" :value="number_format($total_revenue, 2)"
                             icon="users">
                         </x-cards.widget>
                     </a>
@@ -69,7 +62,7 @@
 
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('employees.index') }}">
-                        <x-cards.widget :title="__('modules.dashboard.totalCost')" :value="number_format($total_cost, 2)"
+                        <x-cards.widget :title="__('modules.dashboard.totalCost')" :widgetId="$totalCost = 'totalCost'" :value="number_format($total_cost, 2)"
                             icon="user">
                         </x-cards.widget>
                     </a>
@@ -77,7 +70,7 @@
 
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('projects.index'). '?projects=all' }}">
-                        <x-cards.widget :title="__('modules.dashboard.grossProfit')" :value="number_format($gross_profile, 2)"
+                        <x-cards.widget :title="__('modules.dashboard.grossProfit')" :widgetId="$grossProfit = 'grossProfit'" :value="number_format($gross_profile, 2)"
                             icon="layer-group">
                         </x-cards.widget>
                     </a>
@@ -86,6 +79,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                     <a href="{{ route('invoices.index') . '?status=pending' }}">
                         <x-cards.widget :title="__('modules.dashboard.totalOrders')"
+                            :widgetId="$totalOrders = 'totalOrders'"
                             :value="number_format($total_orders)" icon="file-invoice">
                         </x-cards.widget>
                     </a>
@@ -95,15 +89,17 @@
                 </div>
 
 
-                @foreach ($businesses as $business)
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                    <a href="javascript:;">
-                        <x-cards.widget :title="$business->name" :value="$business->total_orders"
-                            icon="clock">
-                        </x-cards.widget>
-                    </a>
+                <div class="row col-12 p-0 m-0" id="business_with_orders">
+                    @foreach ($businesses as $business)
+                        <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                            <a href="javascript:;">
+                                <x-cards.widget :title="$business->name" :value="$business->total_orders"
+                                    icon="clock">
+                                </x-cards.widget>
+                            </a>
+                        </div>
+                    @endforeach
                 </div>
-                @endforeach
         </div>
         <!-- Task Box Start -->
         <div class="d-flex flex-column w-tables rounded mt-3 bg-white table-responsive">
@@ -128,11 +124,11 @@
                 startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
                 endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
             }
-
+            const business_id = $('#business_id').val();
             data['searchText'] =  $('#search-text-field').val();
             data['startDate'] = startDate;
             data['endDate'] = endDate;
-
+            data['business_id'] = business_id;
         });
 
         const showTable = () => {
