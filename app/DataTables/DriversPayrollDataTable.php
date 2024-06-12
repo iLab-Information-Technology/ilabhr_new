@@ -76,17 +76,43 @@ class DriversPayrollDataTable extends DataTable
                 $deductions =  $calculated_salary['deductions'] > 0 ? $calculated_salary['deductions'] : 0;
                 return $deductions;
             })
+            ->addColumn('bonus', function ($row) {
+                $comissionSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    // Comission Sum
+                    $bonusFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Bonus'])->pluck('id')->first();
+                    $comissionSum += $report->field_values->where('field_id', $bonusFieldId)->sum('value');
+                }
+                return $comissionSum;
+            })
+            ->addColumn('tip', function ($row) {
+                $comissionSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    // Comission Sum
+                    $tipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Tip'])->pluck('id')->first();
+                    $comissionSum += $report->field_values->where('field_id', $tipFieldId)->sum('value');
+                }
+                return $comissionSum;
+            })
+            ->addColumn('other_tip', function ($row) {
+                $comissionSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    // Comission Sum
+                    $otherTipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Other Tip'])->pluck('id')->first();
+                    $comissionSum += $report->field_values->where('field_id', $otherTipFieldId)->sum('value');
+                }
+                return $comissionSum;
+            })
             ->addColumn('commission_amount', function ($row) {
                 $comissionSum = 0;
                 foreach ($row->coordinator_reports as $report) {
                     // Comission Sum
-                    $orderFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $bonusFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Bonus'])->pluck('id')->first();
                     $tipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Tip'])->pluck('id')->first();
                     $otherTipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Other Tip'])->pluck('id')->first();
-                    $comissionSum += $report->field_values->where('field_id', $orderFieldId)->sum('value');
+                    $comissionSum += $report->field_values->where('field_id', $bonusFieldId)->sum('value');
                     $comissionSum += $report->field_values->where('field_id', $tipFieldId)->sum('value');
                     $comissionSum += $report->field_values->where('field_id', $otherTipFieldId)->sum('value');
-
                 }
                 return $comissionSum;
             })
@@ -111,10 +137,10 @@ class DriversPayrollDataTable extends DataTable
                     $totalSum += $reportSum;
 
                     // Comission Sum
-                    $orderFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $bonusFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Bonus'])->pluck('id')->first();
                     $tipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Tip'])->pluck('id')->first();
                     $otherTipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Other Tip'])->pluck('id')->first();
-                    $comissionSum += $report->field_values->where('field_id', $orderFieldId)->sum('value');
+                    $comissionSum += $report->field_values->where('field_id', $bonusFieldId)->sum('value');
                     $comissionSum += $report->field_values->where('field_id', $tipFieldId)->sum('value');
                     $comissionSum += $report->field_values->where('field_id', $otherTipFieldId)->sum('value');
 
@@ -187,6 +213,9 @@ class DriversPayrollDataTable extends DataTable
             Column::make('working_days'),
             Column::make('total_orders'),
             Column::make('deductions'),
+            Column::make('bonus'),
+            Column::make('tip'),
+            Column::make('other_tip'),
             Column::make('commission_amount'),
             Column::make('base_salary'),
             Column::make('salary'),
