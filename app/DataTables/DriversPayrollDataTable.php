@@ -2,9 +2,9 @@
 
 namespace App\DataTables;
 
-use App\Models\Business;
+use App\Models\{Driver, DriverType, Business, BusinessField};
+use Carbon\Carbon;
 use App\Models\CoordinatorReport;
-use App\Models\Driver;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
@@ -24,134 +24,175 @@ class DriversPayrollDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
+        $request = $this->request();
+        $currentDate = Carbon::now();
+        $startDate = $request->startDate ? Carbon::parse($request->startDate)->toDateString() : null;
+        $endDate = $request->endDate ? Carbon::parse($request->endDate)->toDateString() : null;
         return (new EloquentDataTable($query))
             ->addColumn('contract_type', function ($row) {
                 return ucwords(strtolower($row->contract_type));
             })
             ->addColumn('nationality', function ($row) {
                 return ucwords(strtolower($row->nationality));
+            })
+            ->addColumn('contract_type', function ($row) {
+                return $row->driver_type->name;
+            })
+            ->addColumn('working_days', function ($row) {
+                $groupedDrivers = collect();
+                foreach ($row->coordinator_reports as $report) {
+                    $reportDate = $report->report_date->format('Y-m-d');
+
+                    // Check if the group already exists, if not create it
+                    if (!$groupedDrivers->has($reportDate)) {
+                        $groupedDrivers->put($reportDate, collect());
+                    }
+
+                    // Add the driver to the corresponding group
+                    $groupedDrivers->get($reportDate)->push($row);
+                }
+                $working_days = count($groupedDrivers);
+                return $working_days;
+            })
+            ->addColumn('total_orders', function ($row) {
+                $totalSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $reportSum = $report->field_values->where('field_id', $fieldId)->sum('value');
+                    $totalSum += $reportSum;
+                }
+                $total_orders = $totalSum;
+                return $total_orders;
+            })
+            ->addColumn('deductions', function ($row) {
+                $totalSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $reportSum = $report->field_values->where('field_id', $fieldId)->sum('value');
+                    $totalSum += $reportSum;
+                }
+                $total_orders = $totalSum;
+                $calculated_salary = $this->calculate_driver_order_price($total_orders, 26, $row->driver_type->is_freelancer);
+                $deductions =  $calculated_salary['deductions'] > 0 ? $calculated_salary['deductions'] : 0;
+                return $deductions;
+            })
+            ->addColumn('commission_amount', function ($row) {
+                $comissionSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    // Comission Sum
+                    $orderFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $tipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Tip'])->pluck('id')->first();
+                    $otherTipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Other Tip'])->pluck('id')->first();
+                    $comissionSum += $report->field_values->where('field_id', $orderFieldId)->sum('value');
+                    $comissionSum += $report->field_values->where('field_id', $tipFieldId)->sum('value');
+                    $comissionSum += $report->field_values->where('field_id', $otherTipFieldId)->sum('value');
+
+                }
+                return $comissionSum;
+            })
+            ->addColumn('base_salary', function ($row) {
+                $totalSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $reportSum = $report->field_values->where('field_id', $fieldId)->sum('value');
+                    $totalSum += $reportSum;
+                }
+                $total_orders = $totalSum;
+                $calculated_salary = $this->calculate_driver_order_price($total_orders, 26, $row->driver_type->is_freelancer);
+                $base_salary =  $calculated_salary['base_salary'] > 0 ? $calculated_salary['base_salary'] : 0;
+                return $base_salary;
+            })
+            ->addColumn('salary', function ($row) {
+                $totalSum = 0;
+                $comissionSum = 0;
+                foreach ($row->coordinator_reports as $report) {
+                    $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $reportSum = $report->field_values->where('field_id', $fieldId)->sum('value');
+                    $totalSum += $reportSum;
+
+                    // Comission Sum
+                    $orderFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
+                    $tipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Tip'])->pluck('id')->first();
+                    $otherTipFieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Other Tip'])->pluck('id')->first();
+                    $comissionSum += $report->field_values->where('field_id', $orderFieldId)->sum('value');
+                    $comissionSum += $report->field_values->where('field_id', $tipFieldId)->sum('value');
+                    $comissionSum += $report->field_values->where('field_id', $otherTipFieldId)->sum('value');
+
+                }
+                $total_orders = $totalSum;
+                $calculated_salary = $this->calculate_driver_order_price($total_orders, 26, $row->driver_type->is_freelancer);
+                $gross_salary =  $calculated_salary['gross_salary'] > 0 ? $calculated_salary['gross_salary'] : 0;
+                $base_salary =  $calculated_salary['base_salary'] > 0 ? $calculated_salary['base_salary'] : 0;
+                $deductions =  $calculated_salary['deductions'] > 0 ? $calculated_salary['deductions'] : 0;
+                $salary = ($gross_salary + $comissionSum) - $deductions;
+                return number_format($salary, 2);
+
             });
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(CoordinatorReport $model): QueryBuilder
+    public function query(Driver $model): QueryBuilder
     {
         $request = $this->request();
-        $WORKING_DAYS_PER_MONTH = 26;
-        $BASE_SALARY_PER_MONTH = 400;
-        $BASE_ORDER_LIMIT_PER_MONTH = 250;
-        $COMMISSION_RATE = 9;
-        $businesses = Business::select('id', 'name')->get();
-        $businessOrders = array_map(function ($b) {
-            return DB::raw("SUM(CASE WHEN b.id = " . $b['id'] . " AND bf.name = 'Total Orders' THEN crfv.value ELSE 0 END) as '" . $b['name'] . "'");
-        }, $businesses->toArray());
-        $businessBonus = array_map(function ($b) {
-            return DB::raw("SUM(CASE WHEN b.id = " . $b['id'] . " AND bf.name = 'Bonus' THEN crfv.value ELSE 0 END) as '" . $b['name'] . "_bonus'");
-        }, $businesses->toArray());
-        $businessTips = array_map(function ($b) {
-            return DB::raw("SUM(CASE WHEN b.id = " . $b['id'] . " AND bf.name = 'Tip' THEN crfv.value ELSE 0 END) as '" . $b['name'] . "_tip'");
-        }, $businesses->toArray());
-        $businessOtherTips = array_map(function ($b) {
-            return DB::raw("SUM(CASE WHEN b.id = " . $b['id'] . " AND bf.name = 'Other Tip' THEN crfv.value ELSE 0 END) as '" . $b['name'] . "_other_tip'");
-        }, $businesses->toArray());
+        $currentDate = Carbon::now();
+        $startDate = $request->startDate ? Carbon::parse($request->startDate)->toDateString() : null;
+        $endDate = $request->endDate ? Carbon::parse($request->endDate)->toDateString() : null;
 
+        // Calculate the difference in days between the start date and end date
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $daysDifference = $start->diffInDays($end) + 1;
 
-        $payrollReport = $model->newQuery()
-            ->select(array_merge([
-                DB::raw('d.name'),
-                DB::raw('dt.name as contract_type'),
-                DB::raw('d.iqaama_number'),
-                DB::raw('d.stc_pay'),
-                DB::raw('d.bank_name'),
-                DB::raw('d.iban'),
-                DB::raw('c.name as nationality'),
-                DB::raw('COUNT(d.id) AS driver_id'),
-                DB::raw('COUNT(coordinator_reports.id) AS working_days'),
-                DB::raw('SUM(CASE WHEN bf.name = "Total Orders" THEN crfv.value ELSE 0 END) AS total_orders'),
-                DB::raw('SUM(CASE WHEN bf.name = "Bonus" THEN crfv.value ELSE 0 END) AS total_bonus'),
-                DB::raw('SUM(CASE WHEN bf.name = "Tip" THEN crfv.value ELSE 0 END) AS total_tip_amount'),
-                DB::raw('SUM(CASE WHEN bf.name = "Other Tip" THEN crfv.value ELSE 0 END) AS total_other_tip_amount'),
-                DB::raw('
-                    ROUND(CASE
-                        WHEN
-                            dt.name = "FREELANCER"
-                        THEN
-                            (' . $BASE_SALARY_PER_MONTH / $WORKING_DAYS_PER_MONTH . ') * LEAST(COUNT(coordinator_reports.id), ' . $WORKING_DAYS_PER_MONTH . ')
-                        ELSE
-                            ' . $BASE_SALARY_PER_MONTH . '
-                    END, 2) as base_salary
-                '),
-                    DB::raw('
-                    CASE
-                        WHEN
-                            dt.name = "FREELANCER"
-                        THEN
-                            (' . $BASE_ORDER_LIMIT_PER_MONTH / $WORKING_DAYS_PER_MONTH . ') * LEAST(COUNT(coordinator_reports.id), ' . $WORKING_DAYS_PER_MONTH . ')
-                        ELSE
-                            ' . $BASE_ORDER_LIMIT_PER_MONTH . '
-                    END as base_order_limit
-                '),
-            ], $businessOrders, $businessBonus, $businessTips, $businessOtherTips))
-            ->leftJoin('drivers AS d', 'd.id', '=', 'coordinator_reports.driver_id')
-            ->leftJoin('driver_types AS dt', 'd.driver_type_id', '=', 'dt.id')
-            ->leftJoin('countries AS c', 'd.nationality_id', '=', 'c.id')
-            ->leftJoin('businesses AS b', 'b.id', '=', 'coordinator_reports.business_id')
-            ->leftJoin('coordinator_report_field_values AS crfv', 'crfv.coordinator_report_id', '=', 'coordinator_reports.id')
-            ->leftJoin('business_fields AS bf', 'bf.id', '=', 'crfv.field_id')
-            ->when($request->startDate, fn ($q) => $q->whereDate('coordinator_reports.created_at', '>=', $request->startDate))
-            ->when($request->endDate, fn ($q) => $q->whereDate('coordinator_reports.created_at', '<=', $request->endDate))
-            ->groupBy('coordinator_reports.driver_id');
+        $query = $model->whereHas('coordinator_reports', function ($query) use ($request, $startDate, $endDate) {
+            $query->when($startDate, function ($q) use ($startDate) {
+                    $q->where('report_date', '>=', $startDate);
+                })
+                ->when($endDate, function ($q) use ($endDate) {
+                    $q->where('report_date', '<=', $endDate);
+                });
+        })
+        ->with([
+            'branch',
+            'driver_type',
+            'coordinator_reports' => function ($query) use ($request, $startDate, $endDate) {
+                $query->with('field_values')
+                    ->when($startDate, function ($q) use ($startDate) {
+                        return $q->where('report_date', '>=', $startDate);
+                    })
+                    ->when($endDate, function ($q) use ($endDate) {
+                        return $q->where('report_date', '<=', $endDate);
+                    })
+                    ->when($request->business_id, function ($q) use ($request) {
+                        return $q->where('business_id', $request->business_id);
+                    });
+            }
+        ]);
 
-        return $model->newQuery()->from(DB::raw("({$payrollReport->toSql()}) as payroll_report"))
-                ->select([
-                    'payroll_report.*',
-                    DB::raw('
-                        CASE
-                            WHEN
-                                payroll_report.total_orders > payroll_report.base_order_limit
-                            THEN
-                                (payroll_report.total_orders - payroll_report.base_order_limit) * ' . $COMMISSION_RATE . '
-                            ELSE
-                                0
-                        END as commission_amount
-                    '),
-                    DB::raw('
-                        CASE
-                            WHEN
-                                payroll_report.total_orders <= payroll_report.base_order_limit
-                            THEN
-                                (payroll_report.base_salary / payroll_report.base_order_limit) * (payroll_report.base_order_limit - payroll_report.total_orders)
-                            ELSE
-                                0
-                        END as deductions
-                    '),
-                    DB::raw('
-                        ROUND((base_salary + (
-                            payroll_report.total_bonus + payroll_report.total_tip_amount + payroll_report.total_other_tip_amount
-                        ) + (
-                            CASE
-                                WHEN
-                                    payroll_report.total_orders > payroll_report.base_order_limit
-                                THEN
-                                    (payroll_report.total_orders - payroll_report.base_order_limit) * ' . $COMMISSION_RATE . '
-                                ELSE
-                                    0
-                            END
-                        )) - (
-                            CASE
-                                WHEN
-                                    payroll_report.total_orders <= payroll_report.base_order_limit
-                                THEN
-                                    (payroll_report.base_salary / payroll_report.base_order_limit) * (payroll_report.base_order_limit - payroll_report.total_orders)
-                                ELSE
-                                    0
-                            END
-                        ), 2) as salary
-                    ')
-                ])
-                ->mergeBindings($payrollReport->getQuery());
+        return $query;
+    }
+
+      /**
+     * Get the dataTable columns definition.
+     */
+    public function getColumns(): array
+    {
+        $columns = [];
+
+        $columns = array_merge($columns, [
+            Column::make('iqaama_number'),
+            Column::make('name'),
+            Column::make('contract_type'),
+            Column::make('working_days'),
+            Column::make('total_orders'),
+            Column::make('deductions'),
+            Column::make('commission_amount'),
+            Column::make('base_salary'),
+            Column::make('salary'),
+        ]);
+
+        return $columns;
     }
 
     /**
@@ -176,44 +217,49 @@ class DriversPayrollDataTable extends DataTable
     }
 
     /**
-     * Get the dataTable columns definition.
-     */
-    public function getColumns(): array
-    {
-        $businesses = Business::select('id', 'name')->get();
-        $columns = [];
-
-        $columns = array_merge($columns, [
-            Column::make('iqaama_number'),
-            Column::make('name'),
-            // Column::make('nationality'),
-            Column::make('contract_type'),
-            Column::make('working_days'),
-        ]);
-
-        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name']), $businesses->toArray()));
-        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_bonus'), $businesses->toArray()));
-        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_tip'), $businesses->toArray()));
-        // $columns = array_merge($columns, array_map(fn ($b) => Column::make($b['name'] . '_other_tip'), $businesses->toArray()));
-
-        $columns = array_merge($columns, [
-            Column::make('total_orders'),
-            Column::make('deductions'),
-            Column::make('commission_amount'),
-            Column::make('base_salary'),
-            Column::make('salary'),
-            // Column::make('stc_pay'),
-            // Column::make('bank_name'),
-            // Column::make('iban'),
-        ]);
-        return $columns;
-    }
-
-    /**
      * Get the filename for export.
      */
     protected function filename(): string
     {
         return 'Drivers_' . date('YmdHis');
+    }
+
+    private function calculate_base_salary($working_days, $freelancer, $BASE_SALARY_PER_MONTH, $WORKING_DAYS_PER_MONTH) {
+        if ($freelancer) {
+            return ($BASE_SALARY_PER_MONTH / $WORKING_DAYS_PER_MONTH) * min($working_days, $WORKING_DAYS_PER_MONTH);
+        }
+        return $BASE_SALARY_PER_MONTH;
+    }
+
+    private function calculate_base_order_limit($working_days, $freelancer, $BASE_ORDER_LIMIT_PER_MONTH, $WORKING_DAYS_PER_MONTH) {
+        if ($freelancer) {
+            return ($BASE_ORDER_LIMIT_PER_MONTH / $WORKING_DAYS_PER_MONTH) * min($working_days, $WORKING_DAYS_PER_MONTH);
+        }
+        return $BASE_ORDER_LIMIT_PER_MONTH;
+    }
+
+    public function calculate_driver_order_price($total_order, $working_days, $freelancer) {
+        $WORKING_DAYS_PER_MONTH = 26;
+        $BASE_SALARY_PER_MONTH = 400;
+        $BASE_ORDER_LIMIT_PER_MONTH = 250;
+        $COMMISSION_RATE = 9;
+
+        $base_salary = $this->calculate_base_salary($working_days, $freelancer, $BASE_SALARY_PER_MONTH, $WORKING_DAYS_PER_MONTH);
+        $base_order_limit = $this->calculate_base_order_limit($working_days, $freelancer, $BASE_ORDER_LIMIT_PER_MONTH, $WORKING_DAYS_PER_MONTH);
+        $per_order_base_salary = $base_salary / $base_order_limit;
+
+        if ($total_order <= $base_order_limit) {
+            // $base_salary = $per_order_base_salary * $total_order;
+            $deductions = $per_order_base_salary * ($base_order_limit - $total_order);
+            $commission_amount = 0;
+        } else {
+            $deductions = 0;
+            $commission_amount = ($total_order - $base_order_limit) * $COMMISSION_RATE;
+        }
+
+        $final_salary = ($base_salary + $commission_amount) - $deductions;
+
+        return ['gross_salary' => $final_salary, 'base_salary' => $base_salary, 'deductions' => $deductions];
+
     }
 }

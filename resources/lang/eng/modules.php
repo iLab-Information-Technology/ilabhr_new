@@ -326,6 +326,7 @@ return array(
     ),
     'driverTypes' => array(
         'personalDetails' => 'Driver Type Details',
+        'markAsFreelancer' => 'Mark as Freelancer',
         'vehicle_monthly_cost' => 'Vehicle Monthly Cost',
         'mobile_data' => 'Mobile Data',
         'accommodation' => 'Accommodation',

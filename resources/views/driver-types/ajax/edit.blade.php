@@ -85,7 +85,13 @@ $addDesignationPermission = user()->permission('add_designation');
                         </x-forms.checkbox>
 
                     </div>
-
+                    <div class="col-md-12">
+                        <x-forms.toggle-switch class="mr-0 mr-lg-12"
+                            :fieldLabel="__('modules.driverTypes.markAsFreelancer')"
+                            fieldName="is_freelancer"
+                            fieldId="is_freelancer"
+                            :checked="$driver_type->is_freelancer"/>
+                    </div>
                 </div>
 
 

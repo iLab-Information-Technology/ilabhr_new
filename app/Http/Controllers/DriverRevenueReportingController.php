@@ -320,7 +320,7 @@ class DriverRevenueReportingController extends AccountBaseController
         $per_order_base_salary = $base_salary / $base_order_limit;
 
         if ($total_order <= $base_order_limit) {
-            $base_salary = $per_order_base_salary * $total_order;
+            // $base_salary = $per_order_base_salary * $total_order;
             $deductions = $per_order_base_salary * ($base_order_limit - $total_order);
             $commission_amount = 0;
         } else {

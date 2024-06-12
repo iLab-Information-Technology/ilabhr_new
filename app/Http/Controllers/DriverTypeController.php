@@ -70,6 +70,7 @@ class DriverTypeController extends AccountBaseController
         DB::beginTransaction();
         try {
             $request['fields'] = implode(',', $request->fields);
+            $request['is_freelancer'] = $request->is_freelancer == 'on' ? 1 : 0;
             DriverType::create($request->all());
             DB::commit();
         } catch (\Exception $e) {
@@ -190,6 +191,7 @@ class DriverTypeController extends AccountBaseController
         abort_403(!($this->editPermission == 'all'));
 
         $request['fields'] = implode(',', $request->fields);
+        $request['is_freelancer'] = $request->is_freelancer == 'on' ? 1 : 0;
         $driver_type->update($request->all());
         return Reply::success(__('messages.updateSuccess'));
     }
