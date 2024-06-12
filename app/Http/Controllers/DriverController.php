@@ -6,7 +6,7 @@ use App\DataTables\BusinessesDriverDataTable;
 use App\DataTables\DriversDataTable;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Driver\StoreRequest;
-use App\Models\{Driver, DriverType};
+use App\Models\{Driver, DriverType, User};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
@@ -137,16 +137,35 @@ class DriverController extends AccountBaseController
 
         $search = $request->search;
 
-        // $drivers = (in_array('admin', user_roles()) ? Driver::query() : user()->drivers())
-        //     ->orderby('name')
-        //     ->select('drivers.id', 'drivers.name')
-        //     ->when($search, function ($query) use ($search) {
-        //         $query->where('name', 'like', '%' . $search . '%');
-        //     })
-        //     ->take(20)
-        //     ->get();
+        $drivers = [];
 
-        $drivers = Driver::all();
+
+        if(in_array('admin', user_roles() )) {
+            $drivers = Driver::query()
+            ->orderby('name')
+            ->select('drivers.id', 'drivers.name')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->take(20)
+            ->get();
+        }else{
+            $driversQuery = Driver::select('drivers.id', 'drivers.name')
+            ->join('branches', 'drivers.branch_id', '=', 'branches.id')
+            ->join('branch_employee', 'branches.id', '=', 'branch_employee.branch_id')
+            ->where('branch_employee.employee_id', user()->id)
+            ->when($search, function ($query) use ($search) {
+                $query->where('drivers.name', 'like', '%' . $search . '%');
+            })
+            ->orderBy('drivers.name')
+            ->distinct()
+            ->take(20);
+
+            // Get the drivers
+            $drivers = $driversQuery->get();
+        }
+
+
 
         $response = array();
 
