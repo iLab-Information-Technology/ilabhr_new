@@ -10,21 +10,27 @@
         <div class="py-1 px-lg-3 px-0 align-items-center d-flex">
             <h4 class="mb-0">Filters</h4>
             <select name="business_id" id="business_id" class="form-control ml-1">
-                <option value="">select Business</option>
+                <option value="">Select Business</option>
                 @foreach ($businesses as $business)
                     <option value="{{ $business->id }}">{{ $business->name }}</option>
                 @endforeach
             </select>
-
         </div>
         <div class="py-1 px-lg-3 px-0 align-items-center d-flex">
-            <select name="driver_id" id="driver_id" class="form-control ml-1">
-                <option value="">select Driver</option>
-                @foreach ($drivers as $driver)
+            <select name="driver_type_id" id="driver_type_id" class="form-control ml-1">
+                <option value="">Select Driver Type</option>
+                @foreach ($driver_types as $driver)
                     <option value="{{ $driver->id }}">{{ $driver->name }}</option>
                 @endforeach
             </select>
-
+        </div>
+        <div class="py-1 px-lg-3 px-0 align-items-center d-flex">
+            <select name="branch_id" id="branch_id" class="form-control ml-1">
+                <option value="">Select Branch</option>
+                @foreach ($branches as $branch)
+                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                @endforeach
+            </select>
         </div>
         <!-- DATE START -->
         <div class="select-box d-flex pr-2 border-right-grey border-right-grey-sm-0">
@@ -135,12 +141,14 @@
                 endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
             }
             const business_id = $('#business_id').val();
-            const driver_id = $('#driver_id').val();
+            const driver_type_id = $('#driver_type_id').val();
+            const branch_id = $('#branch_id').val();
             data['searchText'] =  $('#search-text-field').val();
             data['startDate'] = startDate;
             data['endDate'] = endDate;
             data['business_id'] = business_id;
-            data['driver_id'] = driver_id;
+            data['driver_type_id'] = driver_type_id;
+            data['branch_id'] = branch_id;
         });
 
         const showTable = () => {

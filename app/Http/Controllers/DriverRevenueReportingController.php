@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\{BusinessesDriverDataTable, DriversRevenueReportDataTable};
 use App\Helper\Reply;
 use App\Http\Requests\Admin\Driver\StoreRequest;
-use App\Models\{Driver, DriverType, Business, BusinessField};
+use App\Models\{Driver, DriverType, Business, BusinessField, Branch};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
@@ -53,7 +53,8 @@ class DriverRevenueReportingController extends AccountBaseController
             $business->total_orders = $totalSum;
         }
 
-
+        $this->driver_types = DriverType::all();
+        $this->branches = Branch::all();
         $this->drivers = Driver::has('coordinator_reports')->with([
             'branch',
             'driver_type',
@@ -172,7 +173,14 @@ class DriverRevenueReportingController extends AccountBaseController
         $daysDifference = $start->diffInDays($end) + 1;
 
         $this->businesses = Business::with(['coordinator_reports' => function($query) use ($startDate, $endDate, $request) {
-            $query->whereBetween('report_date', [$startDate, $endDate])
+            $query->with(['driver' => function($query) use ($request) {
+                $query->when($request->driver_type_id, function ($q) use ($request) {
+                    $q->where('driver_type_id', $request->driver_type_id);
+                })->when($request->branch_id, function ($q) use ($request) {
+                    $q->where('branch_id', $request->branch_id);
+                });
+            }])
+            ->whereBetween('report_date', [$startDate, $endDate])
                   ->when($request->business_id, function ($q) use ($request) {
                       $q->where('business_id', $request->business_id);
                   })
@@ -218,8 +226,10 @@ class DriverRevenueReportingController extends AccountBaseController
                       });
             }
         ])
-        ->when($request->driver_id, function ($q) use ($request) {
-            $q->where('id', $request->driver_id);
+        ->when($request->driver_type_id, function ($q) use ($request) {
+            $q->where('driver_type_id', $request->driver_type_id);
+        })->when($request->branch_id, function ($q) use ($request) {
+            $q->where('branch_id', $request->branch_id);
         })
         ->get([
             'id',

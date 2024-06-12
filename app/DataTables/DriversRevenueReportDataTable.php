@@ -177,8 +177,10 @@ class DriversRevenueReportDataTable extends DataTable
                     });
             }
         ])
-        ->when($request->driver_id, function ($q) use ($request) {
-            $q->where('id', $request->driver_id);
+        ->when($request->driver_type_id, function ($q) use ($request) {
+            $q->where('driver_type_id', $request->driver_type_id);
+        })->when($request->branch_id, function ($q) use ($request) {
+            $q->where('branch_id', $request->branch_id);
         })
         ->select([
             'id',

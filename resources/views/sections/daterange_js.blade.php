@@ -16,24 +16,37 @@
             ranges: daterangeConfig
         }, cb);
 
-        $('#driver_id').change(function(){
-            const driver_id = $(this).val();
+        $('#branch_id').change(function(){
+            const branch_id = $(this).val();
             const business_id = $('#business_id').val();
+            const driver_type_id = $('#driver_type_id').val();
             const date = $('#datatableRange').val().split(' ')
             const startDate = date[0];
             const endDate = date[2];
             showTable();
-            fetchStats({startDate, endDate, business_id, driver_id});
+            fetchStats({startDate, endDate, business_id, driver_type_id, branch_id});
+        });
+
+        $('#driver_type_id').change(function(){
+            const driver_type_id = $(this).val();
+            const business_id = $('#business_id').val();
+            const branch_id = $('#branch_id').val();
+            const date = $('#datatableRange').val().split(' ')
+            const startDate = date[0];
+            const endDate = date[2];
+            showTable();
+            fetchStats({startDate, endDate, business_id, driver_type_id, branch_id});
         });
 
         $('#business_id').change(function(){
             const business_id = $(this).val();
-            const driver_id = $('#driver_id').val();
+            const driver_type_id = $('#driver_type_id').val();
+            const branch_id = $('#branch_id').val();
             const date = $('#datatableRange').val().split(' ')
             const startDate = date[0];
             const endDate = date[2];
             showTable();
-            fetchStats({startDate, endDate, business_id, driver_id});
+            fetchStats({startDate, endDate, business_id, driver_type_id, branch_id});
         });
 
         $('#datatableRange').on('apply.daterangepicker', function(ev, picker) {
@@ -41,9 +54,10 @@
             const startDate = date[0];
             const endDate = date[2];
             const business_id = $('#business_id').val();
-            const driver_id = $('#driver_id').val();
+            const driver_type_id = $('#driver_type_id').val();
+            const branch_id = $('#branch_id').val();
             showTable();
-            fetchStats({startDate, endDate, business_id, driver_id});
+            fetchStats({startDate, endDate, business_id, driver_type_id, branch_id});
         });
 
         function fetchStats(data){
