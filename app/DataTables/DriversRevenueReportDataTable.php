@@ -79,7 +79,7 @@ class DriversRevenueReportDataTable extends DataTable
                     $fieldId = BusinessField::where(['business_id' => $report->business_id, 'name' => 'Total Orders'])->pluck('id')->first();
                     return $report->field_values->where('field_id', $fieldId)->sum('value');
                 });
-                $calculated_salary = $this->calculate_driver_order_price($totalSum, 26, true);
+                $calculated_salary = $this->calculate_driver_order_price($totalSum, 26, $row->driver_type->is_freelancer);
                 $total_salary = $calculated_salary > 0 ? $calculated_salary : 0;
                 $total_gprs = ($row->gprs / 30) * $daysDifference;
                 $total_fuel = ($row->fuel / 30) * $daysDifference;
@@ -127,7 +127,7 @@ class DriversRevenueReportDataTable extends DataTable
                     return $total_revenue;
                 });
 
-                $calculated_salary = $this->calculate_driver_order_price($totalSum, 26, true);
+                $calculated_salary = $this->calculate_driver_order_price($totalSum, 26, $row->driver_type->is_freelancer);
                 $total_salary = $calculated_salary > 0 ? $calculated_salary : 0;
                 $total_gprs = ($row->gprs / 30) * $daysDifference;
                 $total_fuel = ($row->fuel / 30) * $daysDifference;

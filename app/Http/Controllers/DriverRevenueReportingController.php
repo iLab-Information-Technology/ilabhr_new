@@ -78,6 +78,8 @@ class DriverRevenueReportingController extends AccountBaseController
         $this->total_cost = 0;
         $this->total_orders = 0;
         $this->total_revenue = 0;
+        // Initialize an empty collection to hold the grouped drivers by report_date
+        $groupedDrivers = collect();
         foreach ($this->drivers as $driver) {
             $totalSum = 0;
             $business_reports = [];
@@ -95,6 +97,17 @@ class DriverRevenueReportingController extends AccountBaseController
                     ];
                 }
                 $business_reports[$business_id]['total_orders'] += $reportSum;
+
+                $reportDate = $report->report_date->format('Y-m-d');
+
+                // Check if the group already exists, if not create it
+                if (!$groupedDrivers->has($reportDate)) {
+                    $groupedDrivers->put($reportDate, collect());
+                }
+
+                // Add the driver to the corresponding group
+                $groupedDrivers->get($reportDate)->push($driver);
+                $driver->total_days = count($groupedDrivers);
 
             }
             $driver->total_orders = $totalSum;
@@ -120,7 +133,7 @@ class DriverRevenueReportingController extends AccountBaseController
             }
 
             // Sum of specific fields from the driver
-            $calculated_salary = $this->calculate_driver_order_price($driver->total_orders, 26, true);
+            $calculated_salary = $this->calculate_driver_order_price($driver->total_orders, 26, $driver->driver_type->is_freelancer);
             $driver->total_salary =  $calculated_salary > 0 ? $calculated_salary : 0;
             $total_coordinate_days = $driver->coordinator_reports->count();
             $total_gprs = $daysDifference ? ($driver->gprs / 30) * $daysDifference : 0;
@@ -270,7 +283,7 @@ class DriverRevenueReportingController extends AccountBaseController
             }
 
             // Sum of specific fields from the driver
-            $calculated_salary = $this->calculate_driver_order_price($driver->total_orders, 26, true);
+            $calculated_salary = $this->calculate_driver_order_price($driver->total_orders, 26, $driver->driver_type->is_freelancer);
             $driver->total_salary =  $calculated_salary > 0 ? $calculated_salary : 0;
             $total_coordinate_days = $driver->coordinator_reports->count();
             $total_gprs = $daysDifference ? ($driver->gprs / 30) * $daysDifference : 0;
