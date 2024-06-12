@@ -65,7 +65,6 @@ class CoordinatorReportController extends AccountBaseController
         $this->businesses = Business::select([ 'id', 'name' ])->with([ 'fields' => fn ($q) => $q->where('admin_only', '<>', true) ])->get();
         $this->drivers = Driver::get();
         $this->view = 'coordinator-report.ajax.create';
-
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
 

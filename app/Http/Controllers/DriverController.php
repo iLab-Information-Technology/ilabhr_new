@@ -137,14 +137,16 @@ class DriverController extends AccountBaseController
 
         $search = $request->search;
 
-        $drivers = (in_array('admin', user_roles()) ? Driver::query() : user()->drivers())
-            ->orderby('name')
-            ->select('drivers.id', 'drivers.name')
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->take(20)
-            ->get();
+        // $drivers = (in_array('admin', user_roles()) ? Driver::query() : user()->drivers())
+        //     ->orderby('name')
+        //     ->select('drivers.id', 'drivers.name')
+        //     ->when($search, function ($query) use ($search) {
+        //         $query->where('name', 'like', '%' . $search . '%');
+        //     })
+        //     ->take(20)
+        //     ->get();
+
+        $drivers = Driver::all();
 
         $response = array();
 
