@@ -1810,6 +1810,7 @@ return array(
         'businesses' => 'Businesses',
         'driverTypes' => 'Driver Types',
         'revenueReporting' => 'Revenue Reporting',
+        'payroll' => 'Payroll',
         'coordinatorReports' => 'Coordinator Reports',
         'clients' => 'Clients',
         'employees' => 'Employees',

@@ -119,8 +119,12 @@
     </x-slot>
     <div class="accordionItemContent pb-2">
 
+        @if (in_array('branches', user_modules()) && $sidebarUserPermissions['view_branches'] != 5 && $sidebarUserPermissions['view_branches'] != 'none')
         <x-sub-menu-item :link="route('branches.index')" :text="__('app.menu.branches')" />
+        @endif
+        @if (in_array('driverTypes', user_modules()) && $sidebarUserPermissions['view_driver_types'] != 5 && $sidebarUserPermissions['view_driver_types'] != 'none')
         <x-sub-menu-item :link="route('driver-types.index')" :text="__('app.menu.driver_types')" />
+        @endif
         @if (in_array('drivers', user_modules()) && $sidebarUserPermissions['view_drivers'] != 5 && $sidebarUserPermissions['view_drivers'] != 'none')
             <x-sub-menu-item :link="route('drivers.index')" :text="__('app.menu.drivers')" />
         @endif
@@ -130,12 +134,16 @@
         @if (in_array('coordinatorReports', user_modules()) && $sidebarUserPermissions['view_coordinator_reports'] != 5 && $sidebarUserPermissions['view_coordinator_reports'] != 'none')
             <x-sub-menu-item :link="route('coordinator-report.index')" :text="__('app.menu.coordinatorReport')" />
         @endif
+        @if (in_array('payroll', user_modules()) && $sidebarUserPermissions['view_payroll'] != 5 && $sidebarUserPermissions['view_payroll'] != 'none')
         <x-sub-menu-item :link="route('dms.payroll.index')" :text="__('app.menu.payroll')" />
+        @endif
         <!-- NAV ITEM - CUSTOM MODULES  -->
         @foreach ($worksuitePlugins as $item)
             @includeIf(strtolower($item) . '::sections.hr.sidebar')
         @endforeach
+        @if (in_array('revenueReporting', user_modules()) && $sidebarUserPermissions['view_revenue_reporting'] != 5 && $sidebarUserPermissions['view_revenue_reporting'] != 'none')
         <x-sub-menu-item :link="route('dms.revenue-reporting.index')" :text="__('app.menu.revenue_reporting')" />
+        @endif
     </div>
 </x-menu-item>
 @endif

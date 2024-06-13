@@ -33,7 +33,7 @@ class DriverPayrollController extends AccountBaseController
     public function index(Request $request)
     {
 
-        $viewPermission = user()->permission('view_drivers');
+        $viewPermission = user()->permission('view_payroll');
         abort_403(!in_array($viewPermission, ['all']));
 
         $now = now();
