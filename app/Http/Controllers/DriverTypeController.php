@@ -33,7 +33,7 @@ class DriverTypeController extends AccountBaseController
      */
     public function index(DriverTypesDataTable $dataTable)
     {
-        $viewPermission = user()->permission('view_drivers');
+        $viewPermission = user()->permission('view_driver_types');
         abort_403(!in_array($viewPermission, ['all']));
         return $dataTable->render('driver-types.index', $this->data);
     }
@@ -43,7 +43,7 @@ class DriverTypeController extends AccountBaseController
      */
     public function create()
     {
-        $addPermission = user()->permission('add_drivers');
+        $addPermission = user()->permission('add_driver_types');
         abort_403(!in_array($addPermission, ['all', 'added']));
 
         $this->pageTitle = __('app.addDriverType');
@@ -64,7 +64,7 @@ class DriverTypeController extends AccountBaseController
      */
     public function store(StoreRequest $request)
     {
-        $addPermission = user()->permission('add_drivers');
+        $addPermission = user()->permission('add_driver_types');
         abort_403(!in_array($addPermission, ['all', 'added']));
 
         DB::beginTransaction();
@@ -167,7 +167,7 @@ class DriverTypeController extends AccountBaseController
      */
     public function edit(DriverType $driver_type)
     {
-        $this->editPermission = user()->permission('edit_drivers');
+        $this->editPermission = user()->permission('edit_driver_types');
         abort_403(!($this->editPermission == 'all'));
 
         $this->pageTitle = __('app.update');
@@ -187,7 +187,7 @@ class DriverTypeController extends AccountBaseController
      */
     public function update(StoreRequest $request, DriverType $driver_type)
     {
-        $this->editPermission = user()->permission('edit_drivers');
+        $this->editPermission = user()->permission('edit_driver_types');
         abort_403(!($this->editPermission == 'all'));
 
         $request['fields'] = implode(',', $request->fields);
@@ -201,7 +201,7 @@ class DriverTypeController extends AccountBaseController
      */
     public function destroy(string $id)
     {
-        $deletePermission = user()->permission('delete_drivers');
+        $deletePermission = user()->permission('delete_driver_types');
         abort_403(!($deletePermission == 'all'));
 
         $this->driver = DriverType::findOrFail($id);
