@@ -165,8 +165,6 @@ class DriverController extends AccountBaseController
             $drivers = $driversQuery->get();
         }
 
-
-
         $response = array();
 
         foreach ($drivers as $driver) {
@@ -175,9 +173,7 @@ class DriverController extends AccountBaseController
                 'id' => $driver->id,
                 'text' => $driver->name
             );
-
         }
-
         return response()->json($response);
     }
 

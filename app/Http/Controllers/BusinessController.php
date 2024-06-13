@@ -102,7 +102,7 @@ class BusinessController extends AccountBaseController
                 'admin_only' => '0',
                 'name' => 'Total Orders',
                 'required' => '1',
-                'type' => 'TEXT'
+                'type' => 'INTEGER'
             ];
             $fields[] = [
                 'admin_only' => '0',
