@@ -1808,6 +1808,8 @@ return array(
         'branches' => 'Branches',
         'drivers' => 'Drivers',
         'businesses' => 'Businesses',
+        'driverTypes' => 'Driver Types',
+        'revenueReporting' => 'Revenue Reporting',
         'coordinatorReports' => 'Coordinator Reports',
         'clients' => 'Clients',
         'employees' => 'Employees',
