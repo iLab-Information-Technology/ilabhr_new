@@ -26,9 +26,10 @@ class ModuleSettingController extends AccountBaseController
     {
 
         $tab = request('tab');
-
+        // return ModuleSetting::where('type', 'admin')->get();
         $this->modulesData = match ($tab) {
             'employee' => ModuleSetting::where('module_name', '<>', 'settings')->where('is_allowed', 1)->where('type', 'employee')->get(),
+            'dms' => ModuleSetting::where('module_name', '<>', 'settings')->where('is_allowed', 1)->where('type', 'dms')->get(),
             'client' => ModuleSetting::where('module_name', '<>', 'settings')->where('is_allowed', 1)->where('type', 'client')->get(),
             default => ModuleSetting::where('module_name', '<>', 'settings')->where('is_allowed', 1)->where('type', 'admin')->get(),
         };

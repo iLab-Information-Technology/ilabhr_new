@@ -32,6 +32,7 @@ class DriverRevenueReportingController extends AccountBaseController
      */
     public function index(Request $request)
     {
+        // return user_modules();
         $viewPermission = user()->permission('view_revenue_reporting');
         abort_403(!in_array($viewPermission, ['all']));
         $currentDate = Carbon::now();

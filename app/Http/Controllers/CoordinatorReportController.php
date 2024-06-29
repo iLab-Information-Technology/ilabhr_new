@@ -45,7 +45,6 @@ class CoordinatorReportController extends AccountBaseController
     {
         $viewPermission = user()->permission('view_coordinator_reports');
         abort_403(!in_array($viewPermission, ['all']));
-
         $this->businesses = Business::select([ 'id', 'name' ])->get();
         $this->business_id = request()->business_id ?? $this->businesses->first()?->id;
 

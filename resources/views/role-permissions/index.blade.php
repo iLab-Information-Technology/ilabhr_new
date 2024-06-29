@@ -80,6 +80,8 @@
                     '_token': '{{ csrf_token() }}'
                 },
                 success: function(response) {
+                    // return console.log(response);
+
                     if (response.status == 'success') {
 
                         if ($('#role-permission-' + roleId).html() != '') {

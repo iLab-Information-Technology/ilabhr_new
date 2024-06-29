@@ -452,6 +452,7 @@ return array(
     'inactive' => 'Inactive',
     'admin' => 'Admin',
     'employee' => 'Employee',
+    'dms' => 'DMS',
     'complete' => 'Complete',
     'approved' => 'Approved',
     'reject' => 'Reject',

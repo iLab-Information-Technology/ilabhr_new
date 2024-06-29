@@ -363,6 +363,9 @@ if (!function_exists('user_modules')) {
         elseif (in_array('employee', user_roles())) {
             $module = $module->where('type', 'employee');
         }
+        elseif (in_array('dms', user_roles())) {
+            $module = $module->where('type', 'dms');
+        }
 
         $module = $module->where('status', 'active');
         $module->select('module_name');
@@ -895,6 +898,8 @@ if (!function_exists('sidebar_user_perms')) {
                 'view_lead_report',
                 'view_sales_report',
                 'view_deals',
+                'view_payroll',
+                'view_revenue_reporting',
             ];
 
 

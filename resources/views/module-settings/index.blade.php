@@ -27,11 +27,15 @@
                                     href="{{ route('module-settings.index') }}?tab=employee" role="tab"
                                     aria-controls="nav-ticketTypes" aria-selected="true">@lang('app.employee')
                                 </a>
-
+                                <a class="nav-item nav-link f-15 dms"
+                                    href="{{ route('module-settings.index') }}?tab=dms" role="tab"
+                                    aria-controls="nav-ticketChannels" aria-selected="true">@lang('app.dms')
+                                </a>
                                 <a class="nav-item nav-link f-15 client"
                                     href="{{ route('module-settings.index') }}?tab=client" role="tab"
                                     aria-controls="nav-ticketChannel" aria-selected="true">@lang('app.client')
                                 </a>
+
                             @endif
                             @if(user()->is_superadmin)
                                 <a class="nav-item nav-link f-15 custom" href="{{ route('custom-modules.index') }}?tab=custom"

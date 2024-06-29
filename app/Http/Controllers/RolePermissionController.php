@@ -41,8 +41,9 @@ class RolePermissionController extends AccountBaseController
             ->orderBy('id', 'asc')
             ->get();
 
-        $this->totalPermissions = Permission::count();
+        // return $this->data['roles'];
 
+        $this->totalPermissions = Permission::count();
         return view('role-permissions.index', $this->data);
     }
 
@@ -138,6 +139,7 @@ class RolePermissionController extends AccountBaseController
             $this->modulesData = Module::with('permissions')->where('module_name', '<>', 'messages')->withCount('customPermissions')->get();
         }
 
+        // return $this->data['role'];
         $html = view('role-permissions.ajax.permissions', $this->data)->render();
 
         return Reply::dataOnly(['status' => 'success', 'html' => $html]);

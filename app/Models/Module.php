@@ -46,7 +46,7 @@ class Module extends BaseModel
     const MODULE_LIST = [
         [
             'module_name' => 'branches',
-            'permissions' => [ 
+            'permissions' => [
                 [
                     'allowed_permissions' => Permission::ALL_NONE,
                     'is_custom' => 0,
@@ -71,7 +71,7 @@ class Module extends BaseModel
         ],
         [
             'module_name' => 'drivers',
-            'permissions' => [ 
+            'permissions' => [
                 [
                     'allowed_permissions' => Permission::ALL_NONE,
                     'is_custom' => 0,
@@ -96,7 +96,7 @@ class Module extends BaseModel
         ],
         [
             'module_name' => 'businesses',
-            'permissions' => [ 
+            'permissions' => [
                 [
                     'allowed_permissions' => Permission::ALL_NONE,
                     'is_custom' => 0,
@@ -121,7 +121,7 @@ class Module extends BaseModel
         ],
         [
             'module_name' => 'coordinatorReports',
-            'permissions' => [ 
+            'permissions' => [
                 [
                     'allowed_permissions' => Permission::ALL_NONE,
                     'is_custom' => 0,
