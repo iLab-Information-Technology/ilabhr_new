@@ -124,8 +124,7 @@ class RolePermissionController extends AccountBaseController
     public function permissions()
     {
         $roleId = request('roleId');
-        // $this->role = Role::with('permissions')->where('name', '<>', 'admin')->findOrFail($roleId);
-        $this->role = Role::with('permissions')->findOrFail($roleId);
+        $this->role = Role::with('permissions')->where('name', '<>', 'admin')->findOrFail($roleId);
 
         if ($this->role->name == 'client') {
             $clientModules = ModuleSetting::where('type', 'client')->get()->pluck('module_name');
