@@ -209,7 +209,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account/settings'], function 
     // Role Permissions
     Route::post('role-permission/storeRole', [RolePermissionController::class, 'storeRole'])->name('role-permissions.store_role');
     Route::post('role-permission/deleteRole', [RolePermissionController::class, 'deleteRole'])->name('role-permissions.delete_role');
-    Route::post('role-permissions/permissions', [RolePermissionController::class, 'permissions'])->name('role-permissions.permissions');
+
+    Route::post('role-permissions/permissions', [RolePermissionController::class, 'permissions'])
+    ->name('role-permissions.permissions');
+
     Route::post('role-permissions/customPermissions', [RolePermissionController::class, 'customPermissions'])->name('role-permissions.custom_permissions');
     Route::post('role-permissions/reset-permissions', [RolePermissionController::class, 'resetPermissions'])->name('role-permissions.reset_permissions');
     Route::resource('role-permissions', RolePermissionController::class);

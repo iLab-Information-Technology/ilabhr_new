@@ -65,7 +65,6 @@ class RolePermissionController extends AccountBaseController
     public function store(Request $request)
     {
         abort_403(user()->permission('manage_role_permission_setting') != 'all');
-
         $permissionType = $request->permissionType;
 
         abort_if($permissionType == '', 404);
@@ -73,9 +72,7 @@ class RolePermissionController extends AccountBaseController
         $roleId = $request->roleId;
         $permissionId = $request->permissionId;
 
-
         $role = Role::with('users', 'users.role')->findOrFail($roleId);
-
         // Update role's permission
         $permissionRole = PermissionRole::where('permission_id', $permissionId)
             ->where('role_id', $roleId)
@@ -127,7 +124,8 @@ class RolePermissionController extends AccountBaseController
     public function permissions()
     {
         $roleId = request('roleId');
-        $this->role = Role::with('permissions')->where('name', '<>', 'admin')->findOrFail($roleId);
+        // $this->role = Role::with('permissions')->where('name', '<>', 'admin')->findOrFail($roleId);
+        $this->role = Role::with('permissions')->findOrFail($roleId);
 
         if ($this->role->name == 'client') {
             $clientModules = ModuleSetting::where('type', 'client')->get()->pluck('module_name');

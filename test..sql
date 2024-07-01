@@ -84,6 +84,17 @@ INSERT INTO user_permissions (user_id, permission_id, permission_type_id) VALUES
 INSERT INTO user_permissions (user_id, permission_id, permission_type_id) VALUES
 (11, 517, 4);
 
+INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES
+(1, 'driverTypes', 'active', 'admin', 1),
+(2, 'driverTypes', 'active', 'admin', 1);
+
+INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES
+(1, 'driverTypes', 'active', 'employee', 1),
+(2, 'driverTypes', 'active', 'employee', 1);
+
+INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES
+(1, 'driverTypes', 'active', 'dms', 1),
+(2, 'driverTypes', 'active', 'dms', 1);
 
 -- DELETE QURIES FOR ROLE & PERMISSION MODULE
 -- DELETE Employees and DMS Permissions
