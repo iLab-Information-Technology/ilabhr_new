@@ -190,7 +190,7 @@
                         </td>
                     @endif
                     <td align="right" class="mt-2 mt-lg-0 mt-md-0">
-                        @if ($invoice->clientDetails->company_logo)
+                        @if ($invoice->company->company_logo)
                             <img src="{{ $invoice->clientDetails->image_url }}"
                                 alt="{{ $invoice->clientDetails->company_name }}" class="logo"
                                 style="height:50px;" />
@@ -221,13 +221,13 @@
                                     @lang('modules.invoices.qty')
                                 </td>
                                 <td class="border-right-0 border-left-0" align="right">
-                                    @lang('modules.invoices.unitPrice') ({{ $invoice->currency->currency_code }})
+                                    @lang('modules.invoices.unitPrice') (SAR)
                                 </td>
                                 <td class="border-right-0 border-left-0" align="right">@lang('modules.invoices.tax')</td>
                                 <td class="border-left-0" align="right"
                                     width="{{ $invoiceSetting->hsn_sac_code_show ? '17%' : '20%' }}">
                                     @lang('modules.invoices.amount')
-                                    ({{ $invoice->currency->currency_code }})</td>
+                                    (SAR)</td>
                             </tr>
                             @foreach ($invoice->items as $item)
                                 @if ($item->type == 'item')
@@ -323,7 +323,7 @@
                                         <tr class="bg-light-grey text-dark f-w-500 f-16" align="right">
                                             <td class="border-bottom-0 border-right-0">
                                                 {{ currency_format($invoice->amountDue(), $invoice->currency_id, false) }}
-                                                {{ $invoice->currency->currency_code }}</td>
+                                                SAR</td>
                                         </tr>
                                     </table>
                                 </td>
@@ -373,14 +373,14 @@
                         <tr>
                             <th width="50%" class="bg-light-grey text-dark-grey font-weight-bold">
                                 @lang('modules.invoices.unitPrice')
-                                ({{ $invoice->currency->currency_code }})</th>
+                                (SAR)</th>
                             <td width="50%">{{ currency_format($item->unit_price, $invoice->currency_id, false) }}
                             </td>
                         </tr>
                         <tr>
                             <th width="50%" class="bg-light-grey text-dark-grey font-weight-bold">
                                 @lang('modules.invoices.amount')
-                                ({{ $invoice->currency->currency_code }})</th>
+                                (SAR)</th>
                             <td width="50%">{{ currency_format($item->amount, $invoice->currency_id, false) }}</td>
                         </tr>
                         <tr>
@@ -422,7 +422,7 @@
                         </th>
                     <td width="50%" class="f-16 bg-light-grey text-dark font-weight-bold">
                         {{ currency_format($invoice->amountDue(), $invoice->currency_id, false) }}
-                        {{ $invoice->currency->currency_code }}</td>
+                        SAR</td>
                 </tr>
             </table>
             <table class="inv-note">
@@ -565,61 +565,7 @@
                         </a>
                     @endif
 
-                    @if ($invoice->status != 'canceled')
-                        @if ($invoice->clientDetails)
-                            @if (!is_null($invoice->clientDetails->shipping_address))
-                                @if ($invoice->show_shipping_address == 'yes')
-                                    <li>
-                                        <a class="dropdown-item f-14 text-dark toggle-shipping-address"
-                                            href="javascript:;" data-invoice-id="{{ $invoice->id }}">
-                                            <i class="fa fa-eye-slash f-w-500 mr-2 f-11"></i> @lang('app.hideShippingAddress')
-                                        </a>
-                                    </li>
-                                @else
-                                    <li>
-                                        <a class="dropdown-item f-14 text-dark toggle-shipping-address"
-                                            href="javascript:;" data-invoice-id="{{ $invoice->id }}">
-                                            <i class="fa fa-eye f-w-500 mr-2 f-11"></i> @lang('app.showShippingAddress')
-                                        </a>
-                                    </li>
-                                @endif
-                            @else
-                                <li>
-                                    <a class="dropdown-item f-14 text-dark add-shipping-address" href="javascript:;"
-                                        data-invoice-id="{{ $invoice->id }}">
-                                        <i class="fa fa-plus f-w-500 mr-2 f-11"></i> @lang('app.addShippingAddress')
-                                    </a>
-                                </li>
-                            @endif
-                        @else
-                            @if ($invoice->project->clientDetails)
-                                @if (!is_null($invoice->project->clientDetails->shipping_address))
-                                    @if ($invoice->show_shipping_address == 'yes')
-                                        <li>
-                                            <a class="dropdown-item f-14 text-dark toggle-shipping-address"
-                                                href="javascript:;" data-invoice-id="{{ $invoice->id }}">
-                                                <i class="fa fa-eye-slash f-w-500 mr-2 f-11"></i> @lang('app.hideShippingAddress')
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li>
-                                            <a class="dropdown-item f-14 text-dark toggle-shipping-address"
-                                                href="javascript:;" data-invoice-id="{{ $invoice->id }}">
-                                                <i class="fa fa-eye f-w-500 mr-2 f-11"></i> @lang('app.showShippingAddress')
-                                            </a>
-                                        </li>
-                                    @endif
-                                @else
-                                    <li>
-                                        <a class="dropdown-item f-14 text-dark add-shipping-address"
-                                            href="javascript:;" data-invoice-id="{{ $invoice->id }}">
-                                            <i class="fa plus f-w-500 mr-2 f-11"></i> @lang('app.addShippingAddress')
-                                        </a>
-                                    </li>
-                                @endif
-                            @endif
-                        @endif
-                    @endif
+
 
                     @if (
                         $invoice->status != 'paid' &&
@@ -1027,7 +973,7 @@
             var options = {
                 "key": "{{ $credentials->razorpay_mode == 'test' ? $credentials->test_razorpay_key : $credentials->live_razorpay_key }}",
                 "amount": amount,
-                "currency": '{{ $invoice->currency->currency_code }}',
+                "currency": 'SAR',
                 "name": "{{ $companyName }}",
                 "description": "Invoice Payment",
                 "image": "{{ company()->logo_url }}",

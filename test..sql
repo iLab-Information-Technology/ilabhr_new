@@ -1,4 +1,10 @@
 
+-- Truncate Invoices
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE invoices;
+SET FOREIGN_KEY_CHECKS = 1;
+
+
 -- Module Settings Insert Quries
 -- Note: Add Enum Type type as dms before running these quries
 INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES

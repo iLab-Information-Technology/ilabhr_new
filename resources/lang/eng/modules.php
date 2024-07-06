@@ -345,6 +345,7 @@ return array(
         'coordinatorReport' => 'Coordinator Report'
     ),
     'businesses' => array(
+        'other_business' => 'Other Business',
         'businessId' => 'Business Id',
         'iqaamaNumber' => 'Iqaama Number',
         'totalOrders' => 'Total Orders',
@@ -640,6 +641,9 @@ return array(
         'refunded' => 'Refunded',
         'currency' => 'Currency',
         'invoiceDate' => 'Invoice Date',
+        'walletAmount' => 'Wallet Amount',
+        'startDate' => 'Start Date',
+        'endDate' => 'End Date',
         'projectName' => 'Project Name',
         'item' => 'Item',
         'qty' => 'Quantity',

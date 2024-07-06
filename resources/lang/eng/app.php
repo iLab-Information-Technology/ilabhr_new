@@ -3,6 +3,8 @@
 return array(
     'update' => 'Update',
     'event' => 'Event',
+    'driver' => 'Driver',
+    'received_from_driver' => 'Received From Driver',
     'addUnit' => 'Add New Unit',
     'units' => 'Units',
     'check' => 'Check',

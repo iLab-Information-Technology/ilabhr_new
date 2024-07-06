@@ -588,6 +588,8 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::post('invoices/fetchTimelogs', [InvoiceController::class, 'fetchTimelogs'])->name('invoices.fetch_timelogs');
     Route::get('invoices/check-shipping-address', [InvoiceController::class, 'checkShippingAddress'])->name('invoices.check_shipping_address');
     Route::get('invoices/product-category/{id}', [InvoiceController::class, 'productCategory'])->name('invoices.product_category');
+    Route::get('invoices/get-driver/{id}', [InvoiceController::class, 'getDriver'])->name('invoices.get-driver');
+    Route::get('invoices/get-driver-business-info', [InvoiceController::class, 'getDriverBusinessInfo'])->name('invoices.get-driver-business-info');
 
     Route::get('invoices/toggle-shipping-address/{invoice}', [InvoiceController::class, 'toggleShippingAddress'])->name('invoices.toggle_shipping_address');
     Route::get('invoices/shipping-address-modal/{invoice}', [InvoiceController::class, 'shippingAddressModal'])->name('invoices.shipping_address_modal');

@@ -156,6 +156,8 @@ class Invoice extends BaseModel
     use CustomFieldsTrait;
     use HasCompany;
 
+    protected $guarded = ['id', '_token', '_method'];
+
     protected $casts = [
         'issue_date' => 'datetime',
         'due_date' => 'datetime',
@@ -269,15 +271,15 @@ class Invoice extends BaseModel
         return $this->payment->sum('amount');
     }
 
-    public function getTotalAmountAttribute()
-    {
+    // public function getTotalAmountAttribute()
+    // {
 
-        if (!is_null($this->total) && !is_null($this->currency->currency_symbol)) {
-            return $this->currency->currency_symbol . $this->total;
-        }
+    //     // if (!is_null($this->total) && !is_null($this->currency->currency_symbol)) {
+    //     //     return $this->currency->currency_symbol . $this->total;
+    //     // }
 
-        return '';
-    }
+    //     return $this->total_amount;
+    // }
 
     public function getIssueOnAttribute()
     {
@@ -291,8 +293,9 @@ class Invoice extends BaseModel
 
     public function formatInvoiceNumber()
     {
-        $invoiceSettings = company() ? company()->invoiceSetting : $this->company->invoiceSetting;
-        return \App\Helper\NumberFormat::invoice($this->invoice_number, $invoiceSettings);
+        // $invoiceSettings = company() ? company()->invoiceSetting : $this->company->invoiceSetting;
+        // return \App\Helper\NumberFormat::invoice($this->invoice_number, $invoiceSettings);
+        return $this->invoice_number;
     }
 
     public function getDownloadFileUrlAttribute()
