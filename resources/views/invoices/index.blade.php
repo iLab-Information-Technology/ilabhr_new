@@ -17,24 +17,7 @@
         </div>
         <!-- DATE END -->
 
-        @if (!in_array('client', user_roles()))
-            <!-- CLIENT START -->
-            <div class="select-box d-flex py-2 px-lg-2 px-md-2 px-0 border-right-grey border-right-grey-sm-0">
-                <p class="mb-0 pr-2 f-14 text-dark-grey d-flex align-items-center">@lang('app.client')</p>
-                <div class="select-status">
-                    <select class="form-control select-picker" id="clientID" data-live-search="true" data-size="8">
-                        @if (!in_array('client', user_roles()))
-                            <option value="all">@lang('app.all')</option>
-                        @endif
-                        @foreach ($clients as $client)
-                                <x-user-option :user="$client" />
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <!-- CLIENT END -->
-        @endif
+
 
         <!-- SEARCH BY TASK START -->
         <div class="task-search d-flex  py-1 px-lg-3 px-0 border-right-grey align-items-center">
@@ -60,48 +43,7 @@
         </div>
         <!-- RESET END -->
 
-        <!-- MORE FILTERS START -->
-        <x-filters.more-filter-box>
-            <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.project')</label>
-                <div class="select-filter mb-4">
-                    <div class="select-others">
-                        <select class="form-control select-picker" name="project_id" id="filter_project_id"
-                            data-container="body" data-live-search="true" data-size="8">
-                            <option value="all">@lang('app.all')</option>
-                            @foreach ($projects as $project)
-                                <option value="{{ $project->id }}">{{ $project->project_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
 
-            <div class="more-filter-items">
-                <label class="f-14 text-dark-grey mb-12 text-capitalize" for="usr">@lang('app.status')</label>
-                <div class="select-filter mb-4">
-                    <div class="select-others">
-                        <select class="form-control select-picker" name="status" id="status" data-live-search="true"
-                            data-container="body" data-size="8">
-                            <option value="all">@lang('app.all')</option>
-                            <option {{ request('status') == 'pending' ? 'selected' : '' }} value="pending">
-                                @lang('app.pending')</option>
-                            <option {{ request('status') == 'unpaid' ? 'selected' : '' }} value="unpaid">
-                                @lang('app.unpaid')</option>
-                            <option {{ request('status') == 'paid' ? 'selected' : '' }} value="paid">@lang('app.paid')
-                            </option>
-                            <option {{ request('status') == 'partial' ? 'selected' : '' }} value="partial">
-                                @lang('app.partial')</option>
-                            <option {{ request('status') == 'canceled' ? 'selected' : '' }} value="canceled">
-                                @lang('app.canceled')</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-
-        </x-filters.more-filter-box>
-        <!-- MORE FILTERS END -->
 
     </x-filters.filter-box>
 
@@ -124,26 +66,11 @@ $manageRecurringInvoicesPermission = user()->permission('manage_recurring_invoic
                         @lang('modules.invoices.addInvoice')
                     </x-forms.link-primary>
                 @endif
-                @if ($addInvoicesPermission == 'all' || $manageRecurringInvoicesPermission == 'all')
-                    <x-forms.link-secondary class="mr-3 float-left mb-2 mb-lg-0 mb-md-0" icon="redo"
-                        :link="route('recurring-invoices.index')">
-                        @lang('app.invoiceRecurring')
-                    </x-forms.link-secondary>
-                @endif
-                @if ($addInvoicesPermission == 'all' && in_array('projects', user_modules()))
-                    <x-forms.link-secondary class="mr-3 float-left mb-2 mb-lg-0 mb-md-0" icon="plus"
-                        :link="route('invoices.create', ['type' => 'timelog'])">
-                        @lang('app.createTimeLogInvoice')
-                    </x-forms.link-secondary>
-                @endif
+
 
             </div>
 
-            <div class="btn-group mt-3 mt-lg-0 mt-md-0 ml-lg-3 d-none d-lg-block" role="group">
-                <a href="javascript:;" class="img-lightbox btn btn-secondary f-14"
-                data-image-url="{{ asset('img/invoice-lc.png') }}" data-toggle="tooltip"
-                data-original-title="@lang('app.howItWorks')"><i class="side-icon bi bi-question-circle"></i></a>
-            </div>
+
 
         </div>
 

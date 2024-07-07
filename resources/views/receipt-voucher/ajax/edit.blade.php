@@ -1,6 +1,4 @@
-@php
-$addDesignationPermission = user()->permission('add_designation');
-@endphp
+
 
 <link rel="stylesheet" href="{{ asset('vendor/css/tagify.css') }}">
 
@@ -15,9 +13,9 @@ $addDesignationPermission = user()->permission('add_designation');
                 <div class="row p-20">
                     {{-- Start: Invoice Number --}}
                     <div class="col-md-2">
-                        <x-forms.number fieldId="invoice_number" :fieldLabel="__('modules.invoices.invoiceNumber')"
-                            fieldName="invoice_number" fieldRequired="true" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.invoices.invoiceNumber')" :fieldValue="$lastInvoice">
+                        <x-forms.number fieldId="voucher_number" :fieldLabel="__('modules.invoices.voucherNumber')"
+                            fieldName="voucher_number" fieldRequired="true" fieldReadOnly="true"
+                            :fieldPlaceholder="__('modules.invoices.voucherNumber')" :fieldValue="$receiptVoucher->id">
                         </x-forms.number>
                     </div>
                     {{-- End: Invoice Number --}}
@@ -27,8 +25,8 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     {{-- Start: Invoice Date --}}
                     <div class="col-2">
-                        <x-forms.datepicker fieldId="invoice_date" :fieldLabel="__('modules.invoices.invoiceDate')"
-                            fieldName="invoice_date" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.invoiceDate')" />
+                        <x-forms.datepicker fieldId="voucher_date" :fieldLabel="__('modules.invoices.voucherDate')"
+                            fieldName="voucher_date" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.voucherDate')" :fieldValue="$receiptVoucher->voucher_date"/>
                     </div>
                     {{-- End: Invoice Date --}}
 
@@ -44,7 +42,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     {{-- Start: Total Amount --}}
                     <div class="col-4">
                         <x-forms.number fieldName="total_amount" fieldId="total_amount"
-                        fieldLabel="{{ __('modules.payments.totalAmount') }}" fieldRequired="true" :fieldPlaceholder="__('modules.payments.totalAmount')" />
+                        fieldLabel="{{ __('modules.payments.totalAmount') }}" fieldRequired="true" :fieldPlaceholder="__('modules.payments.totalAmount')" :fieldValue="$receiptVoucher->total_amount"/>
                     </div>
                     {{-- End: Total Amount --}}
 
@@ -57,7 +55,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     <div class="col-md-2">
                         <x-forms.text fieldId="city" :fieldLabel="__('modules.stripeCustomerAddress.city')"
                             fieldName="city" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.stripeCustomerAddress.city')">
+                            :fieldPlaceholder="__('modules.stripeCustomerAddress.city')" :fieldValue="$receiptVoucher->driver->branch->name">
                         </x-forms.text>
                     </div>
                     {{-- End: City --}}
@@ -67,7 +65,7 @@ $addDesignationPermission = user()->permission('add_designation');
                     <div class="col-md-2">
                         <x-forms.text fieldId="iqaama_number" :fieldLabel="__('modules.drivers.iqamaNumber')"
                             fieldName="iqaama_number" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.drivers.iqamaNumber')">
+                            :fieldPlaceholder="__('modules.drivers.iqamaNumber')" :fieldValue="$receiptVoucher->driver->iqaama_number">
                         </x-forms.text>
                     </div>
                     {{-- End: Iqama Number --}}
@@ -77,7 +75,9 @@ $addDesignationPermission = user()->permission('add_designation');
                         <x-forms.select fieldId="business_id" :fieldLabel="__('app.menu.businesses')"
                             fieldName="business_id"
                             :fieldPlaceholder="__('app.menu.businesses')">
-
+                            @foreach ($receiptVoucher->driver->businesses as $item)
+                                <option value="{{ $item->id }}" @selected($item->id == $receiptVoucher->business_id)>{{ $item->name }}</option>
+                            @endforeach
                         </x-forms.select>
                     </div>
                     {{-- End: Businesses --}}
@@ -94,28 +94,28 @@ $addDesignationPermission = user()->permission('add_designation');
                     {{-- Start: Other Business --}}
                     <div class="col-md-4">
                         <x-forms.text fieldName="other_business" fieldId="other_business"
-                        fieldLabel="{{ __('modules.businesses.other_business') }}" :fieldPlaceholder="__('modules.businesses.other_business')" />
+                        fieldLabel="{{ __('modules.businesses.other_business') }}" :fieldPlaceholder="__('modules.businesses.other_business')" :fieldValue="$receiptVoucher->other_business"/>
                     </div>
                     {{-- End: Other Business --}}
 
                     {{-- Start: Start Date --}}
                     <div class="col-md-2">
                         <x-forms.datepicker fieldId="start_date" :fieldLabel="__('modules.invoices.startDate')"
-                            fieldName="start_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" />
+                            fieldName="start_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" :fieldValue="$receiptVoucher->start_date"/>
                     </div>
                     {{-- End: Start Date --}}
 
                     {{-- Start: End Date --}}
                     <div class="col-md-2">
                         <x-forms.datepicker fieldId="end_date" :fieldLabel="__('modules.invoices.endDate')"
-                            fieldName="end_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" />
+                            fieldName="end_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" :fieldValue="$receiptVoucher->end_date"/>
                     </div>
                     {{-- End: End Date --}}
 
                     {{-- Start: Wallet Amount--}}
                     <div class="col-md-4">
                         <x-forms.number fieldName="wallet_amount" fieldId="wallet_amount"
-                        fieldLabel="{{ __('modules.invoices.walletAmount') }}" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.walletAmount')" />
+                        fieldLabel="{{ __('modules.invoices.walletAmount') }}" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.walletAmount')" :fieldValue="$receiptVoucher->wallet_amount"/>
                     </div>
                     {{-- End: Wallet Amount--}}
 
@@ -124,11 +124,11 @@ $addDesignationPermission = user()->permission('add_designation');
                         <x-forms.select fieldId="status" :fieldLabel="__('app.status')"
                             fieldName="status"
                             :fieldPlaceholder="__('app.status')">
-                            <option value="paid">Paid</option>
-                            <option value="unpaid">Unpaid</option>
-                            <option value="partial">Partial</option>
-                            <option value="canceled">Canceled</option>
-                            <option value="draft">Draft</option>
+                            <option value="paid" @selected($receiptVoucher->status == 'paid')>Paid</option>
+                            <option value="unpaid" @selected($receiptVoucher->status == 'unpaid')>Unpaid</option>
+                            <option value="partial" @selected($receiptVoucher->status == 'partial')>Partial</option>
+                            <option value="canceled" @selected($receiptVoucher->status == 'canceled')>Canceled</option>
+                            <option value="draft" @selected($receiptVoucher->status == 'draft')>Draft</option>
                         </x-forms.select>
                     </div>
                     {{-- End: Status --}}
@@ -207,9 +207,7 @@ $addDesignationPermission = user()->permission('add_designation');
 
         });
 
-
-
-        datepicker('#invoice_date', {
+        datepicker('#voucher_date', {
             position: 'bl',
             maxDate: new Date(),
             ...datepickerConfig
@@ -225,22 +223,15 @@ $addDesignationPermission = user()->permission('add_designation');
             ...datepickerConfig
         });
 
-
-
         $('#save-more-driver-form').click(function() {
-
             $('#add_more').val(true);
-
             const url = "{{ route('invoices.store') }}";
             var data = $('#save-driver-data-form').serialize();
             saveDriver(data, url, "#save-more-driver-form");
-
-
         });
 
         $('#save-driver-form').click(function() {
-
-            const url = "{{ route('invoices.store') }}";
+            const url = "{{ route('receipt-voucher.store') }}";
             var data = $('#save-driver-data-form').serialize();
             saveDriver(data, url, "#save-driver-form");
 
@@ -303,13 +294,5 @@ $addDesignationPermission = user()->permission('add_designation');
 
         init(RIGHT_MODAL);
     });
-
-    $('.cropper').on('dropify.fileReady', function(e) {
-        var inputId = $(this).find('input').attr('id');
-        var url = "{{ route('cropper', ':element') }}";
-        url = url.replace(':element', inputId);
-        $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
-        $.ajaxModal(MODAL_LG, url);
-    })
 </script>
 

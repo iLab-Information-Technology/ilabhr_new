@@ -150,6 +150,9 @@
         @if (in_array('revenueReporting', user_modules()) && $sidebarUserPermissions['view_revenue_reporting'] != 5 && $sidebarUserPermissions['view_revenue_reporting'] != 'none')
         <x-sub-menu-item :link="route('dms.revenue-reporting.index')" :text="__('app.menu.revenue_reporting')" />
         @endif
+        @if (in_array('receiptVoucher', user_modules()) && $sidebarUserPermissions['view_receipt_voucher'] != 5 && $sidebarUserPermissions['view_receipt_voucher'] != 'none')
+        <x-sub-menu-item :link="route('receipt-voucher.index')" :text="__('app.menu.receipt_voucher')" />
+        @endif
     </div>
 </x-menu-item>
 @endif

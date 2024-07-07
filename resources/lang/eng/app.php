@@ -134,6 +134,7 @@ return array(
     'menu' => array(
         'branches' => 'Branches',
         'revenue_reporting' => 'Revenue Reporting',
+        'receipt_voucher' => 'Receipt Voucher',
         'activity' => 'Activity',
         'units' => 'Units',
         'employment' => 'Employment',
@@ -1036,6 +1037,7 @@ return array(
     'addLanguage' => 'Add Language',
     'addEmployee' => 'Add Employee',
     'addDriver' => 'Add Driver',
+    'addReceiptVoucher' => 'Add Receipt Voucher',
     'addBranch' => 'Add Branch',
     'addDriverType' => 'Add Driver Type',
     'addClientNote' => 'Add Client Note',

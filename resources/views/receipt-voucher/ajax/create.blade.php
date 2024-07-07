@@ -1,6 +1,4 @@
-@php
-$addDesignationPermission = user()->permission('add_designation');
-@endphp
+
 
 <link rel="stylesheet" href="{{ asset('vendor/css/tagify.css') }}">
 
@@ -15,9 +13,9 @@ $addDesignationPermission = user()->permission('add_designation');
                 <div class="row p-20">
                     {{-- Start: Invoice Number --}}
                     <div class="col-md-2">
-                        <x-forms.number fieldId="invoice_number" :fieldLabel="__('modules.invoices.invoiceNumber')"
-                            fieldName="invoice_number" fieldRequired="true" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.invoices.invoiceNumber')" :fieldValue="$lastInvoice">
+                        <x-forms.number fieldId="voucher_number" :fieldLabel="__('modules.invoices.voucherNumber')"
+                            fieldName="voucher_number" fieldRequired="true" fieldReadOnly="true"
+                            :fieldPlaceholder="__('modules.invoices.voucherNumber')" :fieldValue="$lastVoucherId">
                         </x-forms.number>
                     </div>
                     {{-- End: Invoice Number --}}
@@ -27,8 +25,8 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     {{-- Start: Invoice Date --}}
                     <div class="col-2">
-                        <x-forms.datepicker fieldId="invoice_date" :fieldLabel="__('modules.invoices.invoiceDate')"
-                            fieldName="invoice_date" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.invoiceDate')" />
+                        <x-forms.datepicker fieldId="voucher_date" :fieldLabel="__('modules.invoices.voucherDate')"
+                            fieldName="voucher_date" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.voucherDate')" />
                     </div>
                     {{-- End: Invoice Date --}}
 
@@ -207,9 +205,7 @@ $addDesignationPermission = user()->permission('add_designation');
 
         });
 
-
-
-        datepicker('#invoice_date', {
+        datepicker('#voucher_date', {
             position: 'bl',
             maxDate: new Date(),
             ...datepickerConfig
@@ -225,22 +221,15 @@ $addDesignationPermission = user()->permission('add_designation');
             ...datepickerConfig
         });
 
-
-
         $('#save-more-driver-form').click(function() {
-
             $('#add_more').val(true);
-
             const url = "{{ route('invoices.store') }}";
             var data = $('#save-driver-data-form').serialize();
             saveDriver(data, url, "#save-more-driver-form");
-
-
         });
 
         $('#save-driver-form').click(function() {
-
-            const url = "{{ route('invoices.store') }}";
+            const url = "{{ route('receipt-voucher.store') }}";
             var data = $('#save-driver-data-form').serialize();
             saveDriver(data, url, "#save-driver-form");
 

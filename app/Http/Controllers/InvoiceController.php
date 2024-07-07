@@ -29,14 +29,13 @@ use App\Models\PaymentGatewayCredentials;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Project;
+use App\Models\Driver;
 use App\Models\ProjectMilestone;
 use App\Models\ProjectTimeLog;
 use App\Models\Proposal;
 use App\Models\Tax;
 use App\Models\UnitType;
 use App\Models\User;
-use App\Models\Driver;
-use App\Models\Business;
 use App\Scopes\ActiveScope;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -79,35 +78,258 @@ class InvoiceController extends AccountBaseController
     public function create()
     {
         $this->addPermission = user()->permission('add_invoices');
+
         abort_403(!in_array($this->addPermission, ['all', 'added']));
+
+        if (request('invoice') != '') {
+            $this->invoiceId = request('invoice');
+            $this->type = 'invoice';
+            $this->invoice = Invoice::with('items', 'client', 'client.projects')->findOrFail($this->invoiceId);
+        }
+
         $this->pageTitle = __('modules.invoices.addInvoice');
 
-        $this->lastInvoice = Invoice::lastInvoiceNumber();
-        $this->lastInvoice = $this->lastInvoice == 0 ? 1000 : $this->lastInvoice + 1;
+        // this data is sent from project and client invoices
+        $this->project = request('project_id') ? Project::findOrFail(request('project_id')) : null;
+
+        if (request('client_id')) {
+            $this->client = User::withoutGlobalScope(ActiveScope::class)->findOrFail(request('client_id'));
+        }
+
+        if (request('estimate') != '') {
+            $this->estimateId = request('estimate');
+            $this->type = 'estimate';
+            $this->estimate = Estimate::with('items', 'client', 'client.clientDetails', 'client.projects')->findOrFail($this->estimateId);
+        }
+
+        if (request('proposal') != '') {
+            $this->proposalId = request('proposal');
+            $this->type = 'proposal';
+            $this->estimate = Proposal::with('items', 'lead', 'lead.contact')->findOrFail($this->proposalId);
+            $this->client = $this->estimate->lead->contact->client;
+        }
+
+        $this->currencies = Currency::all();
+        $this->categories = ProductCategory::all();
+        $this->lastInvoice = Invoice::lastInvoiceNumber() + 1;
         $this->invoiceSetting = invoice_setting();
         $this->zero = '';
-        $this->drivers = Driver::all();
-        $this->businesses = Business::all();
+
+        if (strlen($this->lastInvoice) < $this->invoiceSetting->invoice_digit) {
+            $condition = $this->invoiceSetting->invoice_digit - strlen($this->lastInvoice);
+
+            for ($i = 0; $i < $condition; $i++) {
+                $this->zero = '0' . $this->zero;
+            }
+        }
+
+        $this->units = UnitType::all();
+        $this->taxes = Tax::all();
+
+        if (module_enabled('Purchase')){
+            /** @phpstan-ignore-next-line */
+            $this->products = Product::with('inventory')->get();
+        }
+        else
+        {
+            $this->products = Product::all();
+        }
+
+        $this->clients = User::allClients();
+        $this->companyAddresses = CompanyAddress::all();
+        $this->projects = Project::allProjectsHavingClient();
+        $this->linkInvoicePermission = user()->permission('link_invoice_bank_account');
+        $this->viewBankAccountPermission = user()->permission('view_bankaccount');
+        $this->paymentGateway = PaymentGatewayCredentials::first();
+
+        $bankAccounts = BankAccount::where('status', 1)->where('currency_id', company()->currency_id);
+
+        if($this->viewBankAccountPermission == 'added'){
+            $bankAccounts = $bankAccounts->where('added_by', user()->id);
+        }
+
+        $bankAccounts = $bankAccounts->get();
+        $this->bankDetails = $bankAccounts;
+
+        $this->companyCurrency = Currency::where('id', company()->currency_id)->first();
+
+        if (request('type') == 'timelog' && in_array('projects', user_modules())) {
+
+            $this->startDate = Carbon::now($this->company->timezone)->subDays(7);
+            $this->endDate = Carbon::now($this->company->timezone);
+
+            if (request()->ajax()) {
+                $html = view('invoices.ajax.create-timelog-invoice', $this->data)->render();
+
+                return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+            }
+
+            $this->view = 'invoices.ajax.create-timelog-invoice';
+
+            return view('invoices.create', $this->data);
+        }
+
+        $invoice = new Invoice();
+
+        if ($invoice->getCustomFieldGroupsWithFields()) {
+            $this->fields = $invoice->getCustomFieldGroupsWithFields()->fields;
+        }
+
         if (request()->ajax()) {
             $html = view('invoices.ajax.create', $this->data)->render();
+
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
         $this->view = 'invoices.ajax.create';
+
         return view('invoices.create', $this->data);
 
     }
 
     public function store(StoreInvoice $request)
     {
-        $request['company_id'] = company()->id;
-        $request['invoice_date'] = Carbon::createFromFormat($this->company->date_format, $request->invoice_date)->format('Y-m-d');
-        $request['start_date'] = Carbon::createFromFormat($this->company->date_format, $request->start_date)->format('Y-m-d');
-        $request['end_date'] = Carbon::createFromFormat($this->company->date_format, $request->end_date)->format('Y-m-d');
+        $redirectUrl = urldecode($request->redirect_url);
 
-        $invoice = Invoice::create($request->all());
+        if ($redirectUrl == '') {
+            $redirectUrl = route('invoices.index');
+        }
 
-        return Reply::successWithData(__('messages.recordSaved'), ['invoiceID' => $invoice->id]);
+        $items = $request->item_name;
+        $cost_per_item = $request->cost_per_item;
+        $quantity = $request->quantity;
+        $amount = $request->amount;
+
+
+        if (empty($items)) {
+            return Reply::error(__('messages.addItem'));
+        }
+
+        foreach ($items as $itm) {
+            if (is_null($itm)) {
+                return Reply::error(__('messages.itemBlank'));
+            }
+        }
+
+        foreach ($quantity as $qty) {
+            if (!is_numeric($qty) && (intval($qty) < 1)) {
+                return Reply::error(__('messages.quantityNumber'));
+            }
+        }
+
+        foreach ($cost_per_item as $rate) {
+            if (!is_numeric($rate)) {
+                return Reply::error(__('messages.unitPriceNumber'));
+            }
+        }
+
+        foreach ($amount as $amt) {
+            if (!is_numeric($amt)) {
+                return Reply::error(__('messages.amountNumber'));
+            }
+        }
+
+        $invoice = new Invoice();
+        $invoice->project_id = $request->project_id ?? null;
+        $invoice->client_id = ($request->client_id) ?: null;
+        $invoice->issue_date = Carbon::createFromFormat($this->company->date_format, $request->issue_date)->format('Y-m-d');
+        $invoice->due_date = Carbon::createFromFormat($this->company->date_format, $request->due_date)->format('Y-m-d');
+        $invoice->sub_total = round($request->sub_total, 2);
+        $invoice->discount = round($request->discount_value, 2);
+        $invoice->discount_type = $request->discount_type;
+        $invoice->total = round($request->total, 2);
+        $invoice->due_amount = round($request->total, 2);
+        $invoice->currency_id = $request->currency_id;
+        $invoice->default_currency_id = company()->currency_id;
+        $invoice->exchange_rate = $request->exchange_rate;
+        $invoice->recurring = 'no';
+        $invoice->billing_frequency = $request->recurring_payment == 'yes' ? $request->billing_frequency : null;
+        $invoice->billing_interval = $request->recurring_payment == 'yes' ? $request->billing_interval : null;
+        $invoice->billing_cycle = $request->recurring_payment == 'yes' ? $request->billing_cycle : null;
+        $invoice->note = trim_editor($request->note);
+        $invoice->show_shipping_address = $request->show_shipping_address;
+        $invoice->invoice_number = $request->invoice_number;
+        $invoice->company_address_id = $request->company_address_id;
+        $invoice->estimate_id = $request->estimate_id ? $request->estimate_id : null;
+        $invoice->bank_account_id = $request->bank_account_id;
+        $invoice->payment_status = $request->payment_status == null ? '0' : $request->payment_status;
+        $invoice->save();
+
+        // To add custom fields data
+
+        if ($request->custom_fields_data) {
+            $invoice->updateCustomFieldData($request->custom_fields_data);
+        }
+
+        if ($request->estimate_id) {
+            $estimate = Estimate::findOrFail($request->estimate_id);
+            $estimate->status = 'accepted';
+            $estimate->save();
+        }
+
+        if ($request->proposal_id) {
+            $proposal = Proposal::findOrFail($request->proposal_id);
+            $proposalData = [
+                'invoice_convert' => 1,
+            ];
+
+            if ($proposal->signature) {
+                $proposalData['status'] = 'accepted';
+            }
+
+            Proposal::where('id', $request->proposal_id)->update($proposalData);
+        }
+
+        if ($request->has('shipping_address')) {
+            if ($invoice->project_id != null && $invoice->project_id != '') {
+                $client = $invoice->project->clientdetails;
+            }
+            elseif ($invoice->client_id != null && $invoice->client_id != '') {
+                $client = $invoice->clientdetails;
+            }
+
+            if (isset($client)) {
+                $client->shipping_address = $request->shipping_address;
+
+                $client->save();
+            }
+        }
+
+        // Set milestone paid if converted milestone to invoice
+        if ($request->milestone_id != '') {
+            $milestone = ProjectMilestone::findOrFail($request->milestone_id);
+            $milestone->invoice_created = 1;
+            $milestone->invoice_id = $invoice->id;
+            $milestone->save();
+        }
+
+        // Set invoice id in timelog
+        if ($request->has('timelog_from') && $request->timelog_from != '' && $request->has('timelog_to') && $request->timelog_to != '') {
+            $timelogFrom = Carbon::createFromFormat($this->company->date_format, $request->timelog_from)->format('Y-m-d');
+            $timelogTo = Carbon::createFromFormat($this->company->date_format, $request->timelog_to)->format('Y-m-d');
+            $this->timelogs = ProjectTimeLog::where('project_time_logs.project_id', $request->project_id)
+                ->leftJoin('tasks', 'tasks.id', '=', 'project_time_logs.task_id')
+                ->where('project_time_logs.earnings', '>', 0)
+                ->where('project_time_logs.approved', 1)
+                ->where(
+                    function ($query) {
+                        $query->where('tasks.billable', 1)
+                            ->orWhereNull('tasks.billable');
+                    }
+                )
+                ->whereDate('project_time_logs.start_time', '>=', $timelogFrom)
+                ->whereDate('project_time_logs.end_time', '<=', $timelogTo)
+                ->update(['invoice_id' => $invoice->id]);
+        }
+
+        // Log search
+        $this->logSearchEntry($invoice->id, $invoice->invoice_number, 'invoices.show', 'invoice');
+
+        if ($invoice->send_status == 1) {
+            return Reply::successWithData(__('messages.invoiceSentSuccessfully'), ['redirectUrl' => $redirectUrl, 'invoiceID' => $invoice->id]);
+        }
+
+        return Reply::successWithData(__('messages.recordSaved'), ['redirectUrl' => $redirectUrl, 'invoiceID' => $invoice->id]);
     }
 
     public function applyQuickAction(Request $request)
@@ -1120,17 +1342,6 @@ class InvoiceController extends AccountBaseController
         return Reply::dataOnly(['status' => 'success', 'type' => $unitId] );
     }
 
-    public function getDriver($id){
-        return Driver::with('branch', 'businesses')->find($id);
-    }
-
-    public function getDriverBusinessInfo(Request $request){
-        return DB::table('business_driver')->where([
-            'driver_id' => $request->driver_id,
-            'business_id' => $request->business_id,
-        ])->first();
-    }
-
     public function productCategory(Request $request)
     {
         $categorisedProduct = Product::with('category');
@@ -1154,4 +1365,15 @@ class InvoiceController extends AccountBaseController
         return Reply::dataOnly(['status' => 'success', 'description' => $description]);
     }
 
+
+    public function getDriver($id){
+        return Driver::with('branch', 'businesses')->find($id);
+    }
+
+    public function getDriverBusinessInfo(Request $request){
+        return DB::table('business_driver')->where([
+            'driver_id' => $request->driver_id,
+            'business_id' => $request->business_id,
+        ])->first();
+    }
 }

@@ -271,15 +271,14 @@ class Invoice extends BaseModel
         return $this->payment->sum('amount');
     }
 
-    // public function getTotalAmountAttribute()
-    // {
+    public function getTotalAmountAttribute()
+    {
 
-    //     // if (!is_null($this->total) && !is_null($this->currency->currency_symbol)) {
-    //     //     return $this->currency->currency_symbol . $this->total;
-    //     // }
+        if (!is_null($this->total) && !is_null($this->currency->currency_symbol)) {
+            return $this->currency->currency_symbol . $this->total;
+        }
 
-    //     return $this->total_amount;
-    // }
+    }
 
     public function getIssueOnAttribute()
     {

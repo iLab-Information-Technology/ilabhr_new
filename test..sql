@@ -1,4 +1,36 @@
 
+INSERT INTO modules (module_name, is_superadmin) VALUES('receiptVoucher', 0);
+
+
+-- Permission Insert Quries
+INSERT INTO permissions (name, display_name, module_id, allowed_permissions)
+VALUES('view_receipt_voucher', 'View Receipt Voucher', 42, '{"all":4, "none":5}');
+
+INSERT INTO permissions (name, display_name, module_id, allowed_permissions)
+VALUES('add_receipt_voucher', 'Add Receipt Voucher', 42, '{"all":4, "none":5}');
+
+INSERT INTO permissions (name, display_name, module_id, allowed_permissions)
+VALUES('edit_receipt_voucher', 'Edit Receipt Voucher', 42, '{"all":4, "none":5}');
+
+INSERT INTO permissions (name, display_name, module_id, allowed_permissions)
+VALUES('delete_receipt_voucher', 'Delete Receipt Voucher', 42, '{"all":4, "none":5}');
+
+
+INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES
+(1, 'receiptVoucher', 'active', 'admin', 1),
+(2, 'receiptVoucher', 'active', 'admin', 1);
+
+INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES
+(1, 'receiptVoucher', 'active', 'employee', 1),
+(2, 'receiptVoucher', 'active', 'employee', 1);
+
+INSERT INTO module_settings (company_id, module_name, status, type, is_allowed) VALUES
+(1, 'receiptVoucher', 'active', 'dms', 1),
+(2, 'receiptVoucher', 'active', 'dms', 1);
+
+
+
+
 -- Truncate Invoices
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE invoices;

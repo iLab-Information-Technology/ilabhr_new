@@ -43,6 +43,7 @@ use App\Http\Controllers\TaskLabelController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClientNoteController;
 use App\Http\Controllers\CreditNoteController;
+use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\LeadReportController;
@@ -199,6 +200,8 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::resource('clientSubCategory', ClientSubCategoryController::class);
 
     // DMS
+    Route::resource('branches', BranchController::class);
+    Route::resource('receipt-voucher', ReceiptVoucherController::class);
     Route::resource('branches', BranchController::class);
     Route::resource('driver-types', DriverTypeController::class);
     Route::get('get-driver-type', [DriverController::class, 'getDriverType'])->name('drivers.get-driver-type');

@@ -44,13 +44,13 @@
                             </div>
                         </div>
                         <div>
-                            @if ($role->name == 'admin')
+                            {{-- @if ($role->name == 'admin')
                                 <span class="text-lightest">@lang('messages.adminPermissionsCantChange')</span>
-                            @else
+                            @else --}}
                                 <x-forms.button-secondary class="view-permission" data-role-id="{{ $role->id }}" icon="key">
                                     @lang('modules.permission.permissions')
                                 </x-forms.button-secondary>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     </div>
                     <div class="table-sm-responsive role-permissions" id="role-permission-{{ $role->id }}"></div>

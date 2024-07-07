@@ -901,6 +901,7 @@ if (!function_exists('sidebar_user_perms')) {
                 'view_branches',
                 'view_businesses',
                 'view_revenue_reporting',
+                'view_receipt_voucher',
             ];
 
 
