@@ -12,6 +12,12 @@ class ReceiptVoucher extends Model
 
     protected $guarded = ['id', '_token', '_method'];
 
+    protected $casts = [
+        'voucher_date' => 'datetime',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime'
+    ];
+
     /**
      * Get the driver that owns the ReceiptVoucher
      *
@@ -27,7 +33,7 @@ class ReceiptVoucher extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function business(): BelongsTo
+    public function business()
     {
         return $this->belongsTo(Business::class);
     }

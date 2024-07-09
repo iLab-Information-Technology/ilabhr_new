@@ -135,6 +135,7 @@ use App\Http\Controllers\RolePermissionController;
 
 
 
+
 Route::get('/temp-reset-admin-permissions', function() {
     $adminRole = Role::where('name', 'admin')->first();
     $allPermissions = Permission::whereHas('module', function ($query) {

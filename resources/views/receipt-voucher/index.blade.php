@@ -309,7 +309,7 @@
                 buttonsStyling: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var url = "{{ route('drivers.destroy', ':id') }}";
+                    var url = "{{ route('receipt-voucher.destroy', ':id') }}";
                     url = url.replace(':id', id);
 
                     var token = "{{ csrf_token() }}";

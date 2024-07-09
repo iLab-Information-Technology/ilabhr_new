@@ -4,8 +4,8 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <x-form id="save-driver-data-form">
-
+        <x-form method="PUT" id="save-driver-data-form">
+            <input type="hidden" name="id" value="{{ $receiptVoucher->id }}">
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
                     @lang('app.invoiceDetails')
@@ -15,7 +15,7 @@
                     <div class="col-md-2">
                         <x-forms.number fieldId="voucher_number" :fieldLabel="__('modules.invoices.voucherNumber')"
                             fieldName="voucher_number" fieldRequired="true" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.invoices.voucherNumber')" :fieldValue="$receiptVoucher->id">
+                            :fieldPlaceholder="__('modules.invoices.voucherNumber')" :fieldValue="$receiptVoucher->voucher_number">
                         </x-forms.number>
                     </div>
                     {{-- End: Invoice Number --}}
@@ -26,7 +26,7 @@
                     {{-- Start: Invoice Date --}}
                     <div class="col-2">
                         <x-forms.datepicker fieldId="voucher_date" :fieldLabel="__('modules.invoices.voucherDate')"
-                            fieldName="voucher_date" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.voucherDate')" :fieldValue="$receiptVoucher->voucher_date"/>
+                            fieldName="voucher_date" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.voucherDate')" :fieldValue="$receiptVoucher->voucher_date->format(company()->date_format)"/>
                     </div>
                     {{-- End: Invoice Date --}}
 
@@ -34,7 +34,7 @@
                     <div class="col-6">
                         <x-forms.select2-ajax  fieldId="driver_id" fieldName="driver_id"
                             :fieldLabel="__('app.received_from_driver')" :route="route('get.driver-ajax')"
-                            :placeholder="__('placeholders.searchForDrivers')" fieldRequired="true">
+                            :placeholder="__('placeholders.searchForDrivers')" fieldRequired="true" :isEdit="true" :idToSelect="$receiptVoucher->driver_id">
                         </x-forms.select2-ajax>
                     </div>
                     {{-- End: Driver ID --}}
@@ -75,9 +75,7 @@
                         <x-forms.select fieldId="business_id" :fieldLabel="__('app.menu.businesses')"
                             fieldName="business_id"
                             :fieldPlaceholder="__('app.menu.businesses')">
-                            @foreach ($receiptVoucher->driver->businesses as $item)
-                                <option value="{{ $item->id }}" @selected($item->id == $receiptVoucher->business_id)>{{ $item->name }}</option>
-                            @endforeach
+
                         </x-forms.select>
                     </div>
                     {{-- End: Businesses --}}
@@ -101,14 +99,14 @@
                     {{-- Start: Start Date --}}
                     <div class="col-md-2">
                         <x-forms.datepicker fieldId="start_date" :fieldLabel="__('modules.invoices.startDate')"
-                            fieldName="start_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" :fieldValue="$receiptVoucher->start_date"/>
+                            fieldName="start_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" :fieldValue="$receiptVoucher->start_date->format(company()->date_format)"/>
                     </div>
                     {{-- End: Start Date --}}
 
                     {{-- Start: End Date --}}
                     <div class="col-md-2">
                         <x-forms.datepicker fieldId="end_date" :fieldLabel="__('modules.invoices.endDate')"
-                            fieldName="end_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" :fieldValue="$receiptVoucher->end_date"/>
+                            fieldName="end_date" fieldRequired="true" :fieldPlaceholder="__('placeholders.date')" :fieldValue="$receiptVoucher->end_date->format(company()->date_format)"/>
                     </div>
                     {{-- End: End Date --}}
 
@@ -134,15 +132,11 @@
                     {{-- End: Status --}}
                 </div>
 
-
-
                 <x-form-actions>
                     <x-forms.button-primary id="save-driver-form" class="mr-3" icon="check">
                         @lang('app.save')
                     </x-forms.button-primary>
-                    <x-forms.button-secondary class="mr-3" id="save-more-driver-form" icon="check-double">@lang('app.saveAddMore')
-                    </x-forms.button-secondary>
-                    <x-forms.button-cancel class="border-0 " data-dismiss="modal">@lang('app.cancel')
+                    <x-forms.button-cancel class="border-0 " href="{{ route('receipt-voucher.index') }}">@lang('app.cancel')
                     </x-forms.button-cancel>
 
                 </x-form-actions>
@@ -158,7 +152,28 @@
 
     $(document).ready(function() {
         $('#business_id').on('change', function(){
-            var business_id = $(this).val();
+            const business_id = $(this).val();
+            handleBusinessChange(business_id);
+        });
+
+        $('#driver_id').on('change', function(){
+            const driver_id = $(this).val();
+            handleDriverChange(driver_id);
+        });
+        const driver = @json($receiptVoucher->driver);
+
+        if (driver) {
+            const option = new Option(driver.name, driver.id, true, true);
+            $('#driver_id').append(option).val(driver.id).trigger('change');
+            handleDriverChange(driver.id);
+        }
+
+        const business = @json($receiptVoucher->business);
+        if (business) {
+            handleBusinessChange(business.id);
+        }
+
+        function handleBusinessChange(business_id){
             var driver_id = $('#driver_id').val();
             if(business_id){
                 const url = "{{route('invoices.get-driver-business-info')}}";
@@ -174,10 +189,11 @@
             }else{
                 $('#account_number').val('');
             }
-        });
 
-        $('#driver_id').on('change', function(){
-            var driver_id = $(this).val();
+        }
+
+        function handleDriverChange(driver_id){
+
             if(driver_id){
                 var url = "{{route('invoices.get-driver', ':id')}}",
                 url = (driver_id) ? url.replace(':id', driver_id) : url.replace(':id', null);
@@ -190,12 +206,13 @@
                         $('#iqaama_number').val(response?.iqaama_number);
                         $('#city').val(response?.branch?.name);
 
-                        let options = '<option>--</option>';
-                        response?.businesses?.forEach(business => {
-                            console.log(business)
-                            options += `<option value="${business.id}">${business.name}</option>`;
-                        });
-                        $('#business_id').html(options).selectpicker('refresh');
+                        if(business){
+                            let options = '<option>--</option>';
+                            response?.businesses?.forEach(currentbusiness => {
+                                options += `<option value="${currentbusiness.id}" selected="${currentbusiness.id == business?.id}">${currentbusiness.name}</option>`;
+                            });
+                            $('#business_id').html(options).selectpicker('refresh');
+                        }
                     }
                 });
             }else{
@@ -205,7 +222,8 @@
 
             }
 
-        });
+
+        }
 
         datepicker('#voucher_date', {
             position: 'bl',
@@ -231,7 +249,7 @@
         });
 
         $('#save-driver-form').click(function() {
-            const url = "{{ route('receipt-voucher.store') }}";
+            const url = "{{ route('receipt-voucher.update', $receiptVoucher->id) }}";
             var data = $('#save-driver-data-form').serialize();
             saveDriver(data, url, "#save-driver-form");
 
@@ -248,10 +266,11 @@
                 file: true,
                 data: data,
                 success: function(response) {
+                    console.log(response)
                     if (response.status == 'success') {
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');
-                            // window.location.reload();
+                            window.location.reload();
                         }
                         else if(response.add_more == true) {
 
@@ -271,7 +290,9 @@
 
                         }
                         else {
-                            window.location.href = response.redirectUrl;
+                            window.location = "{{route('receipt-voucher.index')}}";
+
+
 
                         }
 

@@ -6,11 +6,11 @@ use App\DataTables\ReceiptVoucherDataTable;
 use App\DataTables\VoucherDataTable;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\ReceiptVoucher\StoreRequest;
+use App\Http\Requests\Admin\ReceiptVoucher\UpdateRequest;
 use App\Models\{Driver, DriverType, User, ReceiptVoucher};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
-use App\Http\Requests\Admin\Driver\UpdateRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -79,7 +79,11 @@ class ReceiptVoucherController extends AccountBaseController
             $validated['voucher_date'] = Carbon::createFromFormat($this->company->date_format, $request->voucher_date)->format('Y-m-d');
             $validated['start_date'] = Carbon::createFromFormat($this->company->date_format, $request->start_date)->format('Y-m-d');
             $validated['end_date'] = Carbon::createFromFormat($this->company->date_format, $request->end_date)->format('Y-m-d');
+            $validated['business_id'] = $request->business_id ? $request->business_id : 0;
+            $validated['other_business'] = $request->other_business ? $request->other_business : '';
+
             $voucher = ReceiptVoucher::create($validated);
+
 
             DB::commit();
         } catch (\Exception $e) {
@@ -107,45 +111,21 @@ class ReceiptVoucherController extends AccountBaseController
         $this->viewPermission = user()->permission('view_receipt_voucher');
         abort_403(!($this->viewPermission == 'all'));
 
-        $this->driver = Driver::findOrFail($id);
+        $this->receiptVoucher = ReceiptVoucher::findOrFail($id);
 
         $tab = request('tab');
 
-        $this->pageTitle = $this->driver->name;
-
-        switch ($tab) {
-            case 'employment':
-                $this->view = 'receipt-voucher.ajax.employment';
-                break;
-            case 'documents':
-                $this->view = 'receipt-voucher.ajax.documents';
-                break;
-
-            case 'locality':
-                $this->view = 'receipt-voucher.ajax.locality';
-                $this->countries = countries();
-                break;
-
-            case 'banking':
-                $this->view = 'receipt-voucher.ajax.banking';
-                break;
-            case 'businesses':
-                return $this->businesses();
-
-            default:
-                $this->view = 'receipt-voucher.ajax.profile';
-                break;
-        }
+        $this->pageTitle = $this->receiptVoucher->driver->name;
+        $this->view = 'receipt-voucher.ajax.show';
 
         if (request()->ajax()) {
             $html = view($this->view, $this->data)->render();
-
             return Reply::dataOnly(['views' => $this->view, 'status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
         $this->activeTab = $tab ?: 'profile';
 
-        return view('receipt-voucher.show', $this->data);
+        return view('receipt-voucher.create', $this->data);
     }
 
     /**
@@ -159,13 +139,11 @@ class ReceiptVoucherController extends AccountBaseController
         $this->pageTitle = __('app.update');
 
         $this->receiptVoucher = $receiptVoucher;
-        $this->driver_types = Driver::all();
+        $this->drivers = Driver::all();
         $this->view = 'receipt-voucher.ajax.edit';
 
-
-
         if (request()->ajax()) {
-            return view($this->view, $this->data);
+            return view('receipt-voucher.ajax.edit', $this->data);
         }
 
         return view('receipt-voucher.create', $this->data);
@@ -174,71 +152,19 @@ class ReceiptVoucherController extends AccountBaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Driver $driver)
+    public function update(UpdateRequest $request, ReceiptVoucher $receiptVoucher)
     {
         $this->editPermission = user()->permission('edit_receipt_voucher');
         abort_403(!($this->editPermission == 'all'));
-
         $validated = $request->validated();
+        $validated['voucher_date'] = Carbon::createFromFormat($this->company->date_format, $request->voucher_date)->format('Y-m-d');
+        $validated['start_date'] = Carbon::createFromFormat($this->company->date_format, $request->start_date)->format('Y-m-d');
+        $validated['end_date'] = Carbon::createFromFormat($this->company->date_format, $request->end_date)->format('Y-m-d');
+        $validated['business_id'] = $request->business_id ? $request->business_id : 0;
+        $validated['other_business'] = $request->other_business ? $request->other_business : '';
+        $receiptVoucher->update($validated);
 
-        $validated['insurance_expiry_date'] = $request->insurance_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->insurance_expiry_date)->format('Y-m-d') : null;
-        $validated['license_expiry_date'] = $request->license_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->license_expiry_date)->format('Y-m-d') : null;
-        $validated['iqaama_expiry_date'] = $request->iqaama_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->iqaama_expiry_date)->format('Y-m-d') : null;
-        $validated['date_of_birth'] = $request->date_of_birth ? Carbon::createFromFormat($this->company->date_format, $request->date_of_birth)->format('Y-m-d') : null;
-        $validated['joining_date'] = $request->joining_date ? Carbon::createFromFormat($this->company->date_format, $request->joining_date)->format('Y-m-d') : null;
-
-        if ($request->iqama_delete == 'yes') {
-            Files::deleteFile($driver->iqama, 'iqama');
-            $driver->iqama = null;
-            $validated['iqaama_expiry_date'] = null;
-        }
-
-        if ($request->hasFile('iqama'))
-            $validated['iqama'] = Files::uploadLocalOrS3($request->iqama, 'iqama', 300);
-
-        if ($request->license_delete == 'yes') {
-            Files::deleteFile($driver->license, 'license');
-            $driver->license = null;
-            $validated['license_expiry_date'] = null;
-        }
-
-        if ($request->hasFile('license'))
-            $validated['license'] = Files::uploadLocalOrS3($request->license, 'license', 300);
-
-        if ($request->mobile_form_delete == 'yes') {
-            Files::deleteFile($driver->mobile_form, 'mobile_form');
-            $driver->mobile_form = null;
-        }
-
-        if ($request->hasFile('mobile_form'))
-            $validated['mobile_form'] = Files::uploadLocalOrS3($request->mobile_form, 'mobile_form', 300);
-
-        if ($request->sim_form_delete == 'yes') {
-            Files::deleteFile($driver->sim_form, 'sim_form');
-            $driver->sim_form = null;
-        }
-
-        if ($request->hasFile('sim_form'))
-            $validated['sim_form'] = Files::uploadLocalOrS3($request->sim_form, 'sim_form', 300);
-
-        if ($request->medical_delete == 'yes') {
-            Files::deleteFile($driver->medical, 'medical');
-            $driver->medical = null;
-        }
-
-        if ($request->hasFile('medical'))
-            $validated['medical'] = Files::uploadLocalOrS3($request->medical, 'medical', 300);
-
-        if ($request->other_document_delete == 'yes') {
-            Files::deleteFile($driver->other_document, 'other_document');
-            $driver->other_document = null;
-        }
-
-        if ($request->hasFile('other_document'))
-            $validated['other_document'] = Files::uploadLocalOrS3($request->other_document, 'other_document', 300);
-
-        $driver->update($validated);
-        return Reply::success(__('messages.updateSuccess'));
+        return Reply::success(__('messages.updateSuccess'),['redirectUrl' => route('receipt-voucher.index')]);
     }
 
     /**
@@ -249,9 +175,9 @@ class ReceiptVoucherController extends AccountBaseController
         $deletePermission = user()->permission('delete_receipt_voucher');
         abort_403(!($deletePermission == 'all'));
 
-        $this->driver = Driver::findOrFail($id);
+        $this->receiptVoucher = ReceiptVoucher::findOrFail($id);
 
-        Driver::destroy($id);
+        ReceiptVoucher::destroy($id);
 
         return Reply::success(__('messages.deleteSuccess'));
     }
