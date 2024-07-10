@@ -7,12 +7,13 @@ use App\DataTables\VoucherDataTable;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\ReceiptVoucher\StoreRequest;
 use App\Http\Requests\Admin\ReceiptVoucher\UpdateRequest;
-use App\Models\{Driver, DriverType, User, ReceiptVoucher};
+use App\Models\{Business, Driver, DriverType, User, ReceiptVoucher};
 use App\Traits\ImportExcel;
 use Illuminate\Http\Request;
 use App\Helper\Files;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class ReceiptVoucherController extends AccountBaseController
 {
@@ -28,7 +29,8 @@ class ReceiptVoucherController extends AccountBaseController
         });
     }
 
-    public function getDriverType(Request $request){
+    public function getDriverType(Request $request)
+    {
         return DriverType::find($request->id);
     }
 
@@ -90,7 +92,7 @@ class ReceiptVoucherController extends AccountBaseController
             logger($e->getMessage());
             DB::rollback();
 
-            return Reply::error('Some error occurred when inserting the data. Please try again or contact support '. $e->getMessage());
+            return Reply::error('Some error occurred when inserting the data. Please try again or contact support ' . $e->getMessage());
         }
 
         if (request()->add_more == 'true') {
@@ -111,7 +113,15 @@ class ReceiptVoucherController extends AccountBaseController
         $this->viewPermission = user()->permission('view_receipt_voucher');
         abort_403(!($this->viewPermission == 'all'));
 
-        $this->receiptVoucher = ReceiptVoucher::findOrFail($id);
+        $this->receiptVoucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+
+        $this->receiptVoucherFirst = ReceiptVoucher::with('driver')->first();
+
+        $this->bussiness = DB::table('business_driver')->where([
+            'driver_id' => $this->receiptVoucher->driver_id,
+            'business_id' => $this->receiptVoucher->business_id,
+        ])->first();
+
 
         $tab = request('tab');
 
@@ -164,7 +174,7 @@ class ReceiptVoucherController extends AccountBaseController
         $validated['other_business'] = $request->other_business ? $request->other_business : '';
         $receiptVoucher->update($validated);
 
-        return Reply::success(__('messages.updateSuccess'),['redirectUrl' => route('receipt-voucher.index')]);
+        return Reply::success(__('messages.updateSuccess'), ['redirectUrl' => route('receipt-voucher.index')]);
     }
 
     /**
@@ -181,4 +191,132 @@ class ReceiptVoucherController extends AccountBaseController
 
         return Reply::success(__('messages.deleteSuccess'));
     }
+
+    public function download($id)
+    {
+        $this->invoiceSetting = invoice_setting();
+        $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+
+        // if ($this->invoice->getCustomFieldGroupsWithFields()) {
+            // $this->fields = $this->invoice->getCustomFieldGroupsWithFields()->fields;
+        // }
+
+        $this->viewPermission = user()->permission('view_invoices');
+        // $this->company = $this->invoice->company;
+
+        $viewProjectInvoicePermission = user()->permission('view_project_invoices');
+        abort_403(!(
+            $this->viewPermission == 'all'
+            || ($this->viewPermission == 'added' && $this->invoice->added_by == user()->id)
+            || ($this->viewPermission == 'owned' && $this->invoice->client_id == user()->id)
+            || ($viewProjectInvoicePermission == 'owned' && $this->invoice->project_id && $this->invoice->project->client_id == user()->id)
+        ));
+
+        // App::setLocale($this->invoiceSetting->locale);
+        // Carbon::setLocale($this->invoiceSetting->locale);
+
+        // Download file uploaded
+        if ($this->receipt_voucher->file != null) {
+            return response()->download(storage_path('app/public/receipt-files') . '/' . $this->invoice->file);
+        }
+
+        $pdfOption = $this->domPdfObjectForDownload($id);
+        $pdf = $pdfOption['pdf'];
+        $filename = $pdfOption['fileName'];
+
+        return request()->view ? $pdf->stream($filename . '.pdf') : $pdf->download($filename . '.pdf');
+    }
+
+    public function domPdfObjectForDownload($id)
+    {
+        $this->invoiceSetting = invoice_setting();
+        $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+
+        $this->bussiness = DB::table('business_driver')->where([
+            'driver_id' => $this->receipt_voucher->driver_id,
+            'business_id' => $this->receipt_voucher->business_id,
+        ])->first();
+
+
+
+        // App::setLocale($this->invoiceSetting->locale);
+        // Carbon::setLocale($this->invoiceSetting->locale);
+        // $this->paidAmount = $this->invoice->getPaidAmount();
+        // $this->creditNote = 0;
+
+        // if ($this->invoice->getCustomFieldGroupsWithFields()) {
+            // $this->fields = $this->invoice->getCustomFieldGroupsWithFields()->fields;
+        // }
+
+        // if ($this->invoice->credit_note) {
+            // $this->creditNote = CreditNotes::where('invoice_id', $id)
+                // ->select('cn_number')
+                // ->first();
+        // }
+
+        // $this->discount = 0;
+
+        // if ($this->invoice->discount > 0) {
+            // if ($this->invoice->discount_type == 'percent') {
+                // $this->discount = (($this->invoice->discount / 100) * $this->invoice->sub_total);
+            // }
+            // else {
+                // $this->discount = $this->invoice->discount;
+            // }
+        // }
+
+        // $taxList = array();
+
+        // $items = InvoiceItems::whereNotNull('taxes')->where('invoice_id', $this->invoice->id)->get();
+
+        // foreach ($items as $item) {
+
+            // foreach (json_decode($item->taxes) as $tax) {
+                // $this->tax = InvoiceItems::taxbyid($tax)->first();
+
+        //         if (!isset($taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'])) {
+
+        //             if ($this->invoice->calculate_tax == 'after_discount' && $this->discount > 0) {
+        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = ($item->amount - ($item->amount / $this->invoice->sub_total) * $this->discount) * ($this->tax->rate_percent / 100);
+
+        //             }
+        //             else {
+        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = $item->amount * ($this->tax->rate_percent / 100);
+        //             }
+
+        //         }
+        //         else {
+        //             if ($this->invoice->calculate_tax == 'after_discount' && $this->discount > 0) {
+        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] + (($item->amount - ($item->amount / $this->invoice->sub_total) * $this->discount) * ($this->tax->rate_percent / 100));
+
+        //             }
+        //             else {
+        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] + ($item->amount * ($this->tax->rate_percent / 100));
+        //             }
+        //         }
+        //     }
+        // }
+
+        // $this->taxes = $taxList;
+
+        // $this->company = $this->invoice->company;
+
+        // $this->invoiceSetting = $this->company->invoiceSetting;
+
+        // $this->payments = Payment::with(['offlineMethod'])->where('invoice_id', $this->invoice->id)->where('status', 'complete')->orderBy('paid_on', 'desc')->get();
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->setOption('enable_php', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+
+        $pdf->loadView('receipt-voucher.pdf.receipt-voucher', $this->data);
+        $filename = $this->receipt_voucher->voucher_number;
+
+        return [
+            'pdf' => $pdf,
+            'fileName' => $filename
+        ];
+    }
+
 }

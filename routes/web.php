@@ -200,6 +200,9 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('getClientSubCategories/{id}', [ClientSubCategoryController::class, 'getSubCategories'])->name('get_client_sub_categories');
     Route::resource('clientSubCategory', ClientSubCategoryController::class);
 
+    // Receipt Voucher
+    Route::get('receipt-voucher/download/{id}', [ReceiptVoucherController::class, 'download'])->name('receipt-voucher.download');
+
     // DMS
     Route::resource('branches', BranchController::class);
     Route::resource('receipt-voucher', ReceiptVoucherController::class);

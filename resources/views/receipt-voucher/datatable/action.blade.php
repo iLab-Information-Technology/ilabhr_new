@@ -15,6 +15,8 @@
 
             <a href="{{ route('receipt-voucher.show', [$id]) }}" class="dropdown-item"><i
                     class="fa fa-eye mr-2"></i>{{ __('app.view') }}</a>
+            <a href="{{ route('receipt-voucher.download', [$id]) }}" class="dropdown-item"><i
+                    class="fa fa-eye mr-2"></i>Download</a>
 
             @if ($editDriverPermission == 'all')
             <a class="dropdown-item openRightModal" href="{{ route('receipt-voucher.edit', [$id]) }}">

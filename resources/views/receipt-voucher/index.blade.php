@@ -110,7 +110,7 @@
 
             <div id="table-actions" class="d-block d-lg-flex align-items-center">
                 @if (checkCompanyCanAddMoreEmployees(user()->company_id))
-                @if ($addReceiptVoucherPermission == 'all')
+                {{-- @if ($addReceiptVoucherPermission == 'all') --}}
                     <x-forms.link-primary :link="route('receipt-voucher.create')" class="mr-3 openRightModal" icon="plus">
                         @lang('app.addReceiptVoucher')
                     </x-forms.link-primary>
@@ -119,7 +119,7 @@
                                             icon="file-upload">
                         @lang('app.importExcel')
                     </x-forms.link-secondary>
-                @endif
+                {{-- @endif --}}
                 @endif
             </div>
 

@@ -10,24 +10,24 @@
     }
 </style>
 
-@php
-    $addPaymentPermission = user()->permission('add_payments');
-    $deleteInvoicePermission = user()->permission('delete_invoices');
-    $editInvoicePermission = user()->permission('edit_invoices');
-@endphp
+{{-- @php --}}
+    {{-- $addPaymentPermission = user()->permission('add_payments'); --}}
+    {{-- $deleteInvoicePermission = user()->permission('delete_invoices'); --}}
+    {{-- $editInvoicePermission = user()->permission('edit_invoices'); --}}
+{{-- @endphp --}}
 
-@if (!in_array('client', user_roles()))
-    @if (!is_null($invoice->last_viewed))
-        <x-alert type="info">
-            {{$invoice->client->name}} @lang('app.viewedOn') {{$invoice->last_viewed->timezone($settings->timezone)->translatedFormat($settings->date_format)}}
-            @lang('app.at') {{$invoice->last_viewed->timezone($settings->timezone)->translatedFormat($settings->time_format)}}
-            @lang('app.usingIpAddress'):{{$invoice->ip_address}}
-        </x-alert>
-    @endif
-@endif
+{{-- @if (!in_array('client', user_roles())) --}}
+    {{-- @if (!is_null($invoice->last_viewed)) --}}
+        {{-- <x-alert type="info"> --}}
+            {{-- {{$invoice->client->name}} @lang('app.viewedOn') {{$invoice->last_viewed->timezone($settings->timezone)->translatedFormat($settings->date_format)}} --}}
+            {{-- @lang('app.at') {{$invoice->last_viewed->timezone($settings->timezone)->translatedFormat($settings->time_format)}} --}}
+            {{-- @lang('app.usingIpAddress'):{{$invoice->ip_address}} --}}
+        {{-- </x-alert> --}}
+    {{-- @endif --}}
+{{-- @endif --}}
 
 <!-- INVOICE CARD START -->
-@if(!is_null($invoice->client_id) && !is_null($invoice->clientDetails))
+{{-- @if(!is_null($invoice->client_id) && !is_null($invoice->clientDetails))
     @php
         $client = $invoice->client;
     @endphp
@@ -38,13 +38,13 @@
     @php
         $client = $invoice->project->client;
     @endphp
-@endif
+@endif --}}
 
-@if (!$invoice->send_status && $invoice->status != 'canceled' && $invoice->amountDue() > 0)
+{{-- @if (!$invoice->send_status && $invoice->status != 'canceled' && $invoice->amountDue() > 0)
     <x-alert icon="info-circle" type="warning">
         @lang('messages.unsentInvoiceInfo')
     </x-alert>
-@endif
+@endif --}}
 
 <div class="card border-0 invoice">
     <!-- CARD BODY START -->
@@ -72,45 +72,45 @@
                     <td><img src="{{ invoice_setting()->logo_url }}" alt="{{ company()->company_name }}"
                             id="logo" /></td>
                     <td align="right" class="font-weight-bold f-21 text-dark text-uppercase mt-4 mt-lg-0 mt-md-0">
-                        @lang('app.invoice')</td>
+                        @lang('app.menu.receipt_voucher')</td>
                 </tr>
                 <tr class="inv-num">
                     <td class="f-14 text-dark">
                         <p class="mt-3 mb-0">
                             {{ company()->company_name }}<br>
-                            @if (!is_null($settings) && $invoice->address)
-                                {!! nl2br($invoice->address->address) !!}<br>
-                            @endif
+                            {{-- @if (!is_null($settings) && $invoice->address) --}}
+                                {{-- {!! nl2br($invoice->address->address) !!}<br> --}}
+                            {{-- @endif --}}
                             {{ company()->company_phone }}
-                            @if ($invoiceSetting->show_gst == 'yes' && $invoice->address->tax_number)
-                                <br>{{ $invoice->address->tax_name }}: {{ $invoice->address->tax_number }}
-                            @endif
+                            {{-- @if ($invoiceSetting->show_gst == 'yes' && $invoice->address->tax_number) --}}
+                                {{-- <br>{{ $invoice->address->tax_name }}: {{ $invoice->address->tax_number }} --}}
+                            {{-- @endif --}}
                         </p><br>
                     </td>
                     <td align="right">
                         <table class="inv-num-date text-dark f-13 mt-3">
                             <tr>
                                 <td class="bg-light-grey border-right-0 f-w-500">
-                                    @lang('modules.invoices.invoiceNumber')</td>
-                                <td class="border-left-0">{{ $invoice->invoice_number }}</td>
+                                    Receipt number</td>
+                                <td class="border-left-0">{{ $receiptVoucher->voucher_number }}</td>
                             </tr>
-                            @if ($creditNote)
+                            {{-- @if ($creditNote)
                                 <tr>
                                     <td class="bg-light-grey border-right-0 f-w-500">@lang('app.credit-note')</td>
                                     <td class="border-left-0">{{ $creditNote->cn_number }}</td>
                                 </tr>
-                            @endif
+                            @endif --}}
                             <tr>
                                 <td class="bg-light-grey border-right-0 f-w-500">
-                                    @lang('modules.invoices.invoiceDate')</td>
-                                <td class="border-left-0">{{ $invoice->issue_date->translatedFormat(company()->date_format) }}
+                                    Receipt Date</td>
+                                <td class="border-left-0">{{ $receiptVoucher->voucher_date->translatedFormat(company()->date_format) }}
                                 </td>
                             </tr>
 
-                            @if (empty($invoice->order_id) && $invoice->status === 'unpaid' && $invoice->due_date->year > 1)
+                            @if ($receiptVoucher->status === 'unpaid' && $receiptVoucher->end_date->year > 1)
                                 <tr>
                                     <td class="bg-light-grey border-right-0 f-w-500">@lang('app.dueDate')</td>
-                                    <td class="border-left-0">{{ $invoice->due_date->translatedFormat(company()->date_format) }}
+                                    <td class="border-left-0">{{ $receiptVoucher->end_date->translatedFormat(company()->date_format) }}
                                     </td>
                                 </tr>
                             @endif
@@ -126,82 +126,75 @@
                     <td class="f-14 text-dark">
                         <p class="mb-0 text-left">
                             @if (
-                                ($invoice->client || $invoice->clientDetails) &&
-                                    ($invoice->client->name ||
-                                        $invoice->client->email ||
-                                        $invoice->client->mobile ||
-                                        $invoice->clientDetails->company_name ||
-                                        $invoice->clientDetails->address) &&
-                                    (invoice_setting()->show_client_name == 'yes' ||
-                                        invoice_setting()->show_client_email == 'yes' ||
-                                        invoice_setting()->show_client_phone == 'yes' ||
-                                        invoice_setting()->show_client_company_name == 'yes' ||
-                                        invoice_setting()->show_client_company_address == 'yes'))
+                                ($receiptVoucher->driver) &&
+                                    ($receiptVoucher->driver->name ||
+                                        $receiptVoucher->driver->email ||
+                                        $receiptVoucher->driver->work_mobile_no))
                                 <span class="text-dark-grey text-capitalize">@lang('modules.invoices.billedTo')</span><br>
 
-                                @if ($invoice->client && $invoice->client->name && invoice_setting()->show_client_name == 'yes')
-                                    {{ $invoice->client->name }}<br>
+                                @if ($receiptVoucher->driver && $receiptVoucher->driver->name)
+                                    {{ $receiptVoucher->driver->name }}<br>
                                 @endif
 
-                                @if ($invoice->client && $invoice->client->email && invoice_setting()->show_client_email == 'yes')
-                                    {{ $invoice->client->email }}<br>
+                                @if ($receiptVoucher->driver && $receiptVoucher->driver->email)
+                                    {{ $receiptVoucher->driver->email }}<br>
                                 @endif
 
-                                @if ($invoice->client && $invoice->client->mobile && invoice_setting()->show_client_phone == 'yes')
-                                    {{ $invoice->client->mobile }}<br>
+                                @if ($receiptVoucher->driver && $receiptVoucher->driver->work_mobile_with_phone_code)
+                                    {{ $receiptVoucher->driver->work_mobile_with_phone_code }}<br>
                                 @endif
 
-                                @if (
-                                    $invoice->clientDetails &&
-                                        $invoice->clientDetails->company_name &&
-                                        invoice_setting()->show_client_company_name == 'yes')
-                                    {{ $invoice->clientDetails->company_name }}<br>
-                                @endif
+                                {{-- @if ( --}}
+                                    {{-- $invoice->clientDetails && --}}
+                                        {{-- $invoice->clientDetails->company_name && --}}
+                                        {{-- invoice_setting()->show_client_company_name == 'yes') --}}
+                                    {{-- {{ $invoice->clientDetails->company_name }}<br> --}}
+                                {{-- @endif --}}
 
-                                @if (
-                                    $invoice->clientDetails &&
-                                        $invoice->clientDetails->address &&
-                                        invoice_setting()->show_client_company_address == 'yes')
-                                    {!! nl2br($invoice->clientDetails->address) !!}
-                                @endif
+                                {{-- @if ( --}}
+                                    {{-- $invoice->clientDetails && --}}
+                                        {{-- $invoice->clientDetails->address && --}}
+                                        {{-- invoice_setting()->show_client_company_address == 'yes') --}}
+                                    {{-- {!! nl2br($invoice->clientDetails->address) !!} --}}
+                                {{-- @endif --}}
 
                             @endif
 
-                            @if ($invoiceSetting->show_project == 1 && isset($invoice->project))
-                                <br><br>
-                                <span class="text-dark-grey text-capitalize">@lang('modules.invoices.projectName')</span><br>
-                                {{ $invoice->project->project_name }}
-                            @endif
+                            {{-- @if ($invoiceSetting->show_project == 1 && isset($invoice->project)) --}}
+                                {{-- <br><br> --}}
+                                {{-- <span class="text-dark-grey text-capitalize">@lang('modules.invoices.projectName')</span><br> --}}
+                                {{-- {{ $invoice->project->project_name }} --}}
+                            {{-- @endif --}}
 
-                            @if ($invoiceSetting->show_gst == 'yes' && !is_null($client->clientDetails->gst_number))
-                                @if ($client->clientDetails->tax_name)
-                                    <br>{{$client->clientDetails->tax_name}}: {{$client->clientDetails->gst_number}}
-                                @else
-                                    <br>@lang('app.gstIn'): {{ $client->clientDetails->gst_number }}
-                                @endif
-                            @endif
+                            {{-- @if ($invoiceSetting->show_gst == 'yes' && !is_null($client->clientDetails->gst_number)) --}}
+                                {{-- @if ($client->clientDetails->tax_name) --}}
+                                    {{-- <br>{{$client->clientDetails->tax_name}}: {{$client->clientDetails->gst_number}} --}}
+                                {{-- @else --}}
+                                    {{-- <br>@lang('app.gstIn'): {{ $client->clientDetails->gst_number }} --}}
+                                {{-- @endif --}}
+                            {{-- @endif --}}
                         </p>
                     </td>
-                    @if ($invoice->show_shipping_address == 'yes')
+                    {{-- @if ($invoice->show_shipping_address == 'yes')
                         <td class="f-14 text-black">
                             <p class="mb-0 text-left"><span
                                     class="text-dark-grey text-capitalize">@lang('app.shippingAddress')</span><br>
                                 {!! nl2br($client->clientDetails->shipping_address) !!}</p>
                         </td>
-                    @endif
+                    @endif --}}
                     <td align="right" class="mt-2 mt-lg-0 mt-md-0">
-                        @if ($invoice->company->company_logo)
-                            <img src="{{ $invoice->clientDetails->image_url }}"
-                                alt="{{ $invoice->clientDetails->company_name }}" class="logo"
-                                style="height:50px;" />
-                            <br><br><br>
-                        @endif
-                        @if ($invoice->credit_note)
-                            <span class="unpaid text-warning border-warning rounded">@lang('app.credit-note')</span>
-                        @else
-                            <span
-                                class="unpaid {{ $invoice->status == 'partial' ? 'text-primary border-primary' : '' }} {{ $invoice->status == 'paid' ? 'text-success border-success' : '' }} rounded f-15 ">@lang('modules.invoices.' . $invoice->status)</span>
-                        @endif
+                        {{-- @if ($invoice->company->company_logo) --}}
+                            {{-- <img src="{{ $invoice->clientDetails->image_url }}" --}}
+                                {{-- alt="{{ $invoice->clientDetails->company_name }}" class="logo" --}}
+                                {{-- style="height:50px;" /> --}}
+                            {{-- <br><br><br> --}}
+                        {{-- @endif --}}
+                        {{-- @if ($invoice->credit_note) --}}
+                            {{-- <span class="unpaid text-warning border-warning rounded">@lang('app.credit-note')</span> --}}
+                        {{-- @else --}}
+                            {{-- <span --}}
+                                {{-- class="unpaid {{ $invoice->status == 'partial' ? 'text-primary border-primary' : '' }} {{ $invoice->status == 'paid' ? 'text-success border-success' : '' }} rounded f-15 ">@lang('modules.invoices.' . $invoice->status)</span> --}}
+                        {{-- @endif --}}
                     </td>
                 </tr>
                 <tr>
@@ -213,23 +206,63 @@
                     <td colspan="2">
                         <table class="inv-detail f-14 table-responsive-sm" width="100%">
                             <tr class="i-d-heading bg-light-grey text-dark-grey font-weight-bold">
-                                <td class="border-right-0" width="35%">@lang('app.description')</td>
-                                @if ($invoiceSetting->hsn_sac_code_show)
-                                    <td class="border-right-0 border-left-0" align="right">@lang('app.hsnSac')</td>
-                                @endif
-                                <td class="border-right-0 border-left-0" align="right">
-                                    @lang('modules.invoices.qty')
+                                <td class="border-right-0">City</td>
+                                <td class="border-right-0 border-left-0" align="center">
+                                    Iqaama number
                                 </td>
-                                <td class="border-right-0 border-left-0" align="right">
-                                    @lang('modules.invoices.unitPrice') (SAR)
+                                <td class="border-right-0 border-left-0" align="center">
+                                    Account Number
                                 </td>
-                                <td class="border-right-0 border-left-0" align="right">@lang('modules.invoices.tax')</td>
-                                <td class="border-left-0" align="right"
-                                    width="{{ $invoiceSetting->hsn_sac_code_show ? '17%' : '20%' }}">
-                                    @lang('modules.invoices.amount')
-                                    (SAR)</td>
+                                <td class="border-right-0 border-left-0" align="center">
+                                    Business
+                                </td>
+                                <td class="border-left-0" align="right">
+                                   Other Account</td>
                             </tr>
-                            @foreach ($invoice->items as $item)
+                            <tr class="text-dark font-weight-semibold f-13">
+                                <td>{{ $receiptVoucher->driver->branch->name}}</td>
+                                <td align="center">{{ $receiptVoucher->driver->iqaama_number }}</td>
+                                <td align="center">
+                                       {{ $bussiness->platform_id ? : '---' }}
+                                </td>
+                                <td align="center">
+                                       {{ $receiptVoucher->business->name ? : '---'}}
+                                </td>
+                                <td align="right">
+                                    {{ $receiptVoucher->other_business ?: '---' }}
+                                </td>
+                            </tr>
+                            <tr class="i-d-heading bg-light-grey text-dark-grey font-weight-bold">
+                                <td class="border-right-0 border-left-0">
+                                    From Date
+                                </td>
+                                <td align="center" class="border-right-0" width="35%">To Date</td>
+                                <td class="border-right-0 border-left-0" align="right" colspan="3">
+                                    Total Amount
+                                </td>
+                            </tr>
+                            <tr class="text-dark font-weight-semibold f-13">
+                                <td>{{ $receiptVoucher->start_date->format(company()->date_format) }}</td>
+                                <td align="center">{{ $receiptVoucher->end_date->format(company()->date_format) }}</td>
+                                <td align="right" colspan="3">
+                                    {{ $receiptVoucher->total_amount }}
+                                </td>
+                            </tr>
+                            <tr class="i-d-heading bg-light-grey text-dark-grey font-weight-bold">
+                                <td class="border-right-0" width="35%">Accountant</td>
+                                <td class="border-right-0 border-left-0" align="center">
+                                    Driver
+                                </td>
+                                <td class="border-right-0 border-left-0" align="right" colspan="3">
+                                    Supervisor
+                                </td>
+                            </tr>
+                            <tr class="text-dark font-weight-semibold f-13">
+                                <td style="padding: 50px 10px 2px 10px"></td>
+                                <td style="padding: 50px 10px 2px 10px" align="right"></td>
+                                <td style="padding: 50px 10px 2px 10px" align="right" colspan="3"></td>
+                            </tr>
+                            {{-- @foreach ($invoice->items as $item)
                                 @if ($item->type == 'item')
                                     <tr class="text-dark font-weight-semibold f-13">
                                         <td>{{ $item->item_name }}</td>
@@ -262,9 +295,9 @@
                                         </tr>
                                     @endif
                                 @endif
-                            @endforeach
+                            @endforeach --}}
 
-                            <tr>
+                            {{-- <tr>
                                 <td colspan="{{ $invoiceSetting->hsn_sac_code_show ? '4' : '3' }}"
                                     class="blank-td border-bottom-0 border-left-0 border-right-0"></td>
                                 <td class="p-0 border-right-0" align="right">
@@ -327,7 +360,7 @@
                                         </tr>
                                     </table>
                                 </td>
-                            </tr>
+                            </tr> --}}
                         </table>
                     </td>
 
@@ -335,7 +368,7 @@
             </table>
             <table width="100%" class="inv-desc-mob d-block d-lg-none d-md-none">
 
-                @foreach ($invoice->items as $item)
+                {{-- @foreach ($invoice->items as $item)
                     @if ($item->type == 'item')
                         <tr>
                             <th width="50%" class="bg-light-grey text-dark-grey font-weight-bold">
@@ -387,9 +420,9 @@
                             <td height="3" class="p-0 " colspan="2"></td>
                         </tr>
                     @endif
-                @endforeach
+                @endforeach --}}
 
-                <tr>
+                {{-- <tr>
                     <th width="50%" class="text-dark-grey font-weight-normal">@lang('modules.invoices.subTotal')
                     </th>
                     <td width="50%" class="text-dark-grey font-weight-normal">
@@ -423,10 +456,10 @@
                     <td width="50%" class="f-16 bg-light-grey text-dark font-weight-bold">
                         {{ currency_format($invoice->amountDue(), $invoice->currency_id, false) }}
                         SAR</td>
-                </tr>
+                </tr> --}}
             </table>
             <table class="inv-note">
-                <tr>
+                {{-- <tr>
                     <td height="30" colspan="2"></td>
                 </tr>
                 <tr>
@@ -480,7 +513,7 @@
                             </tr>
                         </table>
                     </td>
-                </tr>
+                </tr> --}}
             </table>
         </div>
     </div>
@@ -497,38 +530,31 @@
                 <!-- DROPDOWN - INFORMATION -->
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" tabindex="0">
 
-                    @if ($invoice->status == 'paid' && !in_array('client', user_roles()) && $invoice->amountPaid() == 0)
+                    @if ($receiptVoucher->status == 'paid' && !in_array('client', user_roles()) && $receiptVoucher->amountPaid() == 0)
                         <li>
                             <a class="dropdown-item f-14 text-dark"
-                                href="{{ route('invoices.edit', [$invoice->id]) }}">
+                                href="{{ route('receipt-voucher.edit', [$receiptVoucher->id]) }}">
                                 <i class="fa fa-edit f-w-500 mr-2 f-11"></i> @lang('app.edit')
                             </a>
                         </li>
                     @endif
 
                     @if (
-                        $invoice->status != 'paid' &&
-                            $invoice->status != 'canceled' &&
-                            is_null($invoice->invoice_recurring_id) &&
-                            ($editInvoicePermission == 'all' ||
-                                ($editInvoicePermission == 'added' && $invoice->added_by == user()->id) ||
-                                ($editInvoicePermission == 'owned' && $invoice->client_id == user()->id) ||
-                                ($editInvoicePermission == 'both' &&
-                                    ($invoice->client_id == user()->id || $invoice->added_by == user()->id))))
+                        $receiptVoucher->status != 'paid' &&
+                            $receiptVoucher->status != 'canceled')
                         <li>
                             <a class="dropdown-item f-14 text-dark"
-                                href="{{ route('invoices.edit', [$invoice->id]) }}">
+                                href="{{ route('receipt-voucher.edit', [$receiptVoucher->id]) }}">
                                 <i class="fa fa-edit f-w-500 mr-2 f-11"></i> @lang('app.edit')
                             </a>
                         </li>
                     @endif
 
                     @if (
-                        ($firstInvoice->id == $invoice->id && $invoice->status == 'unpaid' && $deleteInvoicePermission == 'all') ||
-                            ($deleteInvoicePermission == 'added' && $invoice->added_by == user()->id && $firstInvoice->id == $invoice->id))
+                        ($receiptVoucherFirst->id == $receiptVoucher->id && $receiptVoucher->status == 'unpaid' && $receiptVoucherFirst->id == $receiptVoucher->id))
                         <li>
                             <a class="dropdown-item f-14 text-dark delete-invoice" href="javascript:;"
-                                data-invoice-id="{{ $invoice->id }}">
+                                data-invoice-id="{{ $receiptVoucher->id }}">
                                 <i class="fa fa-trash f-w-500 mr-2 f-11"></i> @lang('app.delete')
                             </a>
                         </li>
@@ -536,31 +562,31 @@
 
                     <li>
                         <a class="dropdown-item f-14 text-dark"
-                            href="{{ route('invoices.download', [$invoice->id]) }}">
+                            href="{{ route('receipt-voucher.download', [$receiptVoucher->id]) }}">
                             <i class="fa fa-download f-w-500 mr-2 f-11"></i> @lang('app.download')
                         </a>
                     </li>
 
-                    @if ($invoice->status != 'canceled' && !$invoice->credit_note && !in_array('client', user_roles()))
-                        <li>
+                    @if ($receiptVoucher->status != 'canceled'))
+                        {{-- <li>
                             <a class="dropdown-item f-14 text-dark sendButton" href="javascript:;"
-                                data-invoice-id="{{ $invoice->id }}"  data-type="send">
+                                data-invoice-id="{{ $receiptVoucher->id }}"  data-type="send">
                                 <i class="fa fa-paper-plane f-w-500 mr-2 f-11"></i> @lang('app.send')
                             </a>
-                        </li>
-                        @if ($invoice->send_status == 0)
+                        </li> --}}
+                        {{-- @if ($invoice->send_status == 0)
                             <li>
                                 <a class="dropdown-item f-14 text-dark sendButton" href="javascript:;" data-toggle="tooltip" data-original-title="@lang('messages.markSentInfo')"
                                     data-invoice-id="{{ $invoice->id }}" data-type="mark_as_send">
                                     <i class="fa fa-paper-plane f-w-500 mr-2 f-11"></i> @lang('app.markSent')
                                 </a>
                             </li>
-                        @endif
+                        @endif --}}
                     @endif
 
-                    @if ($invoice->status == 'paid' && !in_array('client', user_roles()) && $invoice->credit_note == 0)
+                    @if ($receiptVoucher->status == 'paid')
                         <a class="dropdown-item invoice-upload" href="javascript:;" data-toggle="tooltip"
-                            data-invoice-id="{{ $invoice->id }}">
+                            data-invoice-id="{{ $receiptVoucher->id }}">
                             <i class="fa fa-upload mr-2"></i>@lang('app.upload')
                         </a>
                     @endif
@@ -568,28 +594,22 @@
 
 
                     @if (
-                        $invoice->status != 'paid' &&
-                            $invoice->status != 'draft' &&
-                            $invoice->status != 'canceled' &&
-                            !in_array('client', user_roles()) &&
-                            $invoice->send_status == 1)
+                        $receiptVoucher->status != 'paid' &&
+                            $receiptVoucher->status != 'draft' &&
+                            $receiptVoucher->status != 'canceled')
                         <li>
                             <a class="dropdown-item f-14 text-dark reminderButton" href="javascript:;"
-                                data-invoice-id="{{ $invoice->id }}">
+                                data-invoice-id="{{ $receiptVoucher->id }}">
                                 <i class="fa fa-bell f-w-500 mr-2 f-11"></i> @lang('app.paymentReminder')
                             </a>
                         </li>
                     @endif
 
                     @if (
-                        !in_array('client', user_roles()) &&
-                            in_array('payments', $user->modules) &&
-                            $invoice->credit_note == 0 &&
-                            $invoice->status != 'draft' &&
-                            $invoice->status != 'paid' &&
-                            $invoice->status != 'canceled' &&
-                            $invoice->send_status)
-                        @if ($addPaymentPermission == 'all' || ($addPaymentPermission == 'added' && $invoice->added_by == user()->id))
+                            $receiptVoucher->status != 'draft' &&
+                            $receiptVoucher->status != 'paid' &&
+                            $receiptVoucher->status != 'canceled')
+                        {{-- @if ($addPaymentPermission == 'all' || ($addPaymentPermission == 'added' && $invoice->added_by == user()->id))
                             <li>
                                 <a class="dropdown-item f-14 text-dark openRightModal"
                                     data-redirect-url="{{ route('invoices.show', $invoice->id) }}"
@@ -598,16 +618,15 @@
                                     <i class="fa fa-plus f-w-500 mr-2 f-11"></i> @lang('modules.payments.addPayment')
                                 </a>
                             </li>
-                        @endif
+                        @endif --}}
                     @endif
 
                     @if (
-                        $invoice->credit_note == 0 &&
-                            $invoice->status != 'draft' &&
-                            $invoice->status != 'canceled' &&
-                            $invoice->status != 'unpaid' &&
+                            $receiptVoucher->status != 'draft' &&
+                            $receiptVoucher->status != 'canceled' &&
+                            $receiptVoucher->status != 'unpaid' &&
                             !in_array('client', user_roles()))
-                        @if ($invoice->amountPaid() > 0)
+                        {{-- @if ($invoice->amountPaid() > 0)
                             @if ($invoice->status == 'paid')
                                 <a class="dropdown-item"
                                     href="{{ route('creditnotes.create') . '?invoice=' . $invoice->id }}"><i
@@ -617,9 +636,9 @@
                                     data-invoice-id="{{ $invoice->id }}" href="javascript:;"><i
                                         class="fa fa-plus mr-2"></i>@lang('modules.credit-notes.addCreditNote')</a>
                             @endif
-                        @endif
+                        @endif --}}
                     @endif
-
+{{-- 
                     @if (!in_array($invoice->status, ['canceled', 'draft']) && !$invoice->credit_note && $invoice->send_status)
                         <li>
                             <a class="dropdown-item f-14 text-dark btn-copy" href="javascript:;"
@@ -635,15 +654,15 @@
                                 @lang('modules.payments.paymentLink')
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
 
-                    @if ($addInvoicesPermission == 'all' || $addInvoicesPermission == 'added')
+                    {{-- @if ($addInvoicesPermission == 'all' || $addInvoicesPermission == 'added')
                         <a href="{{ route('invoices.create') . '?invoice=' . $invoice->id }}"
                             class="dropdown-item"><i class="fa fa-copy mr-2"></i> @lang('app.createDuplicate')
                             </a>
-                    @endif
+                    @endif --}}
 
-                    @if (
+                    {{-- @if (
                         $firstInvoice->id != $invoice->id &&
                             ($invoice->status == 'unpaid' || $invoice->status == 'draft') &&
                             !in_array('client', user_roles()))
@@ -654,9 +673,9 @@
                                 @lang('app.cancel')
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoice->appliedCredits() > 0)
+                    {{-- @if ($invoice->appliedCredits() > 0)
                         <li>
                             <a class="dropdown-item f-14 text-dark openRightModal"
                                 href="{{ route('invoices.applied_credits', $invoice->id) }}">
@@ -664,12 +683,12 @@
                                 @lang('app.viewInvoicePayments')
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
                 </ul>
             </div>
 
             {{-- PAYMENT GATEWAY --}}
-            @if (in_array('client', user_roles()) &&
+            {{-- @if (in_array('client', user_roles()) &&
                     $invoice->total > 0 &&
                     in_array($invoice->status, ['unpaid', 'partial']) &&
                     ($credentials->show_pay || $methods->count() > 0))
@@ -770,7 +789,7 @@
                         @endif
                     </ul>
                 </div>
-            @endif
+            @endif --}}
             {{-- PAYMENT GATEWAY --}}
 
             <x-forms.button-cancel :link="route('invoices.index')" class="border-0 mr-3">@lang('app.cancel')
@@ -798,7 +817,7 @@
     </div>
 @endif
 
-@if (count($invoice->files) > 0)
+{{-- @if (count($invoice->files) > 0)
 <div class="bg-white mt-4 pl-3 pt-3">
     <h5>{{ __('modules.invoiceFiles') }}</h5>
     <div class="d-flex flex-wrap" id="invoice-file-list">
@@ -845,7 +864,7 @@
 
     </div>
 </div>
-@endif
+@endif --}}
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="{{ asset('vendor/jquery/clipboard.min.js') }}"></script>
@@ -926,7 +945,7 @@
             type: "POST",
             blockUI: true,
             data: {
-                id: '{{ $invoice->id }}',
+                id: '{{ $receiptVoucher->id }}',
                 type: 'invoice',
                 _token: '{{ csrf_token() }}'
             },
@@ -948,7 +967,7 @@
             type: "POST",
             blockUI: true,
             data: {
-                id: '{{ $invoice->id }}',
+                id: '{{ $receiptVoucher->id }}',
                 type: 'invoice',
                 _token: '{{ csrf_token() }}'
             }
@@ -964,56 +983,57 @@
         $.ajaxModal(MODAL_LG, url);
     });
 
-    @if ($credentials->razorpay_status == 'active')
-        $('body').on('click', '#razorpayPaymentButton', function() {
-            var amount = {{ number_format((float) $invoice->amountDue(), 2, '.', '') * 100 }};
-            var invoiceId = {{ $invoice->id }};
-            var clientEmail = "{{ $user->email }}";
+    {{-- @if ($credentials->razorpay_status == 'active')
+    //     $('body').on('click', '#razorpayPaymentButton', function() {
+    //         var amount = {{ number_format((float) $invoice->amountDue(), 2, '.', '') * 100 }};
+    //         var invoiceId = {{ $invoice->id }};
+    //         var clientEmail = "{{ $user->email }}";
 
-            var options = {
-                "key": "{{ $credentials->razorpay_mode == 'test' ? $credentials->test_razorpay_key : $credentials->live_razorpay_key }}",
-                "amount": amount,
-                "currency": 'SAR',
-                "name": "{{ $companyName }}",
-                "description": "Invoice Payment",
-                "image": "{{ company()->logo_url }}",
-                "handler": function(response) {
-                    confirmRazorpayPayment(response.razorpay_payment_id, invoiceId);
-                },
-                "modal": {
-                    "ondismiss": function() {
-                        // On dismiss event
-                    }
-                },
-                "prefill": {
-                    "email": clientEmail
-                },
-                "notes": {
-                    "purchase_id": invoiceId, //invoice ID
-                    "type": "invoice"
-                }
-            };
-            var rzp1 = new Razorpay(options);
+    //         var options = {
+    //             "key": "{{ $credentials->razorpay_mode == 'test' ? $credentials->test_razorpay_key : $credentials->live_razorpay_key }}",
+    //             "amount": amount,
+    //             "currency": 'SAR',
+    //             "name": "{{ $companyName }}",
+    //             "description": "Invoice Payment",
+    //             "image": "{{ company()->logo_url }}",
+    //             "handler": function(response) {
+    //                 confirmRazorpayPayment(response.razorpay_payment_id, invoiceId);
+    //             },
+    //             "modal": {
+    //                 "ondismiss": function() {
+    //                     // On dismiss event
+    //                 }
+    //             },
+    //             "prefill": {
+    //                 "email": clientEmail
+    //             },
+    //             "notes": {
+    //                 "purchase_id": invoiceId, //invoice ID
+    //                 "type": "invoice"
+    //             }
+    //         };
+    //         var rzp1 = new Razorpay(options);
 
-            rzp1.open();
-        })
+    //         rzp1.open();
+    //     })
 
-        //Confirmation after transaction
-        function confirmRazorpayPayment(id, invoiceId) {
-            // Block UI immediatly after payment modal disappear
-            $.easyBlockUI();
+    //     //Confirmation after transaction
+    //     function confirmRazorpayPayment(id, invoiceId) {
+    //         // Block UI immediatly after payment modal disappear
+    //         $.easyBlockUI();
 
-            $.easyAjax({
-                type: 'POST',
-                url: "{{ route('pay_with_razorpay', [$invoice->company->hash]) }}",
-                data: {
-                    paymentId: id,
-                    invoiceId: invoiceId,
-                    _token: '{{ csrf_token() }}'
-                }
-            });
-        }
-    @endif
+    //         $.easyAjax({
+    //             type: 'POST',
+    //             url: "{{ route('pay_with_razorpay', [$invoice->company->hash]) }}",
+    //             data: {
+    //                 paymentId: id,
+    //                 invoiceId: invoiceId,
+    //                 _token: '{{ csrf_token() }}'
+    //             }
+    //         });
+    //     }
+    // @endif 
+    --}}
 
     $('body').on('click', '.sendButton', function() {
         var id = $(this).data('invoice-id');
