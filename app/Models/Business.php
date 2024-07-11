@@ -33,6 +33,7 @@ class Business extends BaseModel
         return $this->belongsToMany(Driver::class);
     }
 
+
     public function fields(): HasMany
     {
         return $this->hasMany(BusinessField::class);
