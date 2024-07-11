@@ -236,7 +236,7 @@ return [
         \Illuminate\Mail\MailServiceProvider::class,
         \App\Providers\FileStorageCustomConfigProvider::class,
         \App\Providers\SmtpConfigProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -274,6 +274,7 @@ return [
         'ApiRoute' => Froiden\RestAPI\Facades\ApiRoute::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Zip' => Macellan\Zip\ZipFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),
 
     'debug_blacklist' => [
