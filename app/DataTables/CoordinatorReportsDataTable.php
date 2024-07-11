@@ -68,6 +68,7 @@ class CoordinatorReportsDataTable extends DataTable
             ->where('business_id', $this->business_id)
             ->when($request->startDate, fn ($q) => $q->whereDate('created_at', '>=', $request->startDate))
             ->when($request->endDate, fn ($q) => $q->whereDate('created_at', '<=', $request->endDate))
+            ->when($request->searchText, fn ($q) => $q->whereHas('driver', fn ($query) => $query->where('name', 'like', '%' . $request->searchText . '%')))
             ->newQuery();
     }
 
