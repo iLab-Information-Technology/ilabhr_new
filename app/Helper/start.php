@@ -533,7 +533,7 @@ if (!function_exists('social_auth_setting')) {
 
 if(!function_exists('receipt_voucher_settings')){
     function receipt_voucher_settings(){
-        
+
     }
 }
 

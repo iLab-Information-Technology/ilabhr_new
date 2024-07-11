@@ -215,12 +215,30 @@ class ReceiptVoucherController extends AccountBaseController
             Carbon::setLocale($this->invoiceSetting->locale);
 
             // Example: Handle file download if already uploaded
-            if ($this->receipt_voucher->file != null) {
-                return response()->download(storage_path('app/public/receipt-files') . '/' . $this->receipt_voucher->file);
-            }
+            // if ($this->receipt_voucher->file != null) {
+            //     return response()->download(storage_path('app/public/receipt-files') . '/' . $this->receipt_voucher->file);
+            // }
+
+
+            $this->bussiness = DB::table('business_driver')->where([
+                'driver_id' => $this->receipt_voucher->driver_id,
+                'business_id' => $this->receipt_voucher->business_id,
+            ])->first();
+
+            $pdf = app('dompdf.wrapper');
+            $pdf->setOption('enable_php', true);
+            $pdf->setOption('isHtml5ParserEnabled', true);
+            $pdf->setOption('isRemoteEnabled', true);
+
+            $pdf->loadView('receipt-voucher.pdf.' . $this->invoiceSetting->template, $this->data);
+            $filename = $this->receipt_voucher->voucher_number;
+
 
             // Generate PDF for download
-            $pdfOption = $this->domPdfObjectForDownload($id);
+            $pdfOption = [
+                'pdf' => $pdf,
+                'fileName' => $filename
+            ];
 
             if (!$pdfOption || !isset($pdfOption['pdf']) || !isset($pdfOption['fileName'])) {
                 \Log::error('Error generating PDF for Receipt Voucher ID: ' . $id);
@@ -237,19 +255,17 @@ class ReceiptVoucherController extends AccountBaseController
         }
     }
 
-    public function domPdfObjectForDownload($id)
+    public function domPdfObjectForDownload($id, $invoiceSetting)
     {
-        $this->invoiceSetting = invoice_setting();
         $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
-
         $this->bussiness = DB::table('business_driver')->where([
             'driver_id' => $this->receipt_voucher->driver_id,
             'business_id' => $this->receipt_voucher->business_id,
         ])->first();
 
 
-        App::setLocale($this->invoiceSetting->locale);
-        Carbon::setLocale($this->invoiceSetting->locale);
+        // App::setLocale($this->invoiceSetting->locale);
+        // Carbon::setLocale($this->invoiceSetting->locale);
 
         $pdf = app('dompdf.wrapper');
         $pdf->setOption('enable_php', true);
