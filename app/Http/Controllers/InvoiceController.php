@@ -59,7 +59,7 @@ class InvoiceController extends AccountBaseController
     public function index(InvoicesDataTable $dataTable)
     {
         $viewPermission = user()->permission('view_invoices');
-        abort_403(!in_array($viewPermission, ['all', 'added', 'owned', 'both']));
+        // abort_403(!in_array($viewPermission, ['all', 'added', 'owned', 'both']));
 
         if (!request()->ajax()) {
             $this->projects = Project::allProjects();
@@ -767,13 +767,13 @@ class InvoiceController extends AccountBaseController
         $viewProjectInvoicePermission = user()->permission('view_project_invoices');
         $this->addInvoicesPermission = user()->permission('add_invoices');
 
-        abort_403(!(
-            $this->viewPermission == 'all'
-            || ($this->viewPermission == 'added' && $this->invoice->added_by == user()->id)
-            || ($this->viewPermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
-            || ($this->viewPermission == 'both' && ($this->invoice->added_by == user()->id || $this->invoice->client_id == user()->id))
-            || ($viewProjectInvoicePermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
-        ));
+        // abort_403(!(
+            // $this->viewPermission == 'all'
+            // || ($this->viewPermission == 'added' && $this->invoice->added_by == user()->id)
+            // || ($this->viewPermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
+            // || ($this->viewPermission == 'both' && ($this->invoice->added_by == user()->id || $this->invoice->client_id == user()->id))
+            // || ($viewProjectInvoicePermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
+        // ));
 
         if ($this->invoice->getCustomFieldGroupsWithFields()) {
             $this->fields = $this->invoice->getCustomFieldGroupsWithFields()->fields;

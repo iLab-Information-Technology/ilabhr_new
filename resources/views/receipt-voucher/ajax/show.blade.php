@@ -107,13 +107,13 @@
                                 </td>
                             </tr>
 
-                            @if ($receiptVoucher->status === 'unpaid' && $receiptVoucher->end_date->year > 1)
+                            {{-- @if ($receiptVoucher->status === 'unpaid' && $receiptVoucher->end_date->year > 1)
                                 <tr>
                                     <td class="bg-light-grey border-right-0 f-w-500">@lang('app.dueDate')</td>
                                     <td class="border-left-0">{{ $receiptVoucher->end_date->translatedFormat(company()->date_format) }}
                                     </td>
                                 </tr>
-                            @endif
+                            @endif --}}
                         </table>
                     </td>
                 </tr>
@@ -249,18 +249,18 @@
                                 </td>
                             </tr>
                             <tr class="i-d-heading bg-light-grey text-dark-grey font-weight-bold">
-                                <td class="border-right-0" width="35%">Accountant</td>
+                                <td class="border-right-0" width="35%">Accountant Signature</td>
                                 <td class="border-right-0 border-left-0" align="center">
-                                    Driver
+                                    Driver Signature
                                 </td>
                                 <td class="border-right-0 border-left-0" align="right" colspan="3">
-                                    Supervisor
+                                    Supervisor Signature
                                 </td>
                             </tr>
                             <tr class="text-dark font-weight-semibold f-13">
-                                <td style="padding: 50px 10px 2px 10px"></td>
-                                <td style="padding: 50px 10px 2px 10px" align="right"></td>
-                                <td style="padding: 50px 10px 2px 10px" align="right" colspan="3"></td>
+                                <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
+                                <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
+                                <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">________________________________</td>
                             </tr>
                             {{-- @foreach ($invoice->items as $item)
                                 @if ($item->type == 'item')

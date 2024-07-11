@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use App\Helper\Files;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use PDF;
+use Illuminate\Support\Facades\App;
 
 class ReceiptVoucherController extends AccountBaseController
 {
@@ -24,7 +24,7 @@ class ReceiptVoucherController extends AccountBaseController
         parent::__construct();
         $this->pageTitle = 'app.menu.receipt_voucher';
         $this->middleware(function ($request, $next) {
-            abort_403(!in_array('receiptVoucher', $this->user->modules));
+            // abort_403(!in_array('receiptVoucher', $this->user->modules));
             return $next($request);
         });
     }
@@ -40,7 +40,7 @@ class ReceiptVoucherController extends AccountBaseController
     public function index(VoucherDataTable $dataTable)
     {
         $viewPermission = user()->permission('view_receipt_voucher');
-        abort_403(!in_array($viewPermission, ['all']));
+        // abort_403(!in_array($viewPermission, ['all']));
 
         return $dataTable->render('receipt-voucher.index', $this->data);
     }
@@ -111,9 +111,10 @@ class ReceiptVoucherController extends AccountBaseController
     public function show(string $id)
     {
         $this->viewPermission = user()->permission('view_receipt_voucher');
-        abort_403(!($this->viewPermission == 'all'));
+        // abort_403(!($this->viewPermission == 'all'));
 
         $this->receiptVoucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+        // return $this->receiptVoucher;
 
         $this->receiptVoucherFirst = ReceiptVoucher::with('driver')->first();
 
@@ -144,7 +145,7 @@ class ReceiptVoucherController extends AccountBaseController
     public function edit(ReceiptVoucher $receiptVoucher)
     {
         $this->editPermission = user()->permission('edit_receipt_voucher');
-        abort_403(!($this->editPermission == 'all'));
+        // abort_403(!($this->editPermission == 'all'));
 
         $this->pageTitle = __('app.update');
 
@@ -165,7 +166,7 @@ class ReceiptVoucherController extends AccountBaseController
     public function update(UpdateRequest $request, ReceiptVoucher $receiptVoucher)
     {
         $this->editPermission = user()->permission('edit_receipt_voucher');
-        abort_403(!($this->editPermission == 'all'));
+        // abort_403(!($this->editPermission == 'all'));
         $validated = $request->validated();
         $validated['voucher_date'] = Carbon::createFromFormat($this->company->date_format, $request->voucher_date)->format('Y-m-d');
         $validated['start_date'] = Carbon::createFromFormat($this->company->date_format, $request->start_date)->format('Y-m-d');
@@ -194,37 +195,46 @@ class ReceiptVoucherController extends AccountBaseController
 
     public function download($id)
     {
-        $this->invoiceSetting = invoice_setting();
-        $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+        try {
+            $this->invoiceSetting = invoice_setting();
+            $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+            $this->font = match ($this->invoiceSetting->locale) {
+                'ja' => 'ipag',
+                'hi' => 'hindi',
+                'th' => 'THSarabunNew',
+                'vi' => 'BeVietnamPro',
+                default => $this->invoiceSetting->is_chinese_lang ? 'SimHei' : 'Verdana',
+            };
 
-        // if ($this->invoice->getCustomFieldGroupsWithFields()) {
-            // $this->fields = $this->invoice->getCustomFieldGroupsWithFields()->fields;
-        // }
+            if (!$this->receipt_voucher) {
+                \Log::error('Receipt voucher not found for ID: ' . $id);
+                abort(404, 'Receipt voucher not found');
+            }
 
-        $this->viewPermission = user()->permission('view_invoices');
-        // $this->company = $this->invoice->company;
+            App::setLocale($this->invoiceSetting->locale);
+            Carbon::setLocale($this->invoiceSetting->locale);
 
-        $viewProjectInvoicePermission = user()->permission('view_project_invoices');
-        abort_403(!(
-            $this->viewPermission == 'all'
-            || ($this->viewPermission == 'added' && $this->invoice->added_by == user()->id)
-            || ($this->viewPermission == 'owned' && $this->invoice->client_id == user()->id)
-            || ($viewProjectInvoicePermission == 'owned' && $this->invoice->project_id && $this->invoice->project->client_id == user()->id)
-        ));
+            // Example: Handle file download if already uploaded
+            if ($this->receipt_voucher->file != null) {
+                return response()->download(storage_path('app/public/receipt-files') . '/' . $this->receipt_voucher->file);
+            }
 
-        // App::setLocale($this->invoiceSetting->locale);
-        // Carbon::setLocale($this->invoiceSetting->locale);
+            // Generate PDF for download
+            $pdfOption = $this->domPdfObjectForDownload($id);
 
-        // Download file uploaded
-        if ($this->receipt_voucher->file != null) {
-            return response()->download(storage_path('app/public/receipt-files') . '/' . $this->invoice->file);
+            if (!$pdfOption || !isset($pdfOption['pdf']) || !isset($pdfOption['fileName'])) {
+                \Log::error('Error generating PDF for Receipt Voucher ID: ' . $id);
+                abort(500, 'Error generating PDF');
+            }
+
+            $pdf = $pdfOption['pdf'];
+            $filename = $pdfOption['fileName'];
+
+            return request()->view ? $pdf->stream($filename . '.pdf') : $pdf->download($filename . '.pdf');
+        } catch (\Exception $e) {
+            \Log::error('Exception during download: ' . $e->getMessage());
+            abort(500, 'Error occurred during download');
         }
-
-        $pdfOption = $this->domPdfObjectForDownload($id);
-        $pdf = $pdfOption['pdf'];
-        $filename = $pdfOption['fileName'];
-
-        return request()->view ? $pdf->stream($filename . '.pdf') : $pdf->download($filename . '.pdf');
     }
 
     public function domPdfObjectForDownload($id)
@@ -238,79 +248,15 @@ class ReceiptVoucherController extends AccountBaseController
         ])->first();
 
 
-
-        // App::setLocale($this->invoiceSetting->locale);
-        // Carbon::setLocale($this->invoiceSetting->locale);
-        // $this->paidAmount = $this->invoice->getPaidAmount();
-        // $this->creditNote = 0;
-
-        // if ($this->invoice->getCustomFieldGroupsWithFields()) {
-            // $this->fields = $this->invoice->getCustomFieldGroupsWithFields()->fields;
-        // }
-
-        // if ($this->invoice->credit_note) {
-            // $this->creditNote = CreditNotes::where('invoice_id', $id)
-                // ->select('cn_number')
-                // ->first();
-        // }
-
-        // $this->discount = 0;
-
-        // if ($this->invoice->discount > 0) {
-            // if ($this->invoice->discount_type == 'percent') {
-                // $this->discount = (($this->invoice->discount / 100) * $this->invoice->sub_total);
-            // }
-            // else {
-                // $this->discount = $this->invoice->discount;
-            // }
-        // }
-
-        // $taxList = array();
-
-        // $items = InvoiceItems::whereNotNull('taxes')->where('invoice_id', $this->invoice->id)->get();
-
-        // foreach ($items as $item) {
-
-            // foreach (json_decode($item->taxes) as $tax) {
-                // $this->tax = InvoiceItems::taxbyid($tax)->first();
-
-        //         if (!isset($taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'])) {
-
-        //             if ($this->invoice->calculate_tax == 'after_discount' && $this->discount > 0) {
-        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = ($item->amount - ($item->amount / $this->invoice->sub_total) * $this->discount) * ($this->tax->rate_percent / 100);
-
-        //             }
-        //             else {
-        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = $item->amount * ($this->tax->rate_percent / 100);
-        //             }
-
-        //         }
-        //         else {
-        //             if ($this->invoice->calculate_tax == 'after_discount' && $this->discount > 0) {
-        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] + (($item->amount - ($item->amount / $this->invoice->sub_total) * $this->discount) * ($this->tax->rate_percent / 100));
-
-        //             }
-        //             else {
-        //                 $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] = $taxList[$this->tax->tax_name . ': ' . $this->tax->rate_percent . '%'] + ($item->amount * ($this->tax->rate_percent / 100));
-        //             }
-        //         }
-        //     }
-        // }
-
-        // $this->taxes = $taxList;
-
-        // $this->company = $this->invoice->company;
-
-        // $this->invoiceSetting = $this->company->invoiceSetting;
-
-        // $this->payments = Payment::with(['offlineMethod'])->where('invoice_id', $this->invoice->id)->where('status', 'complete')->orderBy('paid_on', 'desc')->get();
+        App::setLocale($this->invoiceSetting->locale);
+        Carbon::setLocale($this->invoiceSetting->locale);
 
         $pdf = app('dompdf.wrapper');
         $pdf->setOption('enable_php', true);
         $pdf->setOption('isHtml5ParserEnabled', true);
         $pdf->setOption('isRemoteEnabled', true);
 
-        $pdf->loadView('receipt-voucher.pdf.receipt-voucher', $this->data);
+        $pdf->loadView('receipt-voucher.pdf.' . $this->invoiceSetting->template, $this->data);
         $filename = $this->receipt_voucher->voucher_number;
 
         return [
@@ -318,5 +264,4 @@ class ReceiptVoucherController extends AccountBaseController
             'fileName' => $filename
         ];
     }
-
 }
