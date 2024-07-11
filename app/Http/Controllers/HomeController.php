@@ -912,6 +912,7 @@ class HomeController extends Controller
             // Define validation rules
             $rules = [
                 'receipt_voucher_id' => 'required|integer',
+                'iqaama_number' => 'required',
                 'signature' => 'required|file|mimes:jpg,jpeg,png|max:2048', // maximum file size of 2MB
             ];
 
@@ -937,7 +938,11 @@ class HomeController extends Controller
                 ], 422);
             }
 
-            $receiptVoucher = ReceiptVoucher::find($request->receipt_voucher_id);
+            $receiptVoucher = ReceiptVoucher::whereHas('driver', function($query) use($request) {
+                $query->where('iqaama_number', $request->iqaama_number);
+            })->with('driver')->find($request->receipt_voucher_id);
+
+
             if(!$receiptVoucher){
                 return response()->json(['status' => 404, 'message' => 'No Receipt Voucher Found Against This Id '. $request->receipt_voucher_id, 'data' => []]);
             }
