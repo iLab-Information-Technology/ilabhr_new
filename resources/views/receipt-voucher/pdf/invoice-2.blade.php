@@ -518,9 +518,9 @@
                     @if ($company->company_phone)
                         <div>{{ $company->company_phone }}</div>
                     @endif
-                    @if ($invoice->address)
+                    {{-- @if ($invoice->address)
                         <div>{!! nl2br($invoice->address->address) !!}</div>
-                    @endif
+                    @endif --}}
 
                     <span class="clearfix"></span>
 
@@ -528,9 +528,9 @@
 
                     <span class="clearfix"></span>
 
-                    @if ($invoiceSetting->show_gst == 'yes' && $invoice->address->tax_number)
+                    {{-- @if ($invoiceSetting->show_gst == 'yes' && $invoice->address->tax_number)
                         <div>{{ $invoice->address->tax_name }}: {{ $invoice->address->tax_number }}</div>
-                    @endif
+                    @endif --}}
 
 
                 </div>
@@ -541,18 +541,20 @@
                 <table>
                     <tr>
                         <td>Voucher Date</td>
-                        <td>{{ $receiptVoucher->voucher_date->translatedFormat($company->date_format) }}</td>
+                        <td>{{ $receipt_voucher->voucher_date->translatedFormat($company->date_format) }}</td>
                     </tr>
-                    @if (empty($invoice->order_id) && $invoice->status === 'unpaid' && $invoice->due_date->year > 1)
+                    @if (empty($receipt_voucher->voucher_number) &&
+                            $receipt_voucher->status === 'unpaid' &&
+                            $receipt_voucher->end_date->year > 1)
                         <tr>
                             <td>@lang('app.dueDate'):</td>
-                            <td>{{ $invoice->due_date->translatedFormat($company->date_format) }}</td>
+                            <td>{{ $receipt_voucher->end_date->translatedFormat($company->date_format) }}</td>
                         </tr>
                     @endif
                     @if ($invoiceSetting->show_status)
                         <tr>
                             <td>@lang('app.status'):</td>
-                            <td>@lang('modules.invoices.' . $invoice->status)</td>
+                            <td>@lang('modules.invoices.' . $receipt_voucher->status)</td>
                         </tr>
                     @endif
 
@@ -560,72 +562,68 @@
 
                 <section id="invoice-title-number">
 
-                    <span id="number">{{ $receiptVoucher->voucher_number }}</span>
+                    <span id="number">{{ $receipt_voucher->voucher_number }}</span>
 
-                    @if ($invoice->clientDetails->company_logo)
+                    {{-- @if ($invoice->clientDetails->company_logo)
                         <div class="client-logo-div">
                             <img src="{{ $invoice->clientDetails->image_url }}"
                                 alt="{{ $invoice->clientDetails->company_name }}" class="client-logo" />
                         </div>
-                    @endif
+                    @endif --}}
 
 
                 </section>
             </section>
             @if (
-                $invoice->project &&
-                    $invoice->project->client &&
-                    $invoice->project->client->clientDetails &&
-                    ($invoice->project->client->name ||
-                        $invoice->project->client->email ||
-                        $invoice->project->client->mobile ||
-                        $invoice->project->client->clientDetails->company_name ||
-                        $invoice->project->client->clientDetails->address) &&
+                $receipt_voucher->driver &&
+                    ($receipt_voucher->driver->name ||
+                        $receipt_voucher->driver->email ||
+                        $receipt_voucher->driver->work_mobile_with_phone_code) &&
                     ($invoiceSetting->show_client_name == 'yes' ||
                         $invoiceSetting->show_client_email == 'yes' ||
                         $invoiceSetting->show_client_phone == 'yes' ||
                         $invoiceSetting->show_client_company_name == 'yes' ||
                         $invoiceSetting->show_client_company_address == 'yes'))
                 <section id="client-info" class="description">
-                    <span>@lang('modules.invoices.billedTo')</span>
-                    @if ($invoice->project->client->name && $invoiceSetting->show_client_name == 'yes')
+                    <span>Received From</span>
+                    @if ($receipt_voucher->driver->name && $invoiceSetting->show_client_name == 'yes')
                         <div>
-                            <span class="bold">{{ $invoice->project->client->name }}</span>
+                            <span class="bold">{{ $receipt_voucher->driver->name }}</span>
                         </div>
                     @endif
 
-                    @if ($invoice->project->client->email && $invoiceSetting->show_client_email == 'yes')
+                    @if ($receipt_voucher->driver->email && $invoiceSetting->show_client_email == 'yes')
                         <div>
-                            <span class="">{{ $invoice->project->client->email }}</span>
+                            <span class="">{{ $receipt_voucher->driver->email }}</span>
                         </div>
                     @endif
 
-                    @if ($invoice->project->client->mobile && $invoiceSetting->show_client_phone == 'yes')
+                    @if ($receipt_voucher->driver->work_mobile_with_phone_code && $invoiceSetting->show_client_phone == 'yes')
                         <div>
-                            <span class="">{{ $invoice->project->client->mobile }}</span>
+                            <span class="">{{ $receipt_voucher->driver->work_mobile_with_phone_code }}</span>
                         </div>
                     @endif
-                    @if ($invoice->project->client->clientDetails->company_name && $invoiceSetting->show_client_company_name == 'yes')
+                    {{-- @if ($invoice->project->client->clientDetails->company_name && $invoiceSetting->show_client_company_name == 'yes')
                         <div>
                             <span>{{ $invoice->project->client->clientDetails->company_name }}</span>
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoice->project->client->clientDetails->address && $invoiceSetting->show_client_company_address == 'yes')
+                    {{-- @if ($invoice->project->client->clientDetails->address && $invoiceSetting->show_client_company_address == 'yes')
                         <div class="mb-3">
                             <b>@lang('app.address')</b>
                             <div>{!! nl2br($invoice->project->clientDetails->address) !!}</div>
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoice->show_shipping_address === 'yes')
+                    {{-- @if ($invoice->show_shipping_address === 'yes')
                         <div>
                             <b>@lang('app.shippingAddress')</b>
                             <div>{!! nl2br($invoice->project->clientDetails->shipping_address) !!}</div>
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoiceSetting->show_gst == 'yes' && !is_null($invoice->project->client->clientDetails->gst_number))
+                    {{-- @if ($invoiceSetting->show_gst == 'yes' && !is_null($invoice->project->client->clientDetails->gst_number))
                         <div>
                             @if ($invoice->project->client->clientDetails->tax_name)
                                 <span> {{ $invoice->project->client->clientDetails->tax_name }}:
@@ -635,23 +633,22 @@
                                 </span>
                             @endif
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoiceSetting->show_project == 1 && isset($invoice->project->project_name))
+                    {{-- @if ($invoiceSetting->show_project == 1 && isset($invoice->project->project_name))
                         <div>
                             <span>@lang('modules.invoices.projectName')</span> <span>{{ $invoice->project->project_name }}</span>
                         </div>
-                    @endif
+                    @endif --}}
 
                 </section>
             @elseif(
-                $invoice->client &&
-                    $invoice->clientDetails &&
-                    ($invoice->client->name ||
-                        $invoice->client->email ||
-                        $invoice->client->mobile ||
-                        $invoice->clientDetails->company_name ||
-                        $invoice->clientDetails->address) &&
+                $receipt_voucher->driver &&
+                    ($receipt_voucher->driver->name ||
+                        $receipt_voucher->driver->email ||
+                        $receipt_voucher->driver->work_mobile_with_phone_code ||
+                        $receipt_voucher->clientDetails->company_name ||
+                        $receipt_voucher->clientDetails->address) &&
                     ($invoiceSetting->show_client_name == 'yes' ||
                         $invoiceSetting->show_client_email == 'yes' ||
                         $invoiceSetting->show_client_phone == 'yes' ||
@@ -660,45 +657,45 @@
                 <section id="client-info" class="description">
                     <span>Received From:</span>
 
-                    @if ($invoice->client->name && $invoiceSetting->show_client_name == 'yes')
+                    @if ($receipt_voucher->driver->name && $invoiceSetting->show_client_name == 'yes')
                         <div>
-                            <span class="bold">{{ $receiptVoucher->driver->name }}</span>
+                            <span class="bold">{{ $receipt_voucher->driver->name }}</span>
                         </div>
                     @endif
 
-                    @if ($invoice->client->email && $invoiceSetting->show_client_email == 'yes')
+                    @if ($receipt_voucher->driver->email && $invoiceSetting->show_client_email == 'yes')
                         <div>
-                            <span class="">{{ $invoice->client->email }}</span>
+                            <span class="">{{ $receipt_voucher->driver->email }}</span>
                         </div>
                     @endif
 
-                    @if ($invoice->client->mobile && $invoiceSetting->show_client_phone == 'yes')
+                    @if ($receipt_voucher->driver->work_mobile_with_phone_code && $invoiceSetting->show_client_phone == 'yes')
                         <div>
-                            <span class="">{{ $invoice->client->mobile }}</span>
+                            <span class="">{{ $receipt_voucher->driver->work_mobile_with_phone_code }}</span>
                         </div>
                     @endif
 
-                    @if ($invoice->clientDetails->company_name && $invoiceSetting->show_client_company_name == 'yes')
+                    {{-- @if ($invoice->clientDetails->company_name && $invoiceSetting->show_client_company_name == 'yes')
                         <div>
                             <span>{{ $invoice->clientDetails->company_name }}</span>
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoice->clientDetails->address && $invoiceSetting->show_client_company_address == 'yes')
+                    {{-- @if ($invoice->clientDetails->address && $invoiceSetting->show_client_company_address == 'yes')
                         <div class="mb-3">
                             <b>@lang('app.address') :</b>
                             <div>{!! nl2br($invoice->clientDetails->address) !!}</div>
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoice->show_shipping_address === 'yes')
+                    {{-- @if ($invoice->show_shipping_address === 'yes')
                         <div>
                             <b>@lang('app.shippingAddress') :</b>
                             <div>{!! nl2br($invoice->clientDetails->shipping_address) !!}</div>
                         </div>
-                    @endif
+                    @endif --}}
 
-                    @if ($invoiceSetting->show_gst == 'yes' && !is_null($invoice->clientDetails->gst_number))
+                    {{-- @if ($invoiceSetting->show_gst == 'yes' && !is_null($invoice->clientDetails->gst_number))
                         <div>
                             @if ($invoice->clientDetails->tax_name)
                                 <span> {{ $invoice->clientDetails->tax_name }}:
@@ -707,23 +704,15 @@
                                 <span> @lang('app.gstIn'): {{ $invoice->clientDetails->gst_number }} </span>
                             @endif
                         </div>
-                    @endif
+                    @endif --}}
                 </section>
             @endif
-            @if (is_null($invoice->project) &&
-                    $invoice->estimate &&
-                    $invoice->estimate->client &&
-                    $invoice->estimate->client->clientDetails &&
-                    ($invoiceSetting->show_client_name == 'yes' ||
-                        $invoiceSetting->show_client_email == 'yes' ||
-                        $invoiceSetting->show_client_phone == 'yes' ||
-                        $invoiceSetting->show_client_company_name == 'yes' ||
-                        $invoiceSetting->show_client_company_address == 'yes'))
+            {{-- @if (is_null($invoice->project) && $invoice->estimate && $invoice->estimate->client && $invoice->estimate->client->clientDetails && ($invoiceSetting->show_client_name == 'yes' || $invoiceSetting->show_client_email == 'yes' || $invoiceSetting->show_client_phone == 'yes' || $invoiceSetting->show_client_company_name == 'yes' || $invoiceSetting->show_client_company_address == 'yes'))
                 <section id="client-info" class="description">
-                    <span>@lang('modules.invoices.billedTo'):</span>
-                    @if ($invoice->estimate->client->name && $invoiceSetting->show_client_name == 'yes')
+                    <span>Received From:</span>
+                    @if ($receipt_voucher->driver->name && $invoiceSetting->show_client_name == 'yes')
                         <div>
-                            <span class="bold">{{ $invoice->estimate->client->name }}</span>
+                            <span class="bold">{{ $receipt_voucher->driver->name }}</span>
                         </div>
                     @endif
 
@@ -771,7 +760,7 @@
                         </div>
                     @endif
                 </section>
-            @endif
+            @endif --}}
 
 
             <div class="clearfix"></div>
@@ -784,53 +773,42 @@
                 <table cellpadding="0" cellspacing="0">
 
                     <tr>
-                        <th>#</th> <!-- Dummy cell for the row number and row commands -->
-                        <th class="description">@lang('modules.invoices.item')</th>
-                        @if ($invoiceSetting->hsn_sac_code_show)
-                            <th class="description">@lang('app.hsnSac')</th>
-                        @endif
-                        <th class="description">@lang('modules.invoices.qty')</th>
-                        <th class="description">@lang('modules.invoices.unitPrice')</th>
-                        <th class="description">@lang('modules.invoices.tax')</th>
-                        <th class="description">@lang('modules.invoices.price') ({!! htmlentities($invoice->currency->currency_code) !!})</th>
+                        <th class="description">مدينة</th>
+                        <th class="description">رقم الاقامة</th>
+                        <th class="description">رقم حساب</th>
+                        <th class="description">عمل</th>
+                        <th class="description">حساب آخر</th>
                     </tr>
 
-                    <?php $count = 0; ?>
-                    @foreach ($invoice->items as $item)
-                        @if ($item->type == 'item')
-                            <tr data-iterate="item">
-                                <td>{{ ++$count }}</td>
-                                <!-- Don't remove this column as it's needed for the row commands -->
-                                <td>
-                                    {{ $item->item_name }}
-                                    @if (!is_null($item->item_summary))
-                                        <p class="item-summary">{!! nl2br(pdfStripTags($item->item_summary)) !!}</p>
-                                    @endif
-                                    @if ($item->invoiceItemImage)
-                                        <p class="mt-2">
-                                            <img src="{{ $item->invoiceItemImage->file_url }}" width="60"
-                                                height="60" class="img-thumbnail">
-                                        </p>
-                                    @endif
-                                </td>
-                                @if ($invoiceSetting->hsn_sac_code_show)
-                                    <td>{{ $item->hsn_sac_code ? $item->hsn_sac_code : '--' }}</td>
-                                @endif
-                                <td align="right" width="10%" class="border-bottom-0">{{ $item->quantity }}
-                                    @if ($item->unit)
-                                        <br><span class="f-11 text-dark-grey">{{ $item->unit->unit_type }}</span>
-                                    @endif
-                                </td>
-                                <td>{{ currency_format($item->unit_price, $invoice->currency_id, false) }}</td>
-                                <td>{{ $item->tax_list }}</td>
-                                <td>{{ currency_format($item->amount, $invoice->currency_id, false) }}</td>
-                            </tr>
-                        @endif
-                    @endforeach
+                    <tr data-iterate="item">
+                        <td>
+                            {{ $receiptVoucher->driver->branch->name }}
+                        </td>
+                        <td align="right" width="10%" class="border-bottom-0">
+                            {{ $receiptVoucher->driver->iqaama_number }}
+                        </td>
+                        <td>
+                            {{ $bussiness->platform_id ?: '---' }}
+                        </td>
+                        <td>
+                            {{ $receiptVoucher->business->name ?: '---' }}
+                        </td>
+                        <td>
+                            {{ $receiptVoucher->other_business ?: '---' }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="description">من التاريخ</th>
+                        <th class="description">رقم الاقامة</th>
+                        <th class="description">رقم حساب</th>
+                        <th class="description">عمل</th>
+                        <th class="description">حساب آخر</th>
+                    </tr>
 
                 </table>
 
-                <table cellpadding="0" cellspacing="0">
+                {{-- <table cellpadding="0" cellspacing="0">
                     <tr>
                         <td colspan="{{ $invoiceSetting->hsn_sac_code_show ? '5' : '4' }}">@lang('modules.invoices.subTotal'):</td>
                         <td>{{ currency_format($invoice->sub_total, $invoice->currency_id, false) }}</td>
@@ -882,10 +860,10 @@
                                 {{ $invoice->currency->currency_code }}</td>
                         </tr>
                     @endif
-                </table>
+                </table> --}}
 
             </section>
-            @if (
+            {{-- @if (
                 $invoiceSetting->authorised_signatory &&
                     $invoiceSetting->authorised_signatory_signature &&
                     $invoice->status == 'paid')
@@ -900,11 +878,12 @@
                         </tr>
                     </table>
                 </section>
-            @endif
-            <section id="terms">
+            @endif --}}
+            {{-- <section id="terms">
                 @if ($invoice->note)
                     <div class="word-break item-summary description">
-                        <b>@lang('app.note')</b><br>{!! nl2br($invoice->note) !!}</div>
+                        <b>@lang('app.note')</b><br>{!! nl2br($invoice->note) !!}
+                    </div>
                 @endif
                 <div class="word-break item-summary description"><b>@lang('modules.invoiceSettings.invoiceTerms')</b><br>{!! nl2br($invoiceSetting->invoice_terms) !!}
                 </div>
@@ -914,9 +893,9 @@
                     </div>
                 @endif
 
-            </section>
+            </section> --}}
 
-            @if (isset($taxes) && $invoiceSetting->tax_calculation_msg == 1)
+            {{-- @if (isset($taxes) && $invoiceSetting->tax_calculation_msg == 1)
                 <p class="text-dark-grey description">
                     @if ($invoice->calculate_tax == 'after_discount')
                         @lang('messages.calculateTaxAfterDiscount')
@@ -924,10 +903,10 @@
                         @lang('messages.calculateTaxBeforeDiscount')
                     @endif
                 </p>
-            @endif
+            @endif --}}
 
             {{-- Custom fields data --}}
-            @if (isset($fields) && count($fields) > 0)
+            {{-- @if (isset($fields) && count($fields) > 0)
                 <div class="page_break"></div>
                 <h3 class="box-title m-t-20 text-center h3-border"> @lang('modules.projects.otherInfo')</h3>
                 <table style="background: none" border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -952,9 +931,9 @@
                         </tr>
                     @endforeach
                 </table>
-            @endif
+            @endif --}}
 
-            @if (count($payments) > 0)
+            {{-- @if (count($payments) > 0)
                 <div class="page_break"></div>
                 <div class="invoice-body b-all m-b-20 description">
                     <h3 class="box-title m-t-20 text-center h3-border">@lang('app.menu.payments')</h3>
@@ -1003,7 +982,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            @endif --}}
 
         </div>
 

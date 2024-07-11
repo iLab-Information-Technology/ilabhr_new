@@ -25,9 +25,12 @@ class VoucherDataTable extends DataTable
             ->addColumn('received_from_driver', function ($row) {
                 return $row->driver->name ?? '';
             })
+            ->addColumn('voucher_date', function ($row) {
+                return $row->voucher_date->format('Y-m-d');
+            })
             ->addColumn('action', 'receipt-voucher.datatable.action')
             ->setRowId('id')
-            ->rawColumns([ 'received_from_driver', 'action']);
+            ->rawColumns(['received_from_driver', 'action']);
     }
 
     /**
@@ -72,10 +75,10 @@ class VoucherDataTable extends DataTable
             Column::make('total_amount'),
             Column::make('status'),
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 

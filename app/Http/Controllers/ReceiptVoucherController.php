@@ -40,7 +40,7 @@ class ReceiptVoucherController extends AccountBaseController
     public function index(VoucherDataTable $dataTable)
     {
         $viewPermission = user()->permission('view_receipt_voucher');
-        // abort_403(!in_array($viewPermission, ['all']));
+        abort_403(!in_array($viewPermission, ['all']));
 
         return $dataTable->render('receipt-voucher.index', $this->data);
     }

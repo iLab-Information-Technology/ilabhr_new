@@ -113,7 +113,7 @@
                     {{-- Start: Wallet Amount--}}
                     <div class="col-md-4">
                         <x-forms.number fieldName="wallet_amount" fieldId="wallet_amount"
-                        fieldLabel="{{ __('modules.invoices.walletAmount') }}" fieldRequired="true" :fieldPlaceholder="__('modules.invoices.walletAmount')" />
+                        fieldLabel="{{ __('modules.invoices.walletAmount') }}" :fieldPlaceholder="__('modules.invoices.walletAmount')" />
                     </div>
                     {{-- End: Wallet Amount--}}
 

@@ -223,10 +223,18 @@
                                 <td>{{ $receiptVoucher->driver->branch->name}}</td>
                                 <td align="center">{{ $receiptVoucher->driver->iqaama_number }}</td>
                                 <td align="center">
-                                       {{ $bussiness->platform_id ? : '---' }}
+                                    @if($bussiness)
+                                    {{ $bussiness->platform_id ?: '---' }}
+                                    @else
+                                    ---
+                                @endif
                                 </td>
                                 <td align="center">
-                                       {{ $receiptVoucher->business->name ? : '---'}}
+                                    @if ($receiptVoucher->bussiness)
+                                    {{ $receiptVoucher->business->name ? : '---'}}
+                                        @else
+                                        ---
+                                    @endif
                                 </td>
                                 <td align="right">
                                     {{ $receiptVoucher->other_business ?: '---' }}
