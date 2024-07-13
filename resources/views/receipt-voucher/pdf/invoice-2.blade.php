@@ -788,10 +788,18 @@
                             {{ $receiptVoucher->driver->iqaama_number }}
                         </td>
                         <td>
-                            {{ $bussiness->platform_id ?: '---' }}
+                            @if ($bussiness)
+                                {{ $bussiness->platform_id ?: '---' }}
+                            @else
+                                ---
+                            @endif
                         </td>
                         <td>
-                            {{ $receiptVoucher->business->name ?: '---' }}
+                            @if ($receiptVoucher->bussiness)
+                                {{ $receiptVoucher->business->name ?: '---' }}
+                            @else
+                                ---
+                            @endif
                         </td>
                         <td>
                             {{ $receiptVoucher->other_business ?: '---' }}
@@ -800,13 +808,45 @@
 
                     <tr>
                         <th class="description">من التاريخ</th>
-                        <th class="description">رقم الاقامة</th>
-                        <th class="description">رقم حساب</th>
-                        <th class="description">عمل</th>
-                        <th class="description">حساب آخر</th>
+                        <th class="description">ان يذهب في موعد</th>
+                        <th class="description" colspan="3">المبلغ الإجمالي</th>
+                    </tr>
+
+                    <tr data-iterate="item">
+                        <td>
+                            {{ $receiptVoucher->start_date->format(company()->date_format) }}
+                        </td>
+                        <td align="right" width="10%" class="border-bottom-0">
+                            {{ $receiptVoucher->end_date->format(company()->date_format) }}
+                        </td>
+                        <td colspan="3">
+                            {{ $receiptVoucher->total_amount }}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="description">توقيع المحاسب</th>
+                        <th class="description">توقيع السائق</th>
+                        <th class="description" colspan="3">توقيع المشرف</th>
+                    </tr>
+
+                    <tr data-iterate="item">
+                        <td style="padding: 50px 10px 2px 10px" align="center">
+                            ________________________________
+                        </td>
+                        <td style="padding: 50px 10px 2px 10px" align="center">
+                            ________________________________
+                        </td>
+                        <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">
+                            ________________________________
+                        </td>
                     </tr>
 
                 </table>
+
+                <div style="float: right;margin-top:30px">
+                    {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+                </div>
 
                 {{-- <table cellpadding="0" cellspacing="0">
                     <tr>
@@ -863,10 +903,7 @@
                 </table> --}}
 
             </section>
-            {{-- @if (
-                $invoiceSetting->authorised_signatory &&
-                    $invoiceSetting->authorised_signatory_signature &&
-                    $invoice->status == 'paid')
+            {{-- @if ($invoiceSetting->authorised_signatory && $invoiceSetting->authorised_signatory_signature && $invoice->status == 'paid')
                 <section id="terms">
                     <table border="0" cellspacing="0" cellpadding="0" width="100%" style="">
                         <tr>

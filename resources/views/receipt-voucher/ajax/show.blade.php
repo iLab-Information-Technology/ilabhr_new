@@ -523,6 +523,10 @@
                     </td>
                 </tr> --}}
             </table>
+
+            <div style="float: right;margin-top:30px">
+                {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+            </div>
         </div>
     </div>
     <!-- CARD BODY END -->
@@ -800,7 +804,7 @@
             @endif --}}
             {{-- PAYMENT GATEWAY --}}
 
-            <x-forms.button-cancel :link="route('invoices.index')" class="border-0 mr-3">@lang('app.cancel')
+            <x-forms.button-cancel :link="route('receipt-voucher.index')" class="border-0 mr-3">@lang('app.cancel')
             </x-forms.button-cancel>
 
         </div>

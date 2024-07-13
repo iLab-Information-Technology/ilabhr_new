@@ -877,9 +877,19 @@
                             {{ $receiptVoucher->driver->iqaama_number }}
                         </td>
                         <td align="right" width="10%" class="border-bottom-0">
-                            {{ $bussiness->platform_id ?: '---' }}
+                            @if ($bussiness)
+                                {{ $bussiness->platform_id ?: '---' }}
+                            @else
+                                ---
+                            @endif
                         </td>
-                        <td>{{ $receiptVoucher->business->name ?: '---' }}</td>
+                        <td>
+                            @if ($receiptVoucher->bussiness)
+                                {{ $receiptVoucher->business->name ?: '---' }}
+                            @else
+                                ---
+                            @endif
+                        </td>
                         <td>{{ $receiptVoucher->other_business ?: '---' }}</td>
                     </tr>
 
@@ -907,9 +917,9 @@
                     </tr>
 
                     <tr data-iterate="item">
-                        <td  style="padding: 50px 10px 2px 10px">___________________________________</td>
+                        <td style="padding: 50px 10px 2px 10px">___________________________________</td>
                         <!-- Don't remove this column as it's needed for the row commands -->
-                        <td  style="padding: 50px 10px 2px 10px">
+                        <td style="padding: 50px 10px 2px 10px">
                             ___________________________________
                         </td>
                         <td style="padding: 50px 10px 2px 10px" align="center" class="border-bottom-0" colspan="3">
@@ -918,6 +928,10 @@
                     </tr>
 
                 </table>
+
+                <div style="float: right;margin-top:30px">
+                    {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+                </div>
 
             </section>
 

@@ -623,7 +623,7 @@
         <section id="invoice-title-number" class="description">
 
             {{-- <span --}}
-                {{-- id="title">{{ str($invoice->invoice_number)->replace($invoice->original_invoice_number, '') }}</span> --}}
+            {{-- id="title">{{ str($invoice->invoice_number)->replace($invoice->original_invoice_number, '') }}</span> --}}
             {{-- <span id="number">{{ $invoice->original_invoice_number }}</span> --}}
 
         </section>
@@ -631,7 +631,7 @@
 
         <div class="clearfix"></div>
         @if (
-                $receiptVoucher->driver->name &&
+            $receiptVoucher->driver->name &&
                 $invoice->project->client->clientDetails &&
                 ($invoice->project->client->name ||
                     $invoice->project->client->email ||
@@ -857,10 +857,18 @@
                         {{ $receiptVoucher->driver->iqaama_number }}
                     </td>
                     <td align="right" width="10%" class="border-bottom-0">
-                        {{ $bussiness->platform_id ?: '---' }}
+                        @if ($bussiness)
+                            {{ $bussiness->platform_id ?: '---' }}
+                        @else
+                            ---
+                        @endif
                     </td>
                     <td>
-                        {{ $receiptVoucher->business->name ?: '---' }}
+                        @if ($receiptVoucher->bussiness)
+                            {{ $receiptVoucher->business->name ?: '---' }}
+                        @else
+                            ---
+                        @endif
                     </td>
                     <td>
                         {{ $receiptVoucher->other_business ?: '---' }}
@@ -868,7 +876,7 @@
                 </tr>
 
                 <tr>
-                    <th>من التاريخ</th> <!-- Dummy cell for the row number and row commands -->
+                    <th>من التاريخ</th>
                     <th class="description">ان يذهب في موعد</th>
                     <th class="description">المبلغ الإجمالي</th>
                 </tr>
@@ -897,6 +905,10 @@
                         ________________________________</td>
                 </tr>
             </table>
+
+            <div style="float: right;margin-top:30px">
+                {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+            </div>
 
         </section>
 
@@ -962,7 +974,9 @@
                 <span>Voucher Date</span>
                 <span>{{ $receiptVoucher->voucher_date->translatedFormat(company()->date_format) }}</span>
             </div>
-            @if (empty($receiptVoucher->voucher_number) && $receiptVoucher->status === 'unpaid' && $receiptVoucher->end_date->year > 1)
+            @if (empty($receiptVoucher->voucher_number) &&
+                    $receiptVoucher->status === 'unpaid' &&
+                    $receiptVoucher->end_date->year > 1)
                 <div class="description">
                     <span>@lang('app.dueDate'):</span>
                     <span>{{ $receiptVoucher->end_date->translatedFormat($company->date_format) }}</span>
@@ -993,7 +1007,7 @@
             </div>
 
         </section> --}}
-{{-- 
+        {{-- 
         @if (isset($taxes) && $invoiceSetting->tax_calculation_msg == 1)
             <section id="calculate_tax" class="description">
                 <p class="text-dark-grey calculate_tax">

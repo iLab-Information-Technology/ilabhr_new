@@ -225,6 +225,8 @@ class ReceiptVoucherController extends AccountBaseController
                 'business_id' => $this->receipt_voucher->business_id,
             ])->first();
 
+            return view('receipt-voucher.pdf.invoice-5', $this->data);
+
             $pdf = app('dompdf.wrapper');
             $pdf->setOption('enable_php', true);
             $pdf->setOption('isHtml5ParserEnabled', true);

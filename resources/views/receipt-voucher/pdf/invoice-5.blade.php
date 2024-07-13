@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>@lang('app.receipt_voucher') - {{ $receipt_voucher->voucher_number }}</title>
+    <title>@lang('app.menu.receipt_voucher') - {{ $receipt_voucher->voucher_number }}</title>
     <meta name="msapplication-TileColor" content="#ffffff">
     {{-- <meta name="msapplication-TileImage" content="{{ $company->favicon_url }}"> --}}
     <meta name="theme-color" content="#ffffff">
@@ -429,9 +429,9 @@
                                         class="text-uppercase bg-white {{ $receipt_voucher->status == 'paid' || $receipt_voucher->status == 'unpaid' ? $receipt_voucher->status : 'other' }} rightaligned">
                                         {{-- @if ($invoice->credit_note)
                                     @lang('app.credit-note')
-                                @else--}}
-                                    @lang('modules.invoices.' . $receipt_voucher->status)
-                               {{-- @endif --}}
+                                @else --}}
+                                        @lang('modules.invoices.' . $receipt_voucher->status)
+                                        {{-- @endif --}}
                                     </div>
                                 </td>
                             @endif
@@ -461,9 +461,22 @@
             <td width="40%" class="border-bottom-0">
                 {{ $receipt_voucher->driver->branch->name }}
             </td>
-            <td align="center" width="10%" class="border-bottom-0">{{ $receipt_voucher->driver->iqaama_number }}</td>
-            <td align="center" class="border-bottom-0">{{ $bussiness->platform_id ?: '---' }}</td>
-            <td align="center" class="border-bottom-0">{{ $receipt_voucher->business->name ?: '---' }}</td>
+            <td align="center" width="10%" class="border-bottom-0">{{ $receipt_voucher->driver->iqaama_number }}
+            </td>
+            <td align="center" class="border-bottom-0">
+                @if ($bussiness)
+                    {{ $bussiness->platform_id ?: '---' }}
+                @else
+                    ---
+                @endif
+            </td>
+            <td align="center" class="border-bottom-0">
+                @if ($receiptVoucher->bussiness)
+                    {{ $receiptVoucher->business->name ?: '---' }}
+                @else
+                    ---
+                @endif
+            </td>
             <td align="right" class="border-bottom-0"
                 width="{{ $invoiceSetting->hsn_sac_code_show ? '20%' : '23%' }}">
                 {{ $receipt_voucher->other_business ?: '---' }}</td>
@@ -579,6 +592,10 @@
             </td>
         </tr> --}}
     </table>
+
+    <div style="float: right;margin-top:30px">
+        {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+    </div>
 
     <table class="bg-white" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
         <tbody>

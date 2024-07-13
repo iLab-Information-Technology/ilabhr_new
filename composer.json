@@ -65,6 +65,7 @@
         "saloonphp/xml-wrangler": "^0.2.0",
         "sentry/sentry-laravel": "^4.2",
         "setasign/fpdf": "^1.8",
+        "simplesoftwareio/simple-qrcode": "4.2",
         "spatie/laravel-activitylog": "*",
         "spatie/laravel-backup": "8.*",
         "square/square": "16.0.0.20211117",
