@@ -631,13 +631,10 @@
 
         <div class="clearfix"></div>
         @if (
-            $receiptVoucher->driver->name &&
-                $invoice->project->client->clientDetails &&
-                ($invoice->project->client->name ||
-                    $invoice->project->client->email ||
-                    $invoice->project->client->mobile ||
-                    $invoice->project->client->clientDetails->company_name ||
-                    $invoice->project->client->clientDetails->address) &&
+            $receipt_voucher->driver->name &&
+                ($receipt_voucher->driver->name ||
+                    $receipt_voucher->driver->email ||
+                    $receipt_voucher->driver->work_mobile_with_phone_code) &&
                 ($invoiceSetting->show_client_name == 'yes' ||
                     $invoiceSetting->show_client_email == 'yes' ||
                     $invoiceSetting->show_client_phone == 'yes' ||
@@ -647,24 +644,24 @@
 
                 <span class="description">مستلم من:</span>
 
-                @if ($receiptVoucher->driver->name && $invoiceSetting->show_client_name == 'yes')
+                @if ($receipt_voucher->driver->name && $invoiceSetting->show_client_name == 'yes')
                     <div>
-                        <span class="bold">{{ $receiptVoucher->driver->name }}</span>
+                        <span class="bold">{{ $receipt_voucher->driver->name }}</span>
                     </div>
                 @endif
 
-                @if ($receiptVoucher->driver->email && $invoiceSetting->show_client_email == 'yes')
+                @if ($receipt_voucher->driver->email && $invoiceSetting->show_client_email == 'yes')
                     <div>
-                        <span class="">{{ $receiptVoucher->driver->email }}</span>
+                        <span class="">{{ $receipt_voucher->driver->email }}</span>
                     </div>
                 @endif
 
-                @if ($receiptVoucher->driver->work_mobile_with_phone_code && $invoiceSetting->show_client_phone == 'yes')
+                @if ($receipt_voucher->driver->work_mobile_with_phone_code && $invoiceSetting->show_client_phone == 'yes')
                     <div>
-                        <span class="">{{ $receiptVoucher->driver->work_mobile_with_phone_code }}</span>
+                        <span class="">{{ $receipt_voucher->driver->work_mobile_with_phone_code }}</span>
                     </div>
                 @endif
-                {{-- @if ($receiptVoucher->project->client->clientDetails->company_name && $invoiceSetting->show_client_company_name == 'yes')
+                {{-- @if ($receipt_voucher->project->client->clientDetails->company_name && $invoiceSetting->show_client_company_name == 'yes')
                     <div>
                         <span>{{ $invoice->project->client->clientDetails->company_name }}</span>
                     </div>
@@ -706,11 +703,11 @@
 
             </section>
         @elseif(
-            $receiptVoucher->client &&
-                $receiptVoucher->clientDetails &&
-                ($receiptVoucher->driver->name ||
-                    $receiptVoucher->driver->email ||
-                    $receiptVoucher->driver->work_mobile_with_phone_code)(
+            $receipt_voucher->client &&
+                $receipt_voucher->clientDetails &&
+                ($receipt_voucher->driver->name ||
+                    $receipt_voucher->driver->email ||
+                    $receipt_voucher->driver->work_mobile_with_phone_code)(
                     $invoiceSetting->show_client_name == 'yes' ||
                         $invoiceSetting->show_client_email == 'yes' ||
                         $invoiceSetting->show_client_phone == 'yes' ||
@@ -719,21 +716,21 @@
             <section id="client-info" class="description">
                 <span>مستلم من:</span>
 
-                @if ($receiptVoucher->client->name && $invoiceSetting->show_client_name == 'yes')
+                @if ($receipt_voucher->client->name && $invoiceSetting->show_client_name == 'yes')
                     <div>
-                        <span class="bold">{{ $receiptVoucher->driver->name }}</span>
+                        <span class="bold">{{ $receipt_voucher->driver->name }}</span>
                     </div>
                 @endif
 
-                @if ($receiptVoucher->driver->email && $invoiceSetting->show_client_email == 'yes')
+                @if ($receipt_voucher->driver->email && $invoiceSetting->show_client_email == 'yes')
                     <div>
-                        <span class="">{{ $receiptVoucher->driver->email }}</span>
+                        <span class="">{{ $receipt_voucher->driver->email }}</span>
                     </div>
                 @endif
 
-                @if ($receiptVoucher->driver->work_mobile_with_phone_code && $invoiceSetting->show_client_phone == 'yes')
+                @if ($receipt_voucher->driver->work_mobile_with_phone_code && $invoiceSetting->show_client_phone == 'yes')
                     <div>
-                        <span class="">{{ $receiptVoucher->driver->work_mobile_with_phone_code }}</span>
+                        <span class="">{{ $receipt_voucher->driver->work_mobile_with_phone_code }}</span>
                     </div>
                 @endif
 
@@ -843,7 +840,7 @@
             <table cellpadding="0" cellspacing="0">
 
                 <tr>
-                    <th>مدينة</th> <!-- Dummy cell for the row number and row commands -->
+                    <th class="description" style="width: 20%!important; text-align:left">مدينة</th> <!-- Dummy cell for the row number and row commands -->
                     <th class="description">رقم الاقامة</th>
                     <th class="description">رقم حساب</th>
                     <th class="description">عمل</th>
@@ -851,10 +848,10 @@
                 </tr>
 
                 <tr data-iterate="item">
-                    <td>{{ $receiptVoucher->driver->branch->name }}</td>
+                    <td style="width: 20%!important; text-align:left">{{ $receipt_voucher->driver->branch->name }}</td>
                     <!-- Don't remove this column as it's needed for the row commands -->
                     <td>
-                        {{ $receiptVoucher->driver->iqaama_number }}
+                        {{ $receipt_voucher->driver->iqaama_number }}
                     </td>
                     <td align="right" width="10%" class="border-bottom-0">
                         @if ($bussiness)
@@ -864,50 +861,50 @@
                         @endif
                     </td>
                     <td>
-                        @if ($receiptVoucher->bussiness)
-                            {{ $receiptVoucher->business->name ?: '---' }}
+                        @if ($receipt_voucher->bussiness)
+                            {{ $receipt_voucher->business->name ?: '---' }}
                         @else
                             ---
                         @endif
                     </td>
                     <td>
-                        {{ $receiptVoucher->other_business ?: '---' }}
+                        {{ $receipt_voucher->other_business ?: '---' }}
                     </td>
                 </tr>
 
                 <tr>
-                    <th>من التاريخ</th>
+                    <th class="description" style="width: 20%!important; text-align:left">من التاريخ</th>
                     <th class="description">ان يذهب في موعد</th>
-                    <th class="description">المبلغ الإجمالي</th>
+                    <th class="description" colspan="3">مبلغ المحفظة</th>
                 </tr>
 
                 <tr data-iterate="item">
-                    <td>{{ $receiptVoucher->start_date->format(company()->date_format) }}</td>
+                    <td style="width: 20%!important; text-align:left">{{ $receipt_voucher->start_date->format(company()->date_format) }}</td>
                     <!-- Don't remove this column as it's needed for the row commands -->
                     <td>
-                        {{ $receiptVoucher->end_date->format(company()->date_format) }}
+                        {{ $receipt_voucher->end_date->format(company()->date_format) }}
                     </td>
-                    <td align="right" width="10%" class="border-bottom-0">
-                        {{ $receiptVoucher->total_amount }}
+                    <td align="right" width="10%" class="border-bottom-0" colspan="3">
+                        {{ $receipt_voucher->wallet_amount }}
                     </td>
                 </tr>
 
                 <tr>
-                    <th>توقيع المحاسب</th> <!-- Dummy cell for the row number and row commands -->
+                    <th class="description" style="width: 20%!important; text-align:left">توقيع المحاسب</th> <!-- Dummy cell for the row number and row commands -->
                     <th class="description">توقيع السائق</th>
-                    <th class="description">توقيع المشرف</th>
+                    <th class="description" colspan="3">توقيع المشرف</th>
                 </tr>
 
                 <tr data-iterate="item">
-                    <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
-                    <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
-                    <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">
+                    <td style="padding: 50px 10px 2px 10px;text-align:center" align="center">________________________________</td>
+                    <td style="padding: 50px 10px 2px 10px;text-align:center" align="center">________________________________</td>
+                    <td style="padding: 50px 10px 2px 10px;text-align:center" colspan="3">
                         ________________________________</td>
                 </tr>
             </table>
 
             <div style="float: right;margin-top:30px">
-                {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+                {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
             </div>
 
         </section>
@@ -972,19 +969,19 @@
         <section id="invoice-info" class="description">
             <div class="description">
                 <span>Voucher Date</span>
-                <span>{{ $receiptVoucher->voucher_date->translatedFormat(company()->date_format) }}</span>
+                <span>{{ $receipt_voucher->voucher_date->translatedFormat(company()->date_format) }}</span>
             </div>
-            @if (empty($receiptVoucher->voucher_number) &&
-                    $receiptVoucher->status === 'unpaid' &&
-                    $receiptVoucher->end_date->year > 1)
+            @if (empty($receipt_voucher->voucher_number) &&
+                    $receipt_voucher->status === 'unpaid' &&
+                    $receipt_voucher->end_date->year > 1)
                 <div class="description">
                     <span>@lang('app.dueDate'):</span>
-                    <span>{{ $receiptVoucher->end_date->translatedFormat($company->date_format) }}</span>
+                    <span>{{ $receipt_voucher->end_date->translatedFormat($company->date_format) }}</span>
                 </div>
             @endif
             @if ($invoiceSetting->show_status)
                 <div>
-                    <span>@lang('app.status'):</span> <span>@lang('modules.invoices.' . $receiptVoucher->status)</span>
+                    <span>@lang('app.status'):</span> <span>@lang('modules.invoices.' . $receipt_voucher->status)</span>
                 </div>
             @endif
             {{-- @if ($creditNote)

@@ -773,7 +773,7 @@
                 <table cellpadding="0" cellspacing="0">
 
                     <tr>
-                        <th class="description">مدينة</th>
+                        <th class="description" style="width: 20%;text-align:left">مدينة</th>
                         <th class="description">رقم الاقامة</th>
                         <th class="description">رقم حساب</th>
                         <th class="description">عمل</th>
@@ -782,10 +782,10 @@
 
                     <tr data-iterate="item">
                         <td>
-                            {{ $receiptVoucher->driver->branch->name }}
+                            {{ $receipt_voucher->driver->branch->name }}
                         </td>
                         <td align="right" width="10%" class="border-bottom-0">
-                            {{ $receiptVoucher->driver->iqaama_number }}
+                            {{ $receipt_voucher->driver->iqaama_number }}
                         </td>
                         <td>
                             @if ($bussiness)
@@ -795,49 +795,49 @@
                             @endif
                         </td>
                         <td>
-                            @if ($receiptVoucher->bussiness)
-                                {{ $receiptVoucher->business->name ?: '---' }}
+                            @if ($receipt_voucher->bussiness)
+                                {{ $receipt_voucher->business->name ?: '---' }}
                             @else
                                 ---
                             @endif
                         </td>
                         <td>
-                            {{ $receiptVoucher->other_business ?: '---' }}
+                            {{ $receipt_voucher->other_business ?: '---' }}
                         </td>
                     </tr>
 
                     <tr>
-                        <th class="description">من التاريخ</th>
+                        <th class="description" style="width: 20%;text-align:left">من التاريخ</th>
                         <th class="description">ان يذهب في موعد</th>
-                        <th class="description" colspan="3">المبلغ الإجمالي</th>
+                        <th class="description" colspan="3">مبلغ المحفظة</th>
                     </tr>
 
                     <tr data-iterate="item">
                         <td>
-                            {{ $receiptVoucher->start_date->format(company()->date_format) }}
+                            {{ $receipt_voucher->start_date->format(company()->date_format) }}
                         </td>
                         <td align="right" width="10%" class="border-bottom-0">
-                            {{ $receiptVoucher->end_date->format(company()->date_format) }}
+                            {{ $receipt_voucher->end_date->format(company()->date_format) }}
                         </td>
                         <td colspan="3">
-                            {{ $receiptVoucher->total_amount }}
+                            {{ $receipt_voucher->wallet_amount }}
                         </td>
                     </tr>
 
                     <tr>
-                        <th class="description">توقيع المحاسب</th>
+                        <th class="description" style="width: 20%;text-align:left">توقيع المحاسب</th>
                         <th class="description">توقيع السائق</th>
                         <th class="description" colspan="3">توقيع المشرف</th>
                     </tr>
 
                     <tr data-iterate="item">
-                        <td style="padding: 50px 10px 2px 10px" align="center">
+                        <td style="padding: 50px 10px 2px 10px;text-align:center">
                             ________________________________
                         </td>
-                        <td style="padding: 50px 10px 2px 10px" align="center">
+                        <td style="padding: 50px 10px 2px 10px;text-align:center" align="center">
                             ________________________________
                         </td>
-                        <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">
+                        <td style="padding: 50px 10px 2px 10px;text-align:center" align="center" colspan="3">
                             ________________________________
                         </td>
                     </tr>
@@ -845,7 +845,7 @@
                 </table>
 
                 <div style="float: right;margin-top:30px">
-                    {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+                    {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
                 </div>
 
                 {{-- <table cellpadding="0" cellspacing="0">

@@ -246,14 +246,14 @@
                                 </td>
                                 <td align="center" class="border-right-0" width="35%">To Date</td>
                                 <td class="border-right-0 border-left-0" align="right" colspan="3">
-                                    Total Amount
+                                    Wallet Amount
                                 </td>
                             </tr>
                             <tr class="text-dark font-weight-semibold f-13">
                                 <td>{{ $receiptVoucher->start_date->format(company()->date_format) }}</td>
                                 <td align="center">{{ $receiptVoucher->end_date->format(company()->date_format) }}</td>
                                 <td align="right" colspan="3">
-                                    {{ $receiptVoucher->total_amount }}
+                                    {{ $receiptVoucher->wallet_amount }}
                                 </td>
                             </tr>
                             <tr class="i-d-heading bg-light-grey text-dark-grey font-weight-bold">

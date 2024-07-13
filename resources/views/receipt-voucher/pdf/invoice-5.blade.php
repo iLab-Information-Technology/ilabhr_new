@@ -471,8 +471,8 @@
                 @endif
             </td>
             <td align="center" class="border-bottom-0">
-                @if ($receiptVoucher->bussiness)
-                    {{ $receiptVoucher->business->name ?: '---' }}
+                @if ($receipt_voucher->bussiness)
+                    {{ $receipt_voucher->business->name ?: '---' }}
                 @else
                     ---
                 @endif
@@ -484,14 +484,14 @@
         <tr class="main-table-heading text-grey">
             <td>من التاريخ</td>
             <td align="center">ان يذهب في موعد</td>
-            <td align="right" colspan="3">المبلغ الإجمالي</td>
+            <td align="right" colspan="3">مبلغ المحفظة</td>
         </tr>
         <!-- Table Row End -->
         <tr class="f-12 main-table-items text-black">
             <td>{{ $receipt_voucher->start_date->format(company()->date_format) }}</td>
             <td align="center">{{ $receipt_voucher->end_date->format(company()->date_format) }}</td>
             <td align="right" colspan="3">
-                {{ $receipt_voucher->total_amount }}
+                {{ $receipt_voucher->wallet_amount }}
             </td>
         </tr>
         <tr class="main-table-heading text-grey">
@@ -594,7 +594,7 @@
     </table>
 
     <div style="float: right;margin-top:30px">
-        {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+        {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
     </div>
 
     <table class="bg-white" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
