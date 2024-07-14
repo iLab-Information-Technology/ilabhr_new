@@ -594,7 +594,7 @@
     </table>
 
     <div style="float: right;margin-top:30px">
-        {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
+        {{-- {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!} --}}
     </div>
 
     <table class="bg-white" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">

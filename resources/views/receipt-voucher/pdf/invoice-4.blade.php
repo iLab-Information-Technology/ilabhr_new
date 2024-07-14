@@ -930,7 +930,7 @@
                 </table>
 
                 <div style="float: right;margin-top:30px">
-                    {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
+                    {{-- {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!} --}}
                 </div>
 
             </section>

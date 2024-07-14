@@ -692,7 +692,7 @@
                         @endif
                     </div>
                 @endif --}}
-                {{-- 
+                {{--
                 @if ($invoice->clientDetails->company_logo)
                     <div class="client-logo-div">
                         <img src="{{ $invoice->clientDetails->image_url }}"
@@ -746,7 +746,7 @@
                         <div>{!! nl2br($invoice->clientDetails->address) !!}</div>
                     </div>
                 @endif --}}
-                {{-- 
+                {{--
                 @if ($invoice->show_shipping_address === 'yes')
                     <div>
                         <b>@lang('app.shippingAddress') :</b>
@@ -904,7 +904,7 @@
             </table>
 
             <div style="float: right;margin-top:30px">
-                {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
+                {{-- {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!} --}}
             </div>
 
         </section>
@@ -1004,7 +1004,7 @@
             </div>
 
         </section> --}}
-        {{-- 
+        {{--
         @if (isset($taxes) && $invoiceSetting->tax_calculation_msg == 1)
             <section id="calculate_tax" class="description">
                 <p class="text-dark-grey calculate_tax">

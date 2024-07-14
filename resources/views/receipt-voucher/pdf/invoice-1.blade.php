@@ -456,7 +456,7 @@
                             {{-- @if ($invoice->estimate->client->email && $invoiceSetting->show_client_email == 'yes')
                                 {{ $invoice->estimate->client->email }}<br>
                             @endif --}}
-{{-- 
+{{--
                             @if ($invoice->estimate->client->mobile && $invoiceSetting->show_client_phone == 'yes')
                                 {{ $invoice->estimate->client->mobile }}<br>
                             @endif --}}
@@ -572,7 +572,7 @@
                             @endif
                             </td>
                             <td class="qty text-green">
-                                {{ $receipt_voucher->other_business ?: '---' }}    
+                                {{ $receipt_voucher->other_business ?: '---' }}
                             </td>
                         </tr>
             </tbody>
@@ -666,7 +666,7 @@
         </table>
 
         <div style="float: right;margin-top:30px">
-            {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!}
+            {{-- {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receipt_voucher->id])) !!} --}}
         </div>
 
         {{-- <p id="notes" class="word-break description">

@@ -525,7 +525,7 @@
             </table>
 
             <div style="float: right;margin-top:30px">
-                {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!}
+                {{-- {!! QrCode::size(200)->generate(route('receipt-voucher.show', [$receiptVoucher->id])) !!} --}}
             </div>
         </div>
     </div>
@@ -650,7 +650,7 @@
                             @endif
                         @endif --}}
                     @endif
-{{-- 
+{{--
                     @if (!in_array($invoice->status, ['canceled', 'draft']) && !$invoice->credit_note && $invoice->send_status)
                         <li>
                             <a class="dropdown-item f-14 text-dark btn-copy" href="javascript:;"
@@ -1044,7 +1044,7 @@
     //             }
     //         });
     //     }
-    // @endif 
+    // @endif
     --}}
 
     $('body').on('click', '.sendButton', function() {
