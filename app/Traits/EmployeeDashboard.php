@@ -49,7 +49,7 @@ trait EmployeeDashboard
 
         $this->attendanceSettings = $this->attendanceShift($showClockIn);
 
-        $startTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time ? $this->attendanceSettings->office_start_time : '';
+        $startTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time;
 
         $endTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_end_time;
         $officeStartTime = Carbon::createFromFormat('Y-m-d H:i:s', $startTimestamp, $this->company->timezone);
@@ -506,7 +506,7 @@ trait EmployeeDashboard
 
         $this->attendanceSettings = $this->attendanceShift($showClockIn);
 
-        $startTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time ? $this->attendanceSettings->office_start_time : '';
+        $startTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time;
         $endTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_end_time;
         $officeStartTime = Carbon::createFromFormat('Y-m-d H:i:s', $startTimestamp, $this->company->timezone);
         $officeEndTime = Carbon::createFromFormat('Y-m-d H:i:s', $endTimestamp, $this->company->timezone);
@@ -561,7 +561,7 @@ trait EmployeeDashboard
 
         $this->attendanceSettings = $this->attendanceShift($showClockIn);
 
-        $startTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time ? $this->attendanceSettings->office_start_time : '';
+        $startTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time;
         $endTimestamp = now()->format('Y-m-d') . ' ' . $this->attendanceSettings->office_end_time;
         $officeStartTime = Carbon::createFromFormat('Y-m-d H:i:s', $startTimestamp, $this->company->timezone);
         $officeEndTime = Carbon::createFromFormat('Y-m-d H:i:s', $endTimestamp, $this->company->timezone);
@@ -641,7 +641,7 @@ trait EmployeeDashboard
             }
 
 
-            $timestamp = $now->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time ? $this->attendanceSettings->office_start_time : '';
+            $timestamp = $now->format('Y-m-d') . ' ' . $this->attendanceSettings->office_start_time;
             $officeStartTime = Carbon::createFromFormat('Y-m-d H:i:s', $timestamp, $this->company->timezone);
             $officeStartTime = $officeStartTime->setTimezone('UTC');
 
@@ -697,9 +697,9 @@ trait EmployeeDashboard
 
             $attendance->employee_shift_id = $this->attendanceSettings->id;
 
-            $attendance->shift_start_time = $attendance->clock_in_time->toDateString() . ' ' . $this->attendanceSettings->office_start_time ? $this->attendanceSettings->office_start_time : '';
+            $attendance->shift_start_time = $attendance->clock_in_time->toDateString() . ' ' . $this->attendanceSettings->office_start_time;
 
-            if (Carbon::parse($this->attendanceSettings->office_start_time ? $this->attendanceSettings->office_start_time : '')->gt(Carbon::parse($this->attendanceSettings->office_end_time))) {
+            if (Carbon::parse($this->attendanceSettings->office_start_time)->gt(Carbon::parse($this->attendanceSettings->office_end_time))) {
                 $attendance->shift_end_time = $attendance->clock_in_time->addDay()->toDateString() . ' ' . $this->attendanceSettings->office_end_time;
 
             }
