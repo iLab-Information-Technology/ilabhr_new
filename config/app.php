@@ -257,7 +257,7 @@ return [
 
         // WORKSUITESAAS
         App\Providers\SuperAdmin\EventServiceProvider::class,
-        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 
     /*
