@@ -266,6 +266,7 @@ return array(
         'name' => 'Name',
         'driverId' => 'Driver ID',
         'nameInfo' => 'Driver name',
+        'driverName' => 'Driver Name',
         'nameTypeInfo' => 'Driver Type name',
         'iqamaNumber' => 'Iqama Number',
         'dateOfBirth' => 'Date of Birth',

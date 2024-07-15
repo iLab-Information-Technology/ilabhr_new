@@ -61,14 +61,14 @@
                     {{-- End: City --}}
 
 
-                    {{-- Start: Iqama Number --}}
+                    {{-- Start: Driver Name --}}
                     <div class="col-md-2">
-                        <x-forms.text fieldId="iqaama_number" :fieldLabel="__('modules.drivers.iqamaNumber')"
-                            fieldName="iqaama_number" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.drivers.iqamaNumber')">
+                        <x-forms.text fieldId="driver_name" :fieldLabel="__('modules.drivers.driverName')"
+                            fieldName="driver_name" fieldReadOnly="true"
+                            :fieldPlaceholder="__('modules.drivers.driverName')">
                         </x-forms.text>
                     </div>
-                    {{-- End: Iqama Number --}}
+                    {{-- End: Driver Name --}}
 
                     {{-- Start: Businesses --}}
                     <div class="col-md-2">
@@ -117,19 +117,7 @@
                     </div>
                     {{-- End: Wallet Amount--}}
 
-                    {{-- Start: Status --}}
-                    <div class="col-md-2">
-                        <x-forms.select fieldId="status" :fieldLabel="__('app.status')"
-                            fieldName="status"
-                            :fieldPlaceholder="__('app.status')">
-                            <option value="paid">Paid</option>
-                            <option value="unpaid">Unpaid</option>
-                            <option value="partial">Partial</option>
-                            <option value="canceled">Canceled</option>
-                            <option value="draft">Draft</option>
-                        </x-forms.select>
-                    </div>
-                    {{-- End: Status --}}
+
                 </div>
 
 
@@ -185,7 +173,7 @@
                     container: '#saveInvoiceForm',
                     blockUI: true,
                     success: function (response) {
-                        $('#iqaama_number').val(response?.iqaama_number);
+                        $('#driver_name').val(response?.name);
                         $('#city').val(response?.branch?.name);
 
                         let options = '<option>--</option>';
@@ -197,7 +185,7 @@
                     }
                 });
             }else{
-                $('#iqaama_number').val('');
+                $('#driver_name').val('');
                 $('#city').val('');
                 $('#business_id').html('').selectpicker('refresh');
 

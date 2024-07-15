@@ -61,14 +61,14 @@
                     {{-- End: City --}}
 
 
-                    {{-- Start: Iqama Number --}}
+                    {{-- Start: Driver Name --}}
                     <div class="col-md-2">
-                        <x-forms.text fieldId="iqaama_number" :fieldLabel="__('modules.drivers.iqamaNumber')"
-                            fieldName="iqaama_number" fieldReadOnly="true"
-                            :fieldPlaceholder="__('modules.drivers.iqamaNumber')" :fieldValue="$receiptVoucher->driver->iqaama_number">
+                        <x-forms.text fieldId="driver_name" :fieldLabel="__('modules.drivers.driverName')"
+                            fieldName="driver_name" fieldReadOnly="true"
+                            :fieldPlaceholder="__('modules.drivers.driverName')" :fieldValue="$receiptVoucher->driver->name">
                         </x-forms.text>
                     </div>
-                    {{-- End: Iqama Number --}}
+                    {{-- End: Driver Name --}}
 
                     {{-- Start: Businesses --}}
                     <div class="col-md-2">
@@ -124,9 +124,6 @@
                             :fieldPlaceholder="__('app.status')">
                             <option value="paid" @selected($receiptVoucher->status == 'paid')>Paid</option>
                             <option value="unpaid" @selected($receiptVoucher->status == 'unpaid')>Unpaid</option>
-                            <option value="partial" @selected($receiptVoucher->status == 'partial')>Partial</option>
-                            <option value="canceled" @selected($receiptVoucher->status == 'canceled')>Canceled</option>
-                            <option value="draft" @selected($receiptVoucher->status == 'draft')>Draft</option>
                         </x-forms.select>
                     </div>
                     {{-- End: Status --}}
@@ -203,7 +200,7 @@
                     container: '#saveInvoiceForm',
                     blockUI: true,
                     success: function (response) {
-                        $('#iqaama_number').val(response?.iqaama_number);
+                        $('#driver_name').val(response?.name);
                         $('#city').val(response?.branch?.name);
 
                         if(business){
@@ -216,7 +213,7 @@
                     }
                 });
             }else{
-                $('#iqaama_number').val('');
+                $('#driver_name').val('');
                 $('#city').val('');
                 $('#business_id').html('').selectpicker('refresh');
 
