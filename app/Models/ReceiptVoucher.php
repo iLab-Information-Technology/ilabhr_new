@@ -28,6 +28,7 @@ class ReceiptVoucher extends Model
         return $this->belongsTo(Driver::class);
     }
 
+
     /**
      * Get the business that owns the ReceiptVoucher
      *

@@ -143,9 +143,10 @@ class DriverController extends AccountBaseController
         if(in_array('admin', user_roles() )) {
             $drivers = Driver::query()
             ->orderby('name')
-            ->select('drivers.id', 'drivers.name')
+            ->select('drivers.id', 'drivers.name', 'drivers.iqaama_number')
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('iqaama_number', 'like', '%' . $search . '%');
             })
             ->take(20)
             ->get();
@@ -155,9 +156,10 @@ class DriverController extends AccountBaseController
             ->join('branch_employee', 'branches.id', '=', 'branch_employee.branch_id')
             ->where('branch_employee.employee_id', user()->id)
             ->when($search, function ($query) use ($search) {
-                $query->where('drivers.name', 'like', '%' . $search . '%');
+                $query->where('drivers.name', 'like', '%' . $search . '%')
+                ->orWhere('drivers.iqaama_number', 'like', '%' . $search . '%');
             })
-            ->orderBy('drivers.name')
+            // ->orderBy('drivers.name')
             ->distinct()
             ->take(20);
 
@@ -171,7 +173,7 @@ class DriverController extends AccountBaseController
 
             $response[] = array(
                 'id' => $driver->id,
-                'text' => $driver->name
+                'text' => $driver->iqaama_number .' - '. $driver->name
             );
         }
         return response()->json($response);
