@@ -160,7 +160,7 @@
         const driver = @json($receiptVoucher->driver);
 
         if (driver) {
-            const option = new Option(driver.name, driver.id, true, true);
+            const option = new Option(driver.iqaama_number, driver.id, true, true);
             $('#driver_id').append(option).val(driver.id).trigger('change');
             handleDriverChange(driver.id);
         }
