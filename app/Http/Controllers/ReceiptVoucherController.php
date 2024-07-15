@@ -84,6 +84,7 @@ class ReceiptVoucherController extends AccountBaseController
             $validated['business_id'] = $request->business_id ? $request->business_id : 0;
             $validated['other_business'] = $request->other_business ? $request->other_business : '';
             $validated['status'] = 'unpaid';
+            $validated['created_by'] = user()->id;
 
             $voucher = ReceiptVoucher::create($validated);
 
@@ -174,6 +175,7 @@ class ReceiptVoucherController extends AccountBaseController
         $validated['end_date'] = Carbon::createFromFormat($this->company->date_format, $request->end_date)->format('Y-m-d');
         $validated['business_id'] = $request->business_id ? $request->business_id : 0;
         $validated['other_business'] = $request->other_business ? $request->other_business : '';
+        $validated['status'] = $request->status;
         $receiptVoucher->update($validated);
 
         return Reply::success(__('messages.updateSuccess'), ['redirectUrl' => route('receipt-voucher.index')]);
