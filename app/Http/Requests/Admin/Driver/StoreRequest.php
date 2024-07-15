@@ -30,9 +30,10 @@ class StoreRequest extends CoreRequest
         $rules = [
             'branch_id' => 'required|exists:branches,id',
             'driver_id' => 'required',
+            'driver_type_id' => 'required',
             'image' => 'required|image',
             'name' => 'required',
-            'iqaama_number' => 'required',
+            'iqaama_number' => 'required|unique:drivers,iqaama_number',
             'absher_number' => 'required',
             'sponsorship' => 'required',
             'sponsorship_id' => 'required',

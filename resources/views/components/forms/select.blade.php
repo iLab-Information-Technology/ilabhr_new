@@ -1,7 +1,7 @@
 <x-forms.label :fieldId="$fieldId" :fieldLabel="$fieldLabel" :fieldRequired="$fieldRequired" :popover="$popover"
     class="mt-3"></x-forms.label>
 <div {{ $attributes->merge(['class' => 'form-group mb-0']) }}>
-    <select name="{{ $fieldName }}" id="{{ $fieldId }}" 
+    <select name="{{ $fieldName }}" id="{{ $fieldId }}"
         @if ($search)
             data-live-search="true"
         @endif

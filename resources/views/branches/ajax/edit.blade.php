@@ -15,14 +15,18 @@ $addDesignationPermission = user()->permission('add_designation');
 
                 <div class="row  p-20">
                     <div class="col-md-4">
-                        <x-forms.select 
-                            fieldId="name" 
-                            :fieldLabel="__('modules.branches.branchName')" 
+                        <x-forms.text fieldId="name" :fieldLabel="__('modules.branches.branchName')"
+                            fieldName="name" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.branches.branchName')" :fieldValue="$branch->name">
+                        </x-forms.text>
+                        {{-- <x-forms.select
+                            fieldId="name"
+                            :fieldLabel="__('modules.branches.branchName')"
                             fieldName="name">
                             @foreach (\App\Enums\BranchName::cases() as $branchName)
                                 <option value="{{ $branchName }}" @selected($branch->name == $branchName)>{{ $branchName->label() }}</option>
                             @endforeach
-                        </x-forms.select>
+                        </x-forms.select> --}}
                     </div>
 
 
@@ -41,7 +45,7 @@ $addDesignationPermission = user()->permission('add_designation');
                 <div class="row p-20">
                     <div class="col-md-4">
                         <x-forms.select2-ajax  fieldId="driver_ids" fieldName="driver_ids[]"
-                            :fieldLabel="__('modules.drivers.driver')" :route="route('get.driver-ajax')" 
+                            :fieldLabel="__('modules.drivers.driver')" :route="route('get.driver-ajax')"
                             :placeholder="__('placeholders.searchForDrivers')" multiple>
                         </x-forms.select2-ajax>
                     </div>
@@ -77,7 +81,7 @@ $addDesignationPermission = user()->permission('add_designation');
             maxDate: new Date(),
             ...datepickerConfig
         });
-        
+
         $('#update-branch-form').click(function() {
 
             const url = "{{ route('branches.update', $branch->id) }}";

@@ -80,19 +80,18 @@ $addDesignationPermission = user()->permission('add_designation');
                                 <x-forms.select fieldId="calculation_type" :fieldLabel="__('modules.businesses.type')"
                                 fieldName="calculation_type[]" fieldRequired="false">
                                 <option value="RANGE">{{ _('RANGE') }}</option>
-                                <option value="EQUAL & ABOVE">{{ _('EQUAL & ABOVE') }}</option>
                                 <option value="FIXED">{{ _('FIXED') }}</option>
                             </x-forms.select>
                         </div>
                         {{-- End:: Type Field --}}
 
                         {{-- Begin:: Equal And Above --}}
-                        <div class="col-md-3 equal_and_above_div d-none">
+                        {{-- <div class="col-md-3 equal_and_above_div d-none">
                             <x-forms.number fieldId="equal_and_above" :fieldLabel="__('modules.businesses.equal_and_above')"
                                 fieldName="equal_and_above[]" fieldRequired="false"
                                 :fieldPlaceholder="__('modules.businesses.equal_and_above')">
                             </x-forms.number>
-                        </div>
+                        </div> --}}
                         {{-- End:: Equal And Above --}}
 
 
@@ -201,7 +200,7 @@ $addDesignationPermission = user()->permission('add_designation');
                             <x-forms.select fieldId="calculation_type" :fieldLabel="__('modules.businesses.type')"
                             fieldName="calculation_type[]" fieldRequired="false">
                             <option value="RANGE">{{ _('RANGE') }}</option>
-                            <option value="EQUAL & ABOVE">{{ _('EQUAL & ABOVE') }}</option>
+
                             <option value="FIXED">{{ _('FIXED') }}</option>
                         </x-forms.select>
                     </div>
@@ -395,7 +394,6 @@ $addDesignationPermission = user()->permission('add_designation');
                 file: true,
                 data: data,
                 success: function(response) {
-                    console.log(response);
                     if (response.status == 'success') {
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');

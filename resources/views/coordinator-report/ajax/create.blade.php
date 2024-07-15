@@ -7,6 +7,7 @@ $addDesignationPermission = user()->permission('add_designation');
 <div class="row">
     <div class="col-sm-12">
         <x-form id="save-coordinator-report-data-form">
+            <input type="hidden" name="report_unique" value="1">
 
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
@@ -22,7 +23,7 @@ $addDesignationPermission = user()->permission('add_designation');
                             @endforeach
                         </x-forms.select>
                     </div>
-                    
+
                     <div class="col-md-4">
 
                         <x-forms.select2-ajax fieldRequired="true" fieldId="driver_id" fieldName="driver_id"
@@ -34,8 +35,8 @@ $addDesignationPermission = user()->permission('add_designation');
 
                     <div class="col-md-4">
                         <x-forms.datepicker fieldId="report_date" :fieldLabel="__('modules.coordinator-report.date')"
-                            fieldName="report_date" 
-                            fieldRequired="true" 
+                            fieldName="report_date"
+                            fieldRequired="true"
                             :fieldPlaceholder="__('modules.coordinator-report.date')"
                             :fieldValue="\Carbon\Carbon::now()->format(company()->date_format)" />
                     </div>
@@ -46,7 +47,7 @@ $addDesignationPermission = user()->permission('add_designation');
                 </h4>
 
                 <div class="row p-20" id="report-fields">
-                    
+
                 </div>
 
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
@@ -70,7 +71,7 @@ $addDesignationPermission = user()->permission('add_designation');
 <script>
     $(document).ready(function() {
         let businesses = @json($businesses);
-        
+
         datepicker('#report_date', {
             ...datepickerConfig,
             position: 'bl'
@@ -84,10 +85,18 @@ $addDesignationPermission = user()->permission('add_designation');
                 return `
                     <div class="col-md-4" id="field-wrapper-${field.id}">
                         <input type="hidden" name="fields[${field.id}][field_id]" value="${field.id}" />
-                        <x-forms.text fieldLabel="${field.name}"
-                            fieldName="fields[${field.id}][value]" fieldId="fields[${field.id}][value]" fieldRequired="${field.required}"
-                            fieldPlaceholder="${field.name}">
-                        </x-forms.text>
+                        ${
+                            field.type == 'TEXT'
+                            ? `<x-forms.text fieldLabel="${field.name}"
+                                    fieldName="fields[${field.id}][value]" fieldId="fields[${field.id}][value]" fieldRequired="${field.required}"
+                                    fieldPlaceholder="${field.name}">
+                                </x-forms.text>`
+                            :  `<x-forms.number fieldLabel="${field.name}"
+                                    fieldName="fields[${field.id}][value]" fieldId="fields[${field.id}][value]" fieldRequired="${field.required}"
+                                    fieldPlaceholder="${field.name}">
+                                </x-forms.number>`
+                        }
+
                     </div>`;
             }).join('\n');
 

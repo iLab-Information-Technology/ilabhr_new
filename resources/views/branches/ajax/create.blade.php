@@ -15,11 +15,15 @@
 
                 <div class="row  p-20">
                     <div class="col-md-4">
-                        <x-forms.select fieldId="name" :fieldLabel="__('modules.branches.branchName')" fieldName="name">
+                        <x-forms.text fieldId="name" :fieldLabel="__('modules.branches.branchName')"
+                            fieldName="name" fieldRequired="true"
+                            :fieldPlaceholder="__('modules.branches.branchName')">
+                        </x-forms.text>
+                        {{-- <x-forms.select fieldId="name" :fieldLabel="__('modules.branches.branchName')" fieldName="name">
                             @foreach (\App\Enums\BranchName::cases() as $branchName)
                                 <option value="{{ $branchName }}">{{ $branchName->label() }}</option>
                             @endforeach
-                        </x-forms.select>
+                        </x-forms.select> --}}
                     </div>
 
 
@@ -37,7 +41,7 @@
                 <div class="row p-20">
                     <div class="col-md-4">
                         <x-forms.select2-ajax  fieldId="driver_id" fieldName="driver_ids[]"
-                            :fieldLabel="__('modules.drivers.driver')" :route="route('get.driver-ajax')" 
+                            :fieldLabel="__('modules.drivers.driver')" :route="route('get.driver-ajax')"
                             :placeholder="__('placeholders.searchForDrivers')" multiple></x-forms.select2-ajax>
                     </div>
                 </div>

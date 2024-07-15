@@ -3,29 +3,28 @@
         <x-form id="import-employee-data-form">
             <div class="add-client bg-white rounded">
                 <h4 class="mb-0 p-20 f-21 font-weight-normal text-capitalize border-bottom-grey">
-                    @lang('app.importEmployee')</h4>
+                    @lang('app.importReport')</h4>
                 <div class="col-sm-12 pt-2">
                     <div class="alert alert-warning" role="alert">
-                        @lang('app.importExcelInfo')
+                        @lang('app.importCoordinatorExcelInfo')
                     </div>
                 </div>
                 <div class="row py-20">
                     <div class="col-md-12">
-                        <x-forms.file :fieldLabel="__('modules.import.file')" fieldName="import_file"
-                                      fieldId="employee_import"/>
+                        <x-forms.file :fieldLabel="__('modules.import.file')" fieldName="import_file" fieldId="lead_import" />
                     </div>
                     <div class="col-md-12">
                         <x-forms.toggle-switch class="mr-0 mr-lg-12"
-                                               :fieldLabel="__('modules.import.containsHeadings')"
-                                               fieldName="heading"
-                                               fieldId="heading"/>
+                            :fieldLabel="__('modules.import.containsHeadings')"
+                            fieldName="heading"
+                            fieldId="heading"/>
                     </div>
                 </div>
                 <x-form-actions>
                     <x-forms.button-primary id="import-employee-form" class="mr-3"
-                                            icon="arrow-right">@lang('app.uploadNext')
+                                            icon="upload">@lang('app.upload')
                     </x-forms.button-primary>
-                    <x-forms.button-cancel :link="route('employees.index')" class="border-0">@lang('app.back')
+                    <x-forms.button-cancel :link="route('coordinator-report.index')" class="border-0">@lang('app.back')
                     </x-forms.button-cancel>
 
                 </x-form-actions>
@@ -44,7 +43,7 @@
         });
 
         $('body').on('click', '#import-employee-form', function () {
-            const url = "{{ route('employees.import.store') }}";
+            const url = "{{ route('coordinator-report.import') }}";
 
             $.easyAjax({
                 url: url,

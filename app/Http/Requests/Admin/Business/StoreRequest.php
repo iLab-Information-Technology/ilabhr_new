@@ -27,7 +27,7 @@ class StoreRequest extends CoreRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|unique:businesses,name,'. $this->business->id,
+            'name' => 'required|unique:businesses,name,',
             'fields' => 'array',
             'fields.*.name' => 'required|string',
             'fields.*.type' => 'required|in:TEXT,INTEGER,DOCUMENT',

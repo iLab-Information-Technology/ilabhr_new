@@ -21,7 +21,7 @@ class CoordinatorReportsDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $business = Business::find($this->business_id);
-        
+
         $dataTable = (new EloquentDataTable($query));
         $rawColumns = [ 'action' ];
         $rawColumns = array_merge(['action'], array_map(fn ($f) => $f['name'], $business->fields->toArray()));
@@ -32,13 +32,16 @@ class CoordinatorReportsDataTable extends DataTable
 
                 if ($field->type == 'DOCUMENT' && $fieldValue) {
                     $documents = json_decode($fieldValue->value, true);
-                    $url = asset_url_local_s3("coordinator-reports/" . $documents[0]);
+                    if($documents){
+                        $url = asset_url_local_s3("coordinator-reports/" . $documents[0]);
                     $html = '<img src="' . $url . '" class="hw-50px object-fit-cover" data-documents=\'' . $fieldValue->value . '\' />';
                     if (count($documents) > 1) {
                         $html =  $html . '&nbsp;+' . (count($documents) - 1) . ' more';
                     }
 
                     return $html;
+                    }
+
                 }
 
                 return $fieldValue ? $fieldValue->value : '-';
@@ -65,6 +68,7 @@ class CoordinatorReportsDataTable extends DataTable
             ->where('business_id', $this->business_id)
             ->when($request->startDate, fn ($q) => $q->whereDate('created_at', '>=', $request->startDate))
             ->when($request->endDate, fn ($q) => $q->whereDate('created_at', '<=', $request->endDate))
+            ->when($request->searchText, fn ($q) => $q->whereHas('driver', fn ($query) => $query->where('name', 'like', '%' . $request->searchText . '%')))
             ->newQuery();
     }
 

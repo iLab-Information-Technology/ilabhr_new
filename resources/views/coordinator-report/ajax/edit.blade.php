@@ -18,10 +18,18 @@ $addDesignationPermission = user()->permission('add_designation');
                         @foreach ($fields->whereIn('type', [ 'TEXT', 'INTEGER' ]) as $field)
                             <div class="col-md-4" id="field-wrapper-{{ $field->id }}">
                                 <input type="hidden" name="fields[{{ $field->id }}][field_id]" value="{{ $field->id }}" />
-                                <x-forms.text fieldLabel="{{ $field->name }}"
-                                    fieldName="fields[{{ $field->id }}][value]" fieldId="fields[{{ $field->id }}][value]" fieldRequired="{{ $field->required }}"
-                                    fieldPlaceholder="{{ $field->name }}">
-                                </x-forms.text>
+                                @if ($field == 'TEXT')
+                                    <x-forms.text fieldLabel="{{ $field->name }}"
+                                        fieldName="fields[{{ $field->id }}][value]" fieldId="fields[{{ $field->id }}][value]" fieldRequired="{{ $field->required }}"
+                                        fieldPlaceholder="{{ $field->name }}">
+                                    </x-forms.text>
+                                @elseif($field == 'INTEGER')
+                                    <x-forms.number fieldLabel="{{ $field->name }}"
+                                        fieldName="fields[{{ $field->id }}][value]" fieldId="fields[{{ $field->id }}][value]" fieldRequired="{{ $field->required }}"
+                                        fieldPlaceholder="{{ $field->name }}">
+                                    </x-forms.number>
+                                @endif
+
                             </div>
                         @endforeach
                     </div>

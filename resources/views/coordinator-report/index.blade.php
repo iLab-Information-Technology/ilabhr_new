@@ -129,6 +129,9 @@
                     <x-forms.link-primary :link="route('coordinator-report.create')" class="mr-3 openRightModal" icon="plus">
                         @lang('app.addReport')
                     </x-forms.link-primary>
+                    <x-forms.link-secondary :link="route('coordinator-report.import-view')" class="mr-3 btn openRightModal" icon="file-import">
+                        @lang('app.importReport')
+                    </x-forms.link-secondary>
                 @endif
                 <div id="table-actions" class="flex-grow-1 align-items-center mt-4">
                 </div>
@@ -169,7 +172,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex flex-column">
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="$('#documents-preview-modal').modal('hide')">Close</button>

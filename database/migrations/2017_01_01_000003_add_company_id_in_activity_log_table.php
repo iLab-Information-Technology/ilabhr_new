@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('activity_log', function (Blueprint $table) {
-            $table->integer('company_id')->unsigned()->nullable();
+            // $table->integer('company_id')->unsigned()->nullable();
 
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('activity_log', function (Blueprint $table) {
-            $table->dropColumn('company_id');
+            // $table->dropColumn('company_id');
         });
     }
 };

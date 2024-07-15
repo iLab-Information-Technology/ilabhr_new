@@ -92,7 +92,7 @@
                                 @if ($user->userAuth->two_factor_secret)
                                     <p class="f-w-500">@lang('modules.twofactor.2faBarcode')</p>
                                     <span class="p-2 border rounded w-100 d-table-cell two-factor-bg">
-                                        {!! $user->userAuth->twoFactorQrCodeSvg() !!}
+                                        {{-- {!! $user->userAuth->twoFactorQrCodeSvg() !!} --}}
                                     </span>
                                     <div class="my-4 f-12 text-lightest">
                                         <span class="badge badge-primary">@lang('app.note')</span>

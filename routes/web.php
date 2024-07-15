@@ -43,6 +43,7 @@ use App\Http\Controllers\TaskLabelController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClientNoteController;
 use App\Http\Controllers\CreditNoteController;
+use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\LeadReportController;
@@ -110,6 +111,7 @@ use App\Http\Controllers\DiscussionCategoryController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\DriverPayrollController;
+use App\Http\Controllers\DriverRevenueReportingController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchEmployeeController;
 use App\Http\Controllers\DriverTypeController;
@@ -130,6 +132,7 @@ use App\Models\Role;
 use App\Models\Permission;
 use App\Models\PermissionRole;
 use App\Http\Controllers\RolePermissionController;
+
 
 
 
@@ -197,7 +200,12 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('getClientSubCategories/{id}', [ClientSubCategoryController::class, 'getSubCategories'])->name('get_client_sub_categories');
     Route::resource('clientSubCategory', ClientSubCategoryController::class);
 
+    // Receipt Voucher
+    Route::get('receipt-voucher/download/{id}', [ReceiptVoucherController::class, 'download'])->name('receipt-voucher.download');
+
     // DMS
+    Route::resource('branches', BranchController::class);
+    Route::resource('receipt-voucher', ReceiptVoucherController::class);
     Route::resource('branches', BranchController::class);
     Route::resource('driver-types', DriverTypeController::class);
     Route::get('get-driver-type', [DriverController::class, 'getDriverType'])->name('drivers.get-driver-type');
@@ -209,10 +217,16 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('branch-ajax', [BranchController::class, 'ajaxLoadBranches'])->name('get.branch-ajax');
     Route::get('linked-driver-ajax', [DriverController::class, 'ajaxLoadLinkedDriver'])->name('get.linked-driver-ajax');
     Route::resource('businesses', BusinessController::class);
+
+    Route::get('coordinator-report/import-view', [CoordinatorReportController::class, 'importReportView'])->name('coordinator-report.import-view');
+    Route::post('coordinator-report/import', [CoordinatorReportController::class, 'importStore'])->name('coordinator-report.import');
+    Route::post('coordinator-report/import/process', [CoordinatorReportController::class, 'importProcess'])->name('coordinator-report.import.process');
     Route::resource('coordinator-report', CoordinatorReportController::class);
 
     Route::group([ 'prefix' => 'dms', 'as' => 'dms.' ], function() {
         Route::resource('payroll', DriverPayrollController::class);
+        Route::get('revenue-reporting/get-content', [DriverRevenueReportingController::class, 'getContent'])->name('revenue-reporting.get-content');
+        Route::resource('revenue-reporting', DriverRevenueReportingController::class);
     });
 
     // employee routes
@@ -581,6 +595,8 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::post('invoices/fetchTimelogs', [InvoiceController::class, 'fetchTimelogs'])->name('invoices.fetch_timelogs');
     Route::get('invoices/check-shipping-address', [InvoiceController::class, 'checkShippingAddress'])->name('invoices.check_shipping_address');
     Route::get('invoices/product-category/{id}', [InvoiceController::class, 'productCategory'])->name('invoices.product_category');
+    Route::get('invoices/get-driver/{id}', [InvoiceController::class, 'getDriver'])->name('invoices.get-driver');
+    Route::get('invoices/get-driver-business-info', [InvoiceController::class, 'getDriverBusinessInfo'])->name('invoices.get-driver-business-info');
 
     Route::get('invoices/toggle-shipping-address/{invoice}', [InvoiceController::class, 'toggleShippingAddress'])->name('invoices.toggle_shipping_address');
     Route::get('invoices/shipping-address-modal/{invoice}', [InvoiceController::class, 'shippingAddressModal'])->name('invoices.shipping_address_modal');

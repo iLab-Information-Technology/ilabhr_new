@@ -6,6 +6,7 @@ use App\Models\GlobalSetting;
 use App\Models\Order;
 use App\Models\Role;
 use App\Models\UserAuth;
+use App\Models\ReceiptVoucher;
 use App\Scopes\ActiveScope;
 use Artisan;
 use App\Scopes\CompanyScope;
@@ -56,7 +57,7 @@ use App\Models\Lead;
 use App\Models\LeadPipeline;
 use App\Models\PipelineStage;
 use App\Models\TicketGroup;
-
+use Illuminate\Support\Facades\Validator;
 class HomeController extends Controller
 {
 
@@ -891,6 +892,70 @@ class HomeController extends Controller
         $enableModules['message'] = $message;
 
         return ApiResponse::make('Plugin data fetched successfully', $enableModules);
+    }
+
+    public function getReceiptVoucher(Request $request, $iqaama_number){
+        try{
+            $receipt_vouhcers = ReceiptVoucher::has('driver')->with(['business', 'driver' => function($query) use($iqaama_number) {
+                return $query->with('businesses')->where('iqaama_number', $iqaama_number);
+            }])->get();
+
+            return response()->json(['status' => 200, 'message' => 'Fetched Successfully! ' . $receipt_vouhcers->count() . ' Records', 'data' => $receipt_vouhcers]);
+        }catch(\Exception $e){
+            return response()->json(['status' => 500, 'message' => 'Internal Server Error', 'data' => $e->getMessage()]);
+        }
+    }
+
+    public function uploadReceiptVoucherUploadSign(Request $request){
+        try{
+
+            // Define validation rules
+            $rules = [
+                'receipt_voucher_id' => 'required|integer',
+                'iqaama_number' => 'required',
+                'signature' => 'required|file|mimes:jpg,jpeg,png|max:2048', // maximum file size of 2MB
+            ];
+
+            // Define custom error messages
+            $messages = [
+                'receipt_voucher_id.required' => 'The receipt voucher ID is required.',
+                'receipt_voucher_id.integer' => 'The receipt voucher ID must be an integer.',
+                'signature.required' => 'The signature file is required.',
+                'signature.file' => 'The signature must be a file.',
+                'signature.mimes' => 'The signature must be a file of type: jpg, jpeg, png.',
+                'signature.max' => 'The signature may not be greater than 2MB.',
+            ];
+
+            // Perform validation
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            // Check if validation fails
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $receiptVoucher = ReceiptVoucher::whereHas('driver', function($query) use($request) {
+                $query->where('iqaama_number', $request->iqaama_number);
+            })->with('driver')->find($request->receipt_voucher_id);
+
+
+            if(!$receiptVoucher){
+                return response()->json(['status' => 404, 'message' => 'No Receipt Voucher Found Against This Id '. $request->receipt_voucher_id, 'data' => []]);
+            }
+
+            $receiptVoucher->signature = $request->file('signature')->store('ReceiptVoucherSigns', 'public');
+            $receiptVoucher->update();
+
+            return response()->json(['status' => 200, 'message' => 'Signature Updated Successfully!', 'data' => []]);
+
+
+        }catch(\Exception $e){
+            return response()->json(['status' => 500, 'message' => 'Internal Server Error', 'data' => $e->getMessage()]);
+        }
     }
 
     public function proposal($hash)

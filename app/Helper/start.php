@@ -351,7 +351,6 @@ if (!function_exists('user_modules')) {
         }
 
         $module = \App\Models\ModuleSetting::where('is_allowed', 1);
-
         if (in_array('admin', user_roles())) {
             $module = $module->where('type', 'admin');
 
@@ -362,6 +361,9 @@ if (!function_exists('user_modules')) {
         }
         elseif (in_array('employee', user_roles())) {
             $module = $module->where('type', 'employee');
+        }
+        elseif (in_array('dms', user_roles())) {
+            $module = $module->where('type', 'dms');
         }
 
         $module = $module->where('status', 'active');
@@ -527,6 +529,12 @@ if (!function_exists('social_auth_setting')) {
         return cache('social_auth_setting');
     }
 
+}
+
+if(!function_exists('receipt_voucher_settings')){
+    function receipt_voucher_settings(){
+
+    }
 }
 
 if (!function_exists('invoice_setting')) {
@@ -847,7 +855,6 @@ if (!function_exists('sidebar_user_perms')) {
 
             $sidebarPermissionsArray = [
                 'view_drivers',
-                'view_businesses',
                 'view_coordinator_reports',
                 'view_clients',
                 'view_lead',
@@ -895,21 +902,38 @@ if (!function_exists('sidebar_user_perms')) {
                 'view_lead_report',
                 'view_sales_report',
                 'view_deals',
+                'view_payroll',
+                'view_driver_types',
+                'view_branches',
+                'view_businesses',
+                'view_revenue_reporting',
+                'view_receipt_voucher',
             ];
 
 
             $sidebarPermissions = Permission::whereIn('name', $sidebarPermissionsArray)->select('id', 'name')->orderBy('id', 'asc')->get();
-
             $sidebarPermissionsId = $sidebarPermissions->pluck('id')->toArray();
 
-            $sidebarUserPermissionType = UserPermission::where('user_id', user()->id)
-                ->whereIn('permission_id', $sidebarPermissionsId)
-                ->join('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
-                ->orderBy('user_permissions.id')
-                ->select('user_permissions.permission_type_id', 'permissions.name', 'permissions.id')
-                ->groupBy(['user_id', 'permission_id', 'permission_type_id'])
-                ->get()
-                ->keyBy('name');
+            // $sidebarUserPermissionType = UserPermission::where('user_id', user()->id)
+            //     ->whereIn('permission_id', $sidebarPermissionsId)
+            //     ->join('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
+            //     ->orderBy('user_permissions.id')
+            //     ->select('user_permissions.permission_type_id', 'permissions.name', 'permissions.id')
+            //     ->groupBy(['user_id', 'permission_id', 'permission_type_id'])
+            //     ->get()
+            //     ->keyBy('name');
+
+            $sidebarUserPermissionType = user()->roles()
+            ->join('roles as r', 'r.id', '=', 'role_user.role_id')
+            ->join('permission_role as pr', 'pr.role_id', '=', 'r.id')
+            ->join('permissions as p', 'p.id', '=', 'pr.permission_id')
+            ->whereIn('p.id', $sidebarPermissionsId)
+            // ->orderBy('pr.id')
+            ->select('pr.permission_type_id', 'p.name', 'p.id')
+            ->groupBy(['p.id', 'pr.permission_type_id'])
+            ->get()
+            ->keyBy('name');
+
 
             $sidebarUserPermissions = array_combine($sidebarUserPermissionType->pluck('name')->toArray(), $sidebarUserPermissionType->pluck('permission_type_id')->toArray());
 
@@ -920,7 +944,7 @@ if (!function_exists('sidebar_user_perms')) {
             });
 
             foreach ($filteredPermissions as $item) {
-                $sidebarUserPermissions[$item->name] = 5;
+                $sidebarUserPermissions[$item->name] = 4;
             }
 
             session(['sidebar_user_perms' => $sidebarUserPermissions]);

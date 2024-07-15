@@ -20,14 +20,14 @@ class StoreInvoice extends CoreRequest
         return true;
     }
 
-    protected function prepareForValidation()
-    {
-        if ($this->invoice_number) {
-            $this->merge([
-                'invoice_number' => \App\Helper\NumberFormat::invoice($this->invoice_number),
-            ]);
-        }
-    }
+    // protected function prepareForValidation()
+    // {
+    //     if ($this->invoice_number) {
+    //         $this->merge([
+    //             'invoice_number' => \App\Helper\NumberFormat::invoice($this->invoice_number),
+    //         ]);
+    //     }
+    // }
 
     /**
      * Get the validation rules that apply to the request.
@@ -36,8 +36,6 @@ class StoreInvoice extends CoreRequest
      */
     public function rules()
     {
-        $this->has('show_shipping_address') ? $this->request->add(['show_shipping_address' => 'yes']) : $this->request->add(['show_shipping_address' => 'no']);
-
         $setting = company();
 
         $rules = [
@@ -45,20 +43,13 @@ class StoreInvoice extends CoreRequest
                 'required',
                 Rule::unique('invoices')->where('company_id', company()->id)
             ],
-            'issue_date' => 'required',
-            'sub_total' => 'required',
-            'total' => 'required',
-            'currency_id' => 'required',
-            'exchange_rate' => 'required',
-            'gateway' => 'required_if:payment_status,1',
-            'offline_methods' => 'required_if:gateway,Offline',
+            'invoice_date' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'total_amount' => 'required',
+            'driver_id' => 'required'
         ];
 
-        if ($this->has('due_date')) {
-            $rules['due_date'] = 'required|date_format:"' . $setting->date_format . '"|after_or_equal:'.$this->issue_date;
-        }
-
-        $rules['client_id'] = 'required';
 
         $rules = $this->customFieldRules($rules);
 

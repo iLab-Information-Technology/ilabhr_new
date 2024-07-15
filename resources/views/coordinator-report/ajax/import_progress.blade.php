@@ -1,6 +1,6 @@
 @include('import.process-form', [
-    'headingTitle' => __('app.importExcel') . ' ' . __('app.employee'),
-    'processRoute' => route('employees.import.process'),
-    'backRoute' => route('employees.index'),
+    'headingTitle' => __('app.importExcel') . ' ' . __('app.coordinatorReport'),
+    'processRoute' => route('coordinator-report.import.process'),
+    'backRoute' => route('coordinator-report.index'),
     'backButtonText' => __('app.backToEmployees'),
 ])

@@ -79,7 +79,6 @@ class BusinessController extends AccountBaseController
 
             return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
-
         return view('businesses.create', $this->data);
     }
 
@@ -103,7 +102,7 @@ class BusinessController extends AccountBaseController
                 'admin_only' => '0',
                 'name' => 'Total Orders',
                 'required' => '1',
-                'type' => 'TEXT'
+                'type' => 'INTEGER'
             ];
             $fields[] = [
                 'admin_only' => '0',
@@ -214,7 +213,7 @@ class BusinessController extends AccountBaseController
 
         if ($request->has('fields')) {
             foreach ($request->fields as $id => $field) {
-                BusinessField::where('id', $id)->update([ 
+                BusinessField::where('id', $id)->update([
                     'name' => $field['name'],
                     'required' => $field['required'],
                     'admin_only' => $field['admin_only']

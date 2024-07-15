@@ -80,7 +80,12 @@ $addDesignationPermission = user()->permission('add_designation');
 
 
                     </div>
-
+                    <div class="col-md-12">
+                        <x-forms.toggle-switch class="mr-0 mr-lg-12"
+                            :fieldLabel="__('modules.driverTypes.markAsFreelancer')"
+                            fieldName="is_freelancer"
+                            fieldId="is_freelancer"/>
+                    </div>
                 </div>
 
                 <x-forms.custom-field :fields="$fields"></x-forms.custom-field>
@@ -137,7 +142,6 @@ $addDesignationPermission = user()->permission('add_designation');
                 file: true,
                 data: data,
                 success: function(response) {
-                // console.log(response)
                     if (response.status == 'success') {
                         if ($(MODAL_XL).hasClass('show')) {
                             $(MODAL_XL).modal('hide');

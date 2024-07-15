@@ -236,7 +236,7 @@ return [
         \Illuminate\Mail\MailServiceProvider::class,
         \App\Providers\FileStorageCustomConfigProvider::class,
         \App\Providers\SmtpConfigProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -257,6 +257,7 @@ return [
 
         // WORKSUITESAAS
         App\Providers\SuperAdmin\EventServiceProvider::class,
+        // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 
     /*
@@ -274,6 +275,8 @@ return [
         'ApiRoute' => Froiden\RestAPI\Facades\ApiRoute::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Zip' => Macellan\Zip\ZipFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        // 'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ])->toArray(),
 
     'debug_blacklist' => [

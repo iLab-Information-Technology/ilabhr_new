@@ -29,6 +29,7 @@ use App\Models\PaymentGatewayCredentials;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Project;
+use App\Models\Driver;
 use App\Models\ProjectMilestone;
 use App\Models\ProjectTimeLog;
 use App\Models\Proposal;
@@ -40,7 +41,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Stripe\Stripe;
-
+use DB;
 class InvoiceController extends AccountBaseController
 {
 
@@ -58,7 +59,7 @@ class InvoiceController extends AccountBaseController
     public function index(InvoicesDataTable $dataTable)
     {
         $viewPermission = user()->permission('view_invoices');
-        abort_403(!in_array($viewPermission, ['all', 'added', 'owned', 'both']));
+        // abort_403(!in_array($viewPermission, ['all', 'added', 'owned', 'both']));
 
         if (!request()->ajax()) {
             $this->projects = Project::allProjects();
@@ -766,13 +767,13 @@ class InvoiceController extends AccountBaseController
         $viewProjectInvoicePermission = user()->permission('view_project_invoices');
         $this->addInvoicesPermission = user()->permission('add_invoices');
 
-        abort_403(!(
-            $this->viewPermission == 'all'
-            || ($this->viewPermission == 'added' && $this->invoice->added_by == user()->id)
-            || ($this->viewPermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
-            || ($this->viewPermission == 'both' && ($this->invoice->added_by == user()->id || $this->invoice->client_id == user()->id))
-            || ($viewProjectInvoicePermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
-        ));
+        // abort_403(!(
+            // $this->viewPermission == 'all'
+            // || ($this->viewPermission == 'added' && $this->invoice->added_by == user()->id)
+            // || ($this->viewPermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
+            // || ($this->viewPermission == 'both' && ($this->invoice->added_by == user()->id || $this->invoice->client_id == user()->id))
+            // || ($viewProjectInvoicePermission == 'owned' && $this->invoice->client_id == user()->id && $this->invoice->send_status)
+        // ));
 
         if ($this->invoice->getCustomFieldGroupsWithFields()) {
             $this->fields = $this->invoice->getCustomFieldGroupsWithFields()->fields;
@@ -1364,4 +1365,15 @@ class InvoiceController extends AccountBaseController
         return Reply::dataOnly(['status' => 'success', 'description' => $description]);
     }
 
+
+    public function getDriver($id){
+        return Driver::with('branch', 'businesses')->find($id);
+    }
+
+    public function getDriverBusinessInfo(Request $request){
+        return DB::table('business_driver')->where([
+            'driver_id' => $request->driver_id,
+            'business_id' => $request->business_id,
+        ])->first();
+    }
 }
