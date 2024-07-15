@@ -108,10 +108,10 @@ class DriverController extends AccountBaseController
     {
         $search = $request->search;
 
-        $drivers = Driver::orderby('name')
-            ->select('id', 'name')
+        $drivers = Driver::orderby('iqaama_number')
+            ->select('id', 'iqaama_number')
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('iqaama_number', 'like', '%' . $search . '%');
             })
             ->take(20)
             ->get();
@@ -122,7 +122,7 @@ class DriverController extends AccountBaseController
 
             $response[] = array(
                 'id' => $driver->id,
-                'text' => $driver->name
+                'text' => $driver->iqaama_number
             );
 
         }
