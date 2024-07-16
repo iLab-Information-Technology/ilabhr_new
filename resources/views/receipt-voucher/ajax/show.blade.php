@@ -283,10 +283,10 @@
                             <tr class="text-dark font-weight-semibold f-13">
                                 <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
                                 <td style="padding: 50px 10px 2px 10px" align="center">
-                                @if ($receiptVoucher->signature = "")
-                                    <img src="{{ storage('/app', $receiptVoucher->signature) }}" alt="Driver Sign" width="200px" height="100px">
+                                    @if ($receiptVoucher->signature != "")
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($receiptVoucher->signature) }}" alt="Driver Sign" width="200px" height="100px">
                                     @else
-                                    ________________________________
+                                        ________________________________
                                     @endif
                                 </td>
                                 <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">
