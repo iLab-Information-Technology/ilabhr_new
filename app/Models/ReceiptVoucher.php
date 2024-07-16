@@ -33,7 +33,7 @@ class ReceiptVoucher extends Model
 
         public function getSignatureAttribute()
         {
-            return url('/') . '/' . $this->attributes['signature'];
+            return url('/app/public') . '/' . $this->attributes['signature'];
         }
 
 
