@@ -189,9 +189,9 @@ class ReceiptVoucherController extends AccountBaseController
         $deletePermission = user()->permission('delete_receipt_voucher');
         abort_403(!($deletePermission == 'all'));
 
-        $this->receiptVoucher = ReceiptVoucher::findOrFail($id);
+        // $this->receiptVoucher = ReceiptVoucher::findOrFail($id);
 
-        ReceiptVoucher::destroy($id);
+        // ReceiptVoucher::destroy($id);
 
         return Reply::success(__('messages.deleteSuccess'));
     }

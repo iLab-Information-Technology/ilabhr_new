@@ -25,6 +25,9 @@ class VoucherDataTable extends DataTable
             ->addColumn('received_from_driver', function ($row) {
                 return $row->driver->name ?? '';
             })
+            ->addColumn('iqaama_number', function ($row) {
+                return $row->driver->iqaama_number ?? '';
+            })
             ->addColumn('voucher_date', function ($row) {
                 return $row->voucher_date->format('Y-m-d');
             })
@@ -72,6 +75,7 @@ class VoucherDataTable extends DataTable
             Column::make('voucher_number'),
             Column::make('voucher_date'),
             Column::make('received_from_driver'),
+            Column::make('iqaama_number'),
             Column::make('total_amount'),
             Column::make('status'),
             Column::computed('action')
