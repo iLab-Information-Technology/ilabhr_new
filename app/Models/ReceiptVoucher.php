@@ -31,12 +31,10 @@ class ReceiptVoucher extends Model
     }
 
 
-        public function getSignatureAttribute()
-        {
-            return Storage::disk('public')->url($this->attributes['signature']);
-        }
-
-
+    public function getSignatureAttribute()
+    {
+        return Storage::disk('public')->url($this->attributes['signature']);
+    }
 
     /**
      * Get the business that owns the ReceiptVoucher
@@ -46,5 +44,15 @@ class ReceiptVoucher extends Model
     public function business()
     {
         return $this->belongsTo(Business::class);
+    }
+
+    /**
+     * Get the business that owns the ReceiptVoucher
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

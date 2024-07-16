@@ -945,9 +945,12 @@ class HomeController extends Controller
                 $query->where('iqaama_number', $request->iqaama_number);
             })->with('driver')->where('voucher_number',$request->receipt_voucher_id)->first();
 
-
             if(!$receiptVoucher){
                 return response()->json(['status' => 404, 'message' => 'No Receipt Voucher Found Against This Id '. $request->receipt_voucher_id, 'data' => []]);
+            }
+
+            if($receiptVoucher->signature != ""){
+                return response()->json(['status' => 400, 'message' => 'Already Signed', 'data' => []]);
             }
 
             $receiptVoucher->signature = $request->file('signature')->store('ReceiptVoucherSigns', 'public');

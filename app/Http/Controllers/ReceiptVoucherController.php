@@ -86,8 +86,7 @@ class ReceiptVoucherController extends AccountBaseController
             $validated['status'] = 'received';
             $validated['created_by'] = user()->id;
 
-            $voucher = ReceiptVoucher::create($validated);
-
+            ReceiptVoucher::create($validated);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -115,8 +114,7 @@ class ReceiptVoucherController extends AccountBaseController
         $this->viewPermission = user()->permission('view_receipt_voucher');
         // abort_403(!($this->viewPermission == 'all'));
 
-        $this->receiptVoucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
-        // return $this->receiptVoucher;
+        $this->receiptVoucher = ReceiptVoucher::with('driver', 'business', 'creator')->findOrFail($id);
 
         $this->receiptVoucherFirst = ReceiptVoucher::with('driver')->first();
 
