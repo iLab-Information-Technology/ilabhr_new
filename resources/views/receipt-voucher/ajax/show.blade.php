@@ -8,8 +8,17 @@
         margin-top: 5px;
         margin-right: 15px;
     }
+    .playwrite-cu-h1{
+    font-family: "Playwrite CU", cursive;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 20px;
+    }
 </style>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playwrite+CU:wght@100..400&display=swap" rel="stylesheet">
 {{-- @php --}}
     {{-- $addPaymentPermission = user()->permission('add_payments'); --}}
     {{-- $deleteInvoicePermission = user()->permission('delete_invoices'); --}}
@@ -245,14 +254,20 @@
                                     From Date
                                 </td>
                                 <td align="center" class="border-right-0" width="35%">To Date</td>
-                                <td class="border-right-0 border-left-0" align="right" colspan="3">
+                                <td class="border-right-0 border-left-0" align="right">
+                                    Amount
+                                </td>
+                                <td class="border-right-0 border-left-0" align="right" colspan="2">
                                     Wallet Amount
                                 </td>
                             </tr>
                             <tr class="text-dark font-weight-semibold f-13">
                                 <td>{{ $receiptVoucher->start_date->format(company()->date_format) }}</td>
                                 <td align="center">{{ $receiptVoucher->end_date->format(company()->date_format) }}</td>
-                                <td align="right" colspan="3">
+                                <td align="right">
+                                    {{ $receiptVoucher->total_amount }}
+                                </td>
+                                <td align="right" colspan="2">
                                     {{ $receiptVoucher->wallet_amount }}
                                 </td>
                             </tr>
@@ -267,8 +282,18 @@
                             </tr>
                             <tr class="text-dark font-weight-semibold f-13">
                                 <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
-                                <td style="padding: 50px 10px 2px 10px" align="center">________________________________</td>
-                                <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">________________________________</td>
+                                <td style="padding: 50px 10px 2px 10px" align="center">
+                                @if ($receiptVoucher->signature = "")
+                                    <img src="{{ storage('/app', $receiptVoucher->signature) }}" alt="Driver Sign" width="200px" height="100px">
+                                    @else
+                                    ________________________________
+                                    @endif
+                                </td>
+                                <td style="padding: 50px 10px 2px 10px" align="center" colspan="3">
+                                    <span class="playwrite-cu-h1">
+                                        {{ $receiptVoucher->creator->name }}
+                                    </span>
+                                </td>
                             </tr>
                             {{-- @foreach ($invoice->items as $item)
                                 @if ($item->type == 'item')
