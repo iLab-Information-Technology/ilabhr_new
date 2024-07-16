@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 class ReceiptVoucher extends Model
 {
     use HasFactory;
@@ -33,7 +33,7 @@ class ReceiptVoucher extends Model
 
         public function getSignatureAttribute()
         {
-            return url('/app/public') . '/' . $this->attributes['signature'];
+            return Storage::disk('public')->url($this->attributes['signature']);
         }
 
 
