@@ -12,6 +12,8 @@ class ReceiptVoucher extends Model
 
     protected $guarded = ['id', '_token', '_method'];
 
+    protected $appends = ['signature'];
+
     protected $casts = [
         'voucher_date' => 'datetime',
         'start_date' => 'datetime',
@@ -27,6 +29,13 @@ class ReceiptVoucher extends Model
     {
         return $this->belongsTo(Driver::class);
     }
+
+
+        public function getSignatureAttribute()
+        {
+            return url('/') . '/' . $this->attributes['signature'];
+        }
+
 
 
     /**
