@@ -896,7 +896,7 @@ class HomeController extends Controller
 
     public function getReceiptVoucher(Request $request, $iqaama_number){
         try{
-            $receipt_vouhcers = ReceiptVoucher::has('driver')->with(['business', 'driver' => function($query) use($iqaama_number) {
+            $receipt_vouhcers = ReceiptVoucher::whereHas('driver')->with(['business', 'driver' => function($query) use($iqaama_number) {
                 return $query->with('businesses')->where('iqaama_number', $iqaama_number);
             }])->get();
 
