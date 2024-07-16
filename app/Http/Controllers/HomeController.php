@@ -941,7 +941,7 @@ class HomeController extends Controller
                 ], 422);
             }
 
-            $receiptVoucher = ReceiptVoucher::whereHas('driver', function($query) use($request) {
+            $receiptVoucher = ReceiptVoucher::whereHas('driver', function ($query) use ($request) {
                 $query->where('iqaama_number', $request->iqaama_number);
             })->with('driver')->find($request->receipt_voucher_id);
 
@@ -951,6 +951,7 @@ class HomeController extends Controller
             }
 
             $receiptVoucher->signature = $request->file('signature')->store('ReceiptVoucherSigns', 'public');
+            $receiptVoucher->status = 'signed';
             $receiptVoucher->update();
 
             return response()->json(['status' => 200, 'message' => 'Signature Updated Successfully!', 'data' => []]);
