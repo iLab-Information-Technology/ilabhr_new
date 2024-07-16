@@ -903,7 +903,7 @@ class HomeController extends Controller
             }])->orderBy('id', 'desc')->get();
 
 
-            return response()->json(['status' => 200, 'message' => 'Fetched Successfully! ' . $receipt_vouhcers->count() . ' Records', 'data' => $receipt_vouhcers]);
+            return response()->json(['status' => 200, 'message' => 'Fetched Successfully! ' . $receipt_vouchers->count() . ' Records', 'data' => $receipt_vouchers]);
         }catch(\Exception $e){
             return response()->json(['status' => 500, 'message' => 'Internal Server Error', 'data' => $e->getMessage()]);
         }
