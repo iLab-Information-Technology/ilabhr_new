@@ -943,7 +943,7 @@ class HomeController extends Controller
 
             $receiptVoucher = ReceiptVoucher::whereHas('driver', function ($query) use ($request) {
                 $query->where('iqaama_number', $request->iqaama_number);
-            })->with('driver')->find($request->receipt_voucher_id);
+            })->with('driver')->where('voucher_number',$request->receipt_voucher_id)->first();
 
 
             if(!$receiptVoucher){
