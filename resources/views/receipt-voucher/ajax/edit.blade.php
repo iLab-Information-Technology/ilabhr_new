@@ -122,8 +122,10 @@
                         <x-forms.select fieldId="status" :fieldLabel="__('app.status')"
                             fieldName="status"
                             :fieldPlaceholder="__('app.status')">
-                            <option value="paid" @selected($receiptVoucher->status == 'paid')>Paid</option>
-                            <option value="unpaid" @selected($receiptVoucher->status == 'unpaid')>Unpaid</option>
+                            <option value="received" @selected($receiptVoucher->status == 'received')>received</option>
+                            <option value="signed" @selected($receiptVoucher->status == 'signed')>signed</option>
+                            <option value="deposited" @selected($receiptVoucher->status == 'deposited')>deposited</option>
+                            <option value="approved" @selected($receiptVoucher->status == 'approved')>approved</option>
                         </x-forms.select>
                     </div>
                     {{-- End: Status --}}
