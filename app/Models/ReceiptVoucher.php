@@ -33,7 +33,7 @@ class ReceiptVoucher extends Model
 
     public function getSignatureAttribute()
     {
-        return asset_url_local_s3('ReceiptVoucherSigns/', $this->signature);
+        return asset_url_local_s3('ReceiptVoucherSigns/', $this->attributes['signature']);
     }
 
     /**
