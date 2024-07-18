@@ -139,7 +139,7 @@
                                     ($receiptVoucher->driver->name ||
                                         $receiptVoucher->driver->email ||
                                         $receiptVoucher->driver->work_mobile_no))
-                                <span class="text-dark-grey text-capitalize">@lang('modules.invoices.billedTo')</span><br>
+                                <span class="text-dark-grey text-capitalize">@lang('modules.invoices.receivedFrom')</span><br>
 
                                 @if ($receiptVoucher->driver && $receiptVoucher->driver->name)
                                     {{ $receiptVoucher->driver->name }}<br>

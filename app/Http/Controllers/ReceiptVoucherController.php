@@ -199,6 +199,7 @@ class ReceiptVoucherController extends AccountBaseController
         try {
             $this->invoiceSetting = invoice_setting();
             $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+
             $this->font = match ($this->invoiceSetting->locale) {
                 'ja' => 'ipag',
                 'hi' => 'hindi',
@@ -207,6 +208,8 @@ class ReceiptVoucherController extends AccountBaseController
                 default => $this->invoiceSetting->is_chinese_lang ? 'SimHei' : 'Verdana',
             };
 
+
+
             if (!$this->receipt_voucher) {
                 \Log::error('Receipt voucher not found for ID: ' . $id);
                 abort(404, 'Receipt voucher not found');
@@ -214,19 +217,6 @@ class ReceiptVoucherController extends AccountBaseController
 
             App::setLocale($this->invoiceSetting->locale);
             Carbon::setLocale($this->invoiceSetting->locale);
-
-            // Example: Handle file download if already uploaded
-            // if ($this->receipt_voucher->file != null) {
-            //     return response()->download(storage_path('app/public/receipt-files') . '/' . $this->receipt_voucher->file);
-            // }
-
-
-            $this->bussiness = DB::table('business_driver')->where([
-                'driver_id' => $this->receipt_voucher->driver_id,
-                'business_id' => $this->receipt_voucher->business_id,
-            ])->first();
-
-            // return view('receipt-voucher.pdf.invoice-1', $this->data);
 
             $pdf = app('dompdf.wrapper');
             $pdf->setOption('enable_php', true);
