@@ -953,7 +953,7 @@ class HomeController extends Controller
                 return response()->json(['status' => 400, 'message' => 'Already Signed', 'data' => []]);
             }
 
-            $receiptVoucher->signature = $request->file('signature')->store('ReceiptVoucherSigns', 'public');
+                $receiptVoucher->signature = Files::uploadLocalOrS3($request->signature, 'ReceiptVoucherSigns', 300);
             $receiptVoucher->status = 'signed';
             $receiptVoucher->update();
 
