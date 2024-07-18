@@ -949,7 +949,7 @@ class HomeController extends Controller
                 return response()->json(['status' => 404, 'message' => 'No Receipt Voucher Found Against This Id '. $request->receipt_voucher_id, 'data' => []]);
             }
 
-            if($receiptVoucher->signature != "received"){
+            if($receiptVoucher->status != "received"){
                 return response()->json(['status' => 400, 'message' => 'Already Signed', 'data' => []]);
             }
 
