@@ -82,6 +82,7 @@ class ReceiptVoucherController extends AccountBaseController
             $validated['start_date'] = Carbon::createFromFormat($this->company->date_format, $request->start_date)->format('Y-m-d');
             $validated['end_date'] = Carbon::createFromFormat($this->company->date_format, $request->end_date)->format('Y-m-d');
             $validated['business_id'] = $request->business_id ? $request->business_id : 0;
+            $validated['wallet_amount'] = $request->wallet_amount ? $request->wallet_amount : 0;
             $validated['other_business'] = $request->other_business ? $request->other_business : '';
             $validated['status'] = 'received';
             $validated['created_by'] = user()->id;
@@ -172,6 +173,7 @@ class ReceiptVoucherController extends AccountBaseController
         $validated['start_date'] = Carbon::createFromFormat($this->company->date_format, $request->start_date)->format('Y-m-d');
         $validated['end_date'] = Carbon::createFromFormat($this->company->date_format, $request->end_date)->format('Y-m-d');
         $validated['business_id'] = $request->business_id ? $request->business_id : 0;
+        $validated['wallet_amount'] = $request->wallet_amount ? $request->wallet_amount : 0;
         $validated['other_business'] = $request->other_business ? $request->other_business : '';
         $validated['status'] = $request->status;
         $receiptVoucher->update($validated);
