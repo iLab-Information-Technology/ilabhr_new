@@ -26,13 +26,62 @@ RUN apt-get update && apt-get install -y \
     libmcrypt-dev \
     openssh-client \
     libpq-dev \
-    sudo \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+    libxslt-dev \
+    libicu-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip xsl intl \
     && pecl install redis \
     && docker-php-ext-enable redis
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install soap extention
+RUN docker-php-ext-install soap
+
+# Install for image manipulation
+RUN docker-php-ext-install exif
+
+# Install the PHP pcntl extention
+RUN docker-php-ext-install pcntl
+
+# Install the PHP zip extention
+RUN docker-php-ext-install zip
+
+# Install the PHP pdo_mysql extention
+RUN docker-php-ext-install pdo_mysql
+
+# Install the PHP bcmath extension
+RUN docker-php-ext-install bcmath
+
+# Install the PHP intl extention
+RUN docker-php-ext-install intl
+
+# Install the PHP gmp extention
+RUN docker-php-ext-install gmp
+
+# Install the PHP tidy extention
+RUN docker-php-ext-install tidy
+
+#####################################
+# PHPRedis:
+#####################################
+RUN pecl install redis && docker-php-ext-enable redis
+
+#####################################
+# Imagick:
+#####################################
+
+RUN pecl install imagick && \
+    docker-php-ext-enable imagick
+
+#####################################
+# GD:
+#####################################
+
+# Install the PHP gd library
+RUN docker-php-ext-install gd && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
