@@ -1,0 +1,1 @@
+{"name":"billowapp\/payfast","author":"Warren Hansen","autoload":{"psr-4":{"Billow\\":"src\/"}},"require":{"illuminate\/support":"^5.2"},"require-dev":{"symfony\/var-dumper":"^3.0"},"time":"2016-02-25T12:55:20+00:00"}

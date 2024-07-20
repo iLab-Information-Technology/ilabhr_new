@@ -1,0 +1,1 @@
+{"name":"billowapp\/payfast","author":"Warren Hansen","autoload":{"psr-4":{"Billow\\":"src\/"}},"require":{"illuminate\/support":"^5.2"},"time":"2016-02-25T09:23:16+00:00"}

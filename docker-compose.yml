@@ -34,11 +34,10 @@ services:
     container_name: phpmyadmin
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
-      MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      PMA_HOST: ${DB_HOST:-mysql}
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
     ports:
       - 8080:80
     depends_on:
@@ -50,18 +49,16 @@ services:
       - app-network
 
   mysql:
-    container_name: ${DB_HOST:-mysql}
-    image: mysql:8.0
+    container_name: mysql
+    image: mysql:latest
     tty: true
     ports:
-      - '3306:3306'
+      - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laraveluser
+      MYSQL_PASSWORD: laravelpass
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
