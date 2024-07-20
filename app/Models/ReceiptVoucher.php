@@ -12,7 +12,7 @@ class ReceiptVoucher extends Model
 
     protected $guarded = ['id', '_token', '_method'];
 
-    protected $appends = ['signature'];
+    // protected $appends = ['signature'];
 
     protected $casts = [
         'voucher_date' => 'datetime',
@@ -33,7 +33,14 @@ class ReceiptVoucher extends Model
 
     public function getSignatureAttribute()
     {
-        return asset_url_local_s3('ReceiptVoucherSigns/', $this->attributes['signature']);
+        // Check if the signature attribute exists
+        if (isset($this->attributes['signature']) && !empty($this->attributes['signature'])) {
+            // Use the custom asset_url_local_s3 function to generate the URL
+            return asset_url_local_s3('ReceiptVoucherSigns') . '/' . $this->attributes['signature'];
+        }
+
+        // Return a default value if the signature is not set
+        return null;
     }
 
     /**
