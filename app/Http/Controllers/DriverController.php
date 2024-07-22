@@ -314,6 +314,9 @@ class DriverController extends AccountBaseController
         if ($request->hasFile('iqama'))
             $validated['iqama'] = Files::uploadLocalOrS3($request->iqama, 'iqama', 300);
 
+        if ($request->hasFile('image'))
+            $validated['image'] = Files::uploadLocalOrS3($request->image, 'image', 300);
+
         if ($request->license_delete == 'yes') {
             Files::deleteFile($driver->license, 'license');
             $driver->license = null;
