@@ -6,6 +6,7 @@
 !public/user-uploads/.htaccess
 /storage/*.key
 /vendor
+/.composer
 .env
 .env.backup
 .phpunit.result.cache
