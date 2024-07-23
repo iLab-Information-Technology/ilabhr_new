@@ -326,6 +326,37 @@ return array(
         'otherDocument' => 'Other Document',
         'joiningDate' => 'Joining Date'
     ),
+    'vehicles' => array(
+        'personalDetails' => 'Vehicle Details',
+        'name' => 'Name',
+        'date' => 'Date',
+        'ilab_id' => 'iLab ID',
+        'vehicleType_id' => 'Vehicle Type ID',
+        'searchVehicleTypes' => 'Search for Vehicle Types',
+        'driver' => 'Driver',
+        'searchDriver' => 'Search for Drivers',
+        'nameInfo' => 'Vehicle Name',
+        'number_plate' => 'Vehicle Number Plate',
+        'makeModel' => 'Vehicle Make Model',
+        'searchMakeModel' => 'Search for Make & Model',
+        'rentalCompany' => 'Rental Company',
+        'searchRentalCompany' => 'Search for Rental Company',
+    ),
+    'vehicleTypes' => array(
+        'personalDetails' => 'Vehicle Type Details',
+    ),
+    'make_model' => array(
+        'personalDetails' => 'Make & Model Details',
+        'name' => 'Name',
+        'nameInfo' => 'Vehicle Name',
+        'logoImage' => 'Logo Image'
+    ),
+    'rental_company' => array(
+        'personalDetails' => 'Rental Company Details',
+        'name' => 'Name',
+        'nameInfo' => 'Company Name',
+        'logoImage' => 'Logo Image',
+    ),
     'driverTypes' => array(
         'personalDetails' => 'Driver Type Details',
         'markAsFreelancer' => 'Mark as Freelancer',

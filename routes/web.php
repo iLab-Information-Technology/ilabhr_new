@@ -128,13 +128,14 @@ use App\Http\Controllers\ProjectTemplateMemberController;
 use App\Http\Controllers\ProjectTemplateSubTaskController;
 use App\Http\Controllers\EmployeeShiftChangeRequestController;
 use App\Http\Controllers\LeadContactController;
+use App\Http\Controllers\RentalCompanyController;
 use App\Models\Role;
 use App\Models\Permission;
 use App\Models\PermissionRole;
 use App\Http\Controllers\RolePermissionController;
-
-
-
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\VehicleMakeModelController;
+use App\Http\Controllers\VehicleTypeController;
 
 Route::get('/temp-reset-admin-permissions', function() {
     $adminRole = Role::where('name', 'admin')->first();
@@ -229,6 +230,12 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
         Route::resource('revenue-reporting', DriverRevenueReportingController::class);
     });
 
+    // Vehicle Managment System Routes
+    Route::resource('vehicles', VehicleController::class);
+    Route::resource('vehicle-types', VehicleTypeController::class);
+    Route::resource('vehicle-make-model', VehicleMakeModelController::class);
+    Route::resource('vehicle-rental-company', RentalCompanyController::class);
+    
     // employee routes
     Route::post('employees/apply-quick-action', [EmployeeController::class, 'applyQuickAction'])->name('employees.apply_quick_action');
     Route::post('employees/assignRole', [EmployeeController::class, 'assignRole'])->name('employees.assign_role');
