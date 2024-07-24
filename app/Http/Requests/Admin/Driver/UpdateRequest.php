@@ -31,8 +31,8 @@ class UpdateRequest extends CoreRequest
         $setting = company();
 
         $rules = [
-            'branch_id' => 'required|exists:branches,id',
-            'driver_type_id' => 'required|exists:driver_types,id',
+            'branch_id' => 'sometimes|exists:branches,id',
+            'driver_type_id' => 'sometimes|exists:driver_types,id',
             'nationality_id' => 'nullable|exists:countries,id',
             'address' => 'nullable',
             'insurance_expiry_date' => 'nullable',
@@ -61,7 +61,7 @@ class UpdateRequest extends CoreRequest
             'image' => 'nullable|image',
             'name' => 'nullable',
             'iqaama_number' => [
-                'required',
+                'sometimes',
                 Rule::unique('drivers', 'iqaama_number')->ignore($this->driver->id),
             ],
             'absher_number' => 'nullable',

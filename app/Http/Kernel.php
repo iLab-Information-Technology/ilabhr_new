@@ -72,7 +72,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'email_verified' => EmailVerified::class,
-
+        'validate.driver' => \App\Http\Middleware\ValidateDriverRequestMiddleware::class,
         // WORKSUITESAAS
         'super-admin' => SuperAdmin::class,
         'multi-company-select' => MultiCompanySelect::class,

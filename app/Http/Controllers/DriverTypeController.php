@@ -177,7 +177,8 @@ class DriverTypeController extends AccountBaseController
         $this->view = 'driver-types.ajax.edit';
 
         if (request()->ajax()) {
-            return view($this->view, $this->data);
+            $html = view($this->view, $this->data)->render();
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
         return view('driver-types.create', $this->data);
     }

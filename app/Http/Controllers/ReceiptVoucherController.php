@@ -155,7 +155,8 @@ class ReceiptVoucherController extends AccountBaseController
         $this->view = 'receipt-voucher.ajax.edit';
 
         if (request()->ajax()) {
-            return view('receipt-voucher.ajax.edit', $this->data);
+            $html = view('receipt-voucher.ajax.edit', $this->data)->render();
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
         return view('receipt-voucher.create', $this->data);
