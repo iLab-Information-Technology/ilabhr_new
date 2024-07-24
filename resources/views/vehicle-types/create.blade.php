@@ -4,7 +4,7 @@
 @section('content')
 
 <div class="content-wrapper">
-    @include($view)
+    @include($view)n
 </div>
 
 @endsection
