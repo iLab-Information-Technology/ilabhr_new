@@ -24,11 +24,12 @@ ApiRoute::group(['namespace' => 'App\Http\Controllers'], function () {
     ApiRoute::group(['namespace' => 'Api'], function () {
         // New driver login routes
         ApiRoute::post('driver/login', ['uses' => 'ApiDriverController@login']);
-        ApiRoute::post('driver/logout', ['uses' => 'ApiDriverController@logout']);
         ApiRoute::get('driver/test', ['uses' => 'ApiDriverController@test']);
-
         // Protected driver routes
-        Route::group(['middleware' => ['auth:api']], function () {
+        ApiRoute::group(['middleware' => 'validate.driver'], function () {
+            ApiRoute::get('driver/logout', ['uses' => 'ApiDriverController@logout']);
+            ApiRoute::post('driver/check/status', ['uses' => 'ApiDriverController@driverCheckStatus']);
+            ApiRoute::get('driver/current/status', ['uses' => 'ApiDriverController@driverCheckCurrentStatus']);
             // Add routes that require driver authentication here
         });
     });
