@@ -30,6 +30,7 @@ ApiRoute::group(['namespace' => 'App\Http\Controllers'], function () {
             ApiRoute::get('driver/logout', ['uses' => 'ApiDriverController@logout']);
             ApiRoute::post('driver/check/status', ['uses' => 'ApiDriverController@driverCheckStatus']);
             ApiRoute::get('driver/current/status', ['uses' => 'ApiDriverController@driverCheckCurrentStatus']);
+            ApiRoute::get('driver/businesses', ['uses' => 'ApiDriverController@getDriverBusinesses']);
             // Add routes that require driver authentication here
         });
     });

@@ -33,6 +33,4 @@ php artisan migrate
     Session
         => Order Pick
 
-
-
  -->

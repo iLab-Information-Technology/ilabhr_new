@@ -94,6 +94,18 @@ class ApiDriverController extends Controller
         }
     }
 
+    public function getDriverBusinesses(Request $request){
+        $driver = $request->attributes->get('driver');
+        $driver = Driver::with('businesses')->find($driver->id);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Business Fetched Successfully!',
+            'data' => $driver->businesses
+        ], 200);
+
+    }
+
     public function driverCheckStatus(Request $request)
     {
         // Define validation rules
