@@ -19,6 +19,22 @@ ApiRoute::group(['namespace' => 'App\Http\Controllers'], function () {
     ApiRoute::get('get-receipt-vouchers/{iqaama_number}', ['uses' => 'HomeController@getReceiptVoucher']);
     ApiRoute::post('upload-sign', ['uses' => 'HomeController@uploadReceiptVoucherUploadSign']);
 
+
+    // New driver login routes
+    ApiRoute::group(['namespace' => 'Api'], function () {
+        // New driver login routes
+        ApiRoute::post('driver/login', ['uses' => 'ApiDriverController@login']);
+        ApiRoute::post('driver/logout', ['uses' => 'ApiDriverController@logout']);
+        ApiRoute::get('driver/test', ['uses' => 'ApiDriverController@test']);
+
+        // Protected driver routes
+        Route::group(['middleware' => ['auth:api']], function () {
+            // Add routes that require driver authentication here
+        });
+    });
+
+
+
 });
 
 
