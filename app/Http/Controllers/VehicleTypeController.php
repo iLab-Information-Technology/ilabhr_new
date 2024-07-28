@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\DataTables\VehicleTypeDataTable;
 use App\Helper\Reply;
 use App\Http\Requests\Admin\VehicleType\StoreRequest;
+use App\Http\Requests\Admin\VehicleType\UpdateRequest;
 use App\Models\VehicleType;
+use App\Helper\Files;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -44,7 +46,13 @@ class VehicleTypeController extends AccountBaseController
     {
         DB::beginTransaction();
         try {
-            VehicleType::create($request->all());
+            if ($request->hasFile('image')) {
+                $image = Files::uploadLocalOrS3($request->image, 'vehicle-type', 300);
+            }
+            VehicleType::create([
+                'name' => $request->name,
+                'image' => $image,
+            ]);
             DB::commit();
         } catch (\Exception $e) {
             logger($e->getMessage());
@@ -93,9 +101,22 @@ class VehicleTypeController extends AccountBaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreRequest $request, VehicleType $vehicle_type)
+    public function update(UpdateRequest $request, VehicleType $vehicle_type)
     {
-        $vehicle_type->update($request->all());
+        if ($request->image_delete == 'yes') {
+            Files::deleteFile($vehicle_type->image, 'vehicle-type');
+            $vehicle_type->image = null;
+        }
+
+        if ($request->hasFile('image')) {
+            $image = Files::uploadLocalOrS3($request->image, 'vehicle-type', 300);
+            $vehicle_type->image = $image;
+            $vehicle_type->save();
+        }
+
+        $vehicle_type->update([
+            'name' => $request->name,
+        ]);
         return Reply::successWithData(__('messages.updateSuccess'), ['redirectUrl' => route('vehicle-types.index')]);
     }
 
@@ -104,7 +125,9 @@ class VehicleTypeController extends AccountBaseController
      */
     public function destroy(string $id)
     {
-        $this->driver = VehicleType::findOrFail($id);
+        $this->vehicleType = VehicleType::findOrFail($id);
+
+        Files::deleteFile($this->vehicleType->image, 'vehicle-type');
 
         VehicleType::destroy($id);
 

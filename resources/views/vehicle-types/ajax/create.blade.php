@@ -9,6 +9,12 @@
                     @lang('modules.vehicleTypes.personalDetails')
                 </h4>
 
+                <div class="col-lg-3">
+                    <x-forms.file allowedFileExtensions="png jpg jpeg svg bmp" class="mr-0 mr-lg-2 mr-md-2 cropper"
+                        :fieldLabel="__('modules.make_model.logoImage')" fieldName="image" fieldId="image"
+                        fieldHeight="119" :popover="__('messages.fileFormat.ImageFile')" />
+                </div>
+
 
                 <div class="row  p-20">
                     <div class="col-md-4">

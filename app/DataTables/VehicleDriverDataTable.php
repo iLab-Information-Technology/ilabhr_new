@@ -2,7 +2,8 @@
 
 namespace App\DataTables;
 
-use App\Models\VehicleType;
+use App\Models\Vehicle;
+use App\Models\VehicleDriver;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,7 +13,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class VehicleTypeDataTable extends DataTable
+class VehicleDriverDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -22,24 +23,27 @@ class VehicleTypeDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('name', function ($vehicleType) {
-                return view('vehicle-types.datatable.name-with-image', [
-                    'id' => $vehicleType->id,
-                    'name' => $vehicleType->name,
-                    'image' => $vehicleType->image,
-                ]);
+            ->addColumn('driver_name', function ($vehicle) {
+                return $vehicle->driver ? $vehicle->driver->name : '';
             })
-            ->addColumn('action', 'vehicle-types.datatable.action')
-            ->setRowId('id')
-            ->rawColumns(['action']);
+            ->addColumn('branch_name', function ($vehicle) {
+                return $vehicle->driver && $vehicle->driver->branch ? $vehicle->driver->branch->name : '';
+            })
+            ->addColumn('action', 'vehicles.drivers.datatable.action')
+            ->setRowId('id');
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(VehicleType $model): QueryBuilder
+    public function query(Vehicle $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with(['driver', 'driver.branch'])->where('id', $this->vehicle_id)->distinct();
+    }
+
+    protected function getQueryParameters()
+    {
+        return array_merge($this->request->all(), $this->additionalParameters);
     }
 
     /**
@@ -48,7 +52,7 @@ class VehicleTypeDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('vehicle-types-table')
+            ->setTableId('vehicledriver-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             //->dom('Bfrtip')
@@ -70,7 +74,8 @@ class VehicleTypeDataTable extends DataTable
     {
         return [
             Column::make('id'),
-            Column::make('name'),
+            Column::make('driver_name'),
+            Column::make('branch_name'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
@@ -84,6 +89,6 @@ class VehicleTypeDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'VehicleType_' . date('YmdHis');
+        return 'VehicleDriver_' . date('YmdHis');
     }
 }

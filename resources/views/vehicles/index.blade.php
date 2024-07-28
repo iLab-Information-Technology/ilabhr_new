@@ -108,11 +108,6 @@
                     <x-forms.link-primary :link="route('vehicles.create')" class="mr-3 openRightModal" icon="plus">
                         @lang('app.menu.AddVehicle')
                     </x-forms.link-primary>
-
-                    <x-forms.link-secondary :link="route('employees.import')" class="mr-3 openRightModal mb-2 mb-lg-0 d-none d-lg-block"
-                                            icon="file-upload">
-                        @lang('app.importExcel')
-                    </x-forms.link-secondary>
             </div>
 
             <x-datatable.actions>
@@ -136,7 +131,7 @@
         <!-- Task Box Start -->
         <div class="d-flex flex-column w-tables rounded mt-3 bg-white table-responsive">
 
-            {{-- {!! $dataTable->table(['class' => 'table table-hover border-0 w-100']) !!} --}}
+            {!! $dataTable->table(['class' => 'table table-hover border-0 w-100']) !!}
 
         </div>
         <!-- Task Box End -->
@@ -146,7 +141,7 @@
 @endsection
 
 @push('scripts')
-    {{-- @include('sections.datatable_js') --}}
+    @include('sections.datatable_js')
 
     <script>
 

@@ -225,8 +225,6 @@
             <x-sub-menu-item :link="route('vehicle-make-model.index')" :text="__('app.menu.make_model')" />
             <x-sub-menu-item :link="route('vehicle-rental-company.index')" :text="__('app.menu.rental_company')" />
             <x-sub-menu-item :link="route('vehicles.index')" :text="__('app.menu.vehicle')" />
-
-            <x-sub-menu-item :link="route('receipt-voucher.index')" :text="__('app.menu.receipt_voucher')" />
         </div>
     </x-menu-item>
 

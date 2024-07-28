@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\VehicleType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'image' => 'required'
+            // 'image' => 'required',
         ];
     }
 }
