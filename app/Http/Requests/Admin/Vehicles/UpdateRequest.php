@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
         $vehicleId = $this->route('vehicle')->id;
 
         $rules = [
-            // 'date' => 'required|date',
+            'date' => 'sometimes|date',
             'ilab_id' => 'sometimes|string',
             'vehicle_type_id' => 'sometimes|exists:vehicle_types,id',
             'vehicle_plate_number' => 'sometimes|string|unique:vehicles,vehicle_plate_number,' . $vehicleId,

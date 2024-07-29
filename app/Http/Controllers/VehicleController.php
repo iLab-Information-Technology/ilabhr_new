@@ -130,21 +130,15 @@ class VehicleController extends AccountBaseController
             case 'documents':
                 $this->view = 'vehicles.ajax.documents';
                 break;
-
-                // case 'locality':
-                //     $this->view = 'drivers.ajax.locality';
-                //     $this->countries = countries();
-                //     break;
-
-                // case 'banking':
-                //     $this->view = 'drivers.ajax.banking';
-                //     break;
-                // case 'businesses':
-                //     return $this->businesses();
-
             default:
                 $this->view = 'vehicles.ajax.profile';
                 break;
+        }
+
+        if (request()->ajax()) {
+            $html = view($this->view, $this->data)->render();
+
+            return Reply::dataOnly(['views' => $this->view, 'status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
         }
 
         $this->activeTab = $tab ?: 'profile';
@@ -220,7 +214,7 @@ class VehicleController extends AccountBaseController
                 $this->view = 'vehicles.ajax.outside-picture';
                 break;
             default:
-                $this->view = 'vehicles.ajax.profile';
+                $this->view = 'vehicles.ajax.edit';
                 break;
         }
 
@@ -247,14 +241,18 @@ class VehicleController extends AccountBaseController
 
         $validated['istimarah_expiry_date'] = $request->istimarah_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->istimarah_expiry_date)->format('Y-m-d') : null;
 
+        if ($request->hasFile('istimarah')) {
+            $validated['istimarah'] = Files::uploadLocalOrS3($request->istimarah, 'istimarah', 300);
+        }
+
         if ($request->istimarah_delete == 'yes') {
             Files::deleteFile($vehicle->istimarah, 'istimarah');
             $vehicle->istimarah = null;
             $validated['istimarah_expiry_date'] = null;
         }
 
-        if ($request->hasFile('istimarah')) {
-            $validated['istimarah'] = Files::uploadLocalOrS3($request->istimarah, 'istimarah', 300);
+        if ($request->hasFile('tamm_report')) {
+            $validated['tamm_report'] = Files::uploadLocalOrS3($request->tamm_report, 'tamm-report', 300);
         }
 
         if ($request->tamm_report_delete == 'yes') {
@@ -262,24 +260,13 @@ class VehicleController extends AccountBaseController
             $vehicle->tamm_report = null;
         }
 
-        if ($request->hasFile('tamm_report')) {
-            $validated['tamm_report'] = Files::uploadLocalOrS3($request->tamm_report, 'tamm-report', 300);
+        if ($request->hasFile('other_report')) {
+            $validated['other_report'] = Files::uploadLocalOrS3($request->other_report, 'other-report', 300);
         }
 
         if ($request->other_report_delete == 'yes') {
             Files::deleteFile($vehicle->other_report, 'other-report');
             $vehicle->other_report = null;
-        }
-
-        if ($request->hasFile('other_report')) {
-            $validated['other_report'] = Files::uploadLocalOrS3($request->other_report, 'other-report', 300);
-        }
-
-        // Handle deletion of inside images if requested
-        if ($request->inside_image_delete == 'yes') {
-            $imagePath = Files::deleteFile($vehicle->images[0]->firstWhere('type', 'inside')->image, 'vehicle-images');
-
-            $vehicle->images()->where('type', 'inside')->delete();
         }
 
         if ($request->hasFile('inside_image')) {
@@ -300,10 +287,10 @@ class VehicleController extends AccountBaseController
             }
         }
 
-        if ($request->outside_image_delete == 'yes') {
-            $imagePath = Files::deleteFile($vehicle->images[0]->firstWhere('type', 'outside')->image, 'vehicle-images');
+        if ($request->inside_image_delete == 'yes') {
+            $imagePath = Files::deleteFile($vehicle->images[0]->firstWhere('type', 'inside')->image, 'vehicle-images');
 
-            $vehicle->images()->where('type', 'outside')->delete();
+            $vehicle->images()->where('type', 'inside')->delete();
         }
 
         if ($request->hasFile('outside_image')) {
@@ -324,9 +311,24 @@ class VehicleController extends AccountBaseController
             }
         }
 
+        if ($request->outside_image_delete == 'yes') {
+            $imagePath = Files::deleteFile($vehicle->images[0]->firstWhere('type', 'outside')->image, 'vehicle-images');
+
+            $vehicle->images()->where('type', 'outside')->delete();
+        }
+
+        if ($request->status == 3) {
+            VehicleReplacement::create([
+                'vehicle_id' => $vehicle->id,
+                'date' => $request->replacement_date,
+                'reason' => $request->replacement_reason,
+            ]);
+        }
+
 
         $vehicle->update($validated);
-        return Reply::success(__('messages.updateSuccess'));
+
+        return Reply::successWithData(__('messages.updateSuccess'), ['redirectUrl' => route('vehicles.index')]);
     }
 
     /**
