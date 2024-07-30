@@ -10,12 +10,12 @@
 
             <div id="table-actions" class="d-flex align-items-center">
 
-                {{-- @if ($addProjectPermission == 'all' || $addProjectPermission == 'added') --}}
+                @if ($vehicle->driver_id == NULL)
                     <x-forms.link-primary :link="route('vehicles.link-driver', $vehicle->id).'?default_assign='.$vehicle->id"
                         class="mr-3 openRightModal" icon="plus" data-redirect-url="{{ url()->full() }}">
                         @lang('app.menu.linkDriver')
                     </x-forms.link-primary>
-                {{-- @endif --}}
+                @endif
             </div>
 
             <x-datatable.actions>

@@ -6,12 +6,13 @@
 </div>
 <div class="modal-body">
     <div class="portlet-body">
-        <x-form id="save-other-report-data-form" method="PUT" class="ajax-form" enctype="multipart/form-data">
+        <x-form id="save-other-report-data-form" method="POST" class="ajax-form" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-lg-12">
-                    <x-forms.file allowedFileExtensions="png jpg jpeg svg pdf doc docx" class="mr-0 mr-lg-2 mr-md-2" :fieldValue="asset('user-uploads/vehicle-images/'. $vehicle->images[0]->firstWhere('type', 'inside')->image)"
-                        :fieldLabel="__('modules.vehicles.insidePictures')" fieldName="inside_image" fieldId="file" aria-multiline="true" multiple>
-                    </x-forms.file>
+                    <x-forms.file-multiple allowedFileExtensions="png jpg jpeg svg pdf doc docx"
+                        class="mr-0 mr-lg-2 mr-md-2" :fieldLabel="__('modules.vehicles.insidePictures')" fieldName="inside_images[]"
+                        fieldId="inside-images" multiple>
+                    </x-forms.file-multiple>
                 </div>
             </div>
         </x-form>
@@ -23,24 +24,97 @@
 </div>
 
 <script>
-    $('#save-other-report-form').click(function() {
-        $.easyAjax({
-            url: "{{ route('vehicles.update', $vehicle->id) }}",
-            container: '#save-other-report-data-form',
-            type: "POST",
-            disableButton: true,
-            blockUI: true,
-            buttonSelector: 'save-other-report-form',
-            file: true,
-            data: $('#save-other-report-data-form').serialize(),
-            success: function(response) {
-                console.log(response);
-                if (response.status === 'success') {
-                    window.location.reload();
+    initializeDropzone()
+
+    function initializeDropzone() {
+        Dropzone.autoDiscover = false;
+
+        var myDropzone = new Dropzone("#inside-images", {
+            url: "{{ route('vehicles.uploadImages', $vehicle->id) }}",
+            method: "POST",
+            paramName: "inside_images[]",
+            maxFilesize: 3, // MB
+            maxFiles: 5,
+            acceptedFiles: "image/*",
+            autoProcessQueue: true,
+            addRemoveLinks: true,
+            init: function() {
+                var submitButton = document.querySelector("#save-other-report-form");
+                var dropzone = this;
+
+                @php($insideImages = $vehicle->images()->where('type', 'inside')->get())
+
+                // Add previously uploaded images to Dropzone
+                @foreach ($insideImages as $image)
+                    var mockFile = {
+                        name: "{{ $image->image }}",
+                        size: 12345
+                    };
+                    dropzone.emit("addedfile", mockFile);
+                    dropzone.emit("thumbnail", mockFile,
+                        "{{ asset('user-uploads/vehicle-images/' . $image->image) }}");
+                    dropzone.emit("complete", mockFile);
+                @endforeach
+
+                submitButton.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    if (dropzone.getQueuedFiles().length > 0) {
+                        dropzone.processQueue();
+                    } else {
+                        submitForm();
+                    }
+
+                    if (dropzone.getQueuedFiles().length = 0) {
+                        submitForm();
+                    }
+                });
+
+                this.on("queuecomplete", function() {
+                    // submitForm();
+                });
+
+
+                this.on("error", function(file, response) {
+                    console.log("Error uploading file:", response);
+                });
+
+                function submitForm() {
+                    var formData = new FormData(document.querySelector("#save-other-report-data-form"));
+                    var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute(
+                        'content');
+
+                    formData.append('_token', csrfToken);
+                    formData.append('_method', 'PUT');
+
+                    @foreach ($vehicle->images as $image)
+                        formData.append('inside_images[]', "{{ asset('user-uploads/vehicle-images/'. $image->image) }}")
+                    @endforeach
+
+                    // Append newly uploaded files
+                    dropzone.getAcceptedFiles().forEach(function(file) {
+                        formData.append('inside_images[]', file);
+                    });
+
+                    $.ajax({
+                        url: "{{ route('vehicles.update', $vehicle->id) }}",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            console.log(response);
+                            if (response.status === 'success') {
+                                window.location.reload();
+                            }
+                        },
+                        error: function(xhr) {
+                            console.log("Error in AJAX request:", xhr.responseText);
+                        }
+                    });
                 }
             }
         });
-    });
-
-    init(MODAL_LG);
+    }
 </script>

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehicle_images', function (Blueprint $table) {
-            $table->id();
-            $table->integer('vehicle_id');
-            $table->text('image');
-            $table->string('type');
-            $table->timestamps();
+        Schema::table('vehicles', function (Blueprint $table) {
+            $table->text('tamm_expiry_date')->nullable();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehicle_images');
+        Schema::table('vehicles', function (Blueprint $table) {
+            $table->dropColumn('tamm_expiry_date');
+        });
     }
 };

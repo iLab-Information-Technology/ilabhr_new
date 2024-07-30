@@ -10,11 +10,11 @@
         height: 120px;
         object-fit: cover;
     }
+
     .appreciation-count {
         top: -6px;
         right: 10px;
     }
-
 </style>
 
 <div class="d-lg-flex">
@@ -26,66 +26,26 @@
             <div class="col-lg-12 col-md-12 mb-4 mb-xl-0 mb-lg-4 mb-md-0">
                 <div class="row">
                     <div class="col-xl-7 col-md-6 mb-4 mb-lg-0">
-{{-- 
-                        @if ($driver->employeeDetail->about_me != '')
-                            <x-cards.data :title="__('app.about')" class="mt-4">
-                                <div>{{ $driver->employeeDetail->about_me }}</div>
-                            </x-cards.data>
-                        @endif --}}
-
-
                         <x-cards.data :title="__('modules.client.profileInfo')" class=" mt-4">
-                            {{-- <x-cards.data-row :label="__('modules.employees.employeeId')"
-                                :value="(!is_null($driver->employeeDetail) && !is_null($driver->employeeDetail->employee_id)) ? ($driver->employeeDetail->employee_id) : '--'" />
+                            <div class="dropdown-menu dropdown-menu-right border-grey rounded b-shadow-4 p-0"
+                                aria-labelledby="dropdownMenuLink" tabindex="0">
+                                <a class="dropdown-item openRightModal"
+                                    href="{{ route('vehicles.edit', $vehicle->id) }}">@lang('app.edit')</a>
+                            </div>
 
-                            <x-cards.data-row :label="__('modules.employees.fullName')"
-                                :value="$driver->name" />
+                            <x-cards.data-row :label="__('modules.vehicles.date')" :value="is_null($vehicle->date) ? '--' : date('d F', strtotime($vehicle->date))" />
 
-                            <x-cards.data-row :label="__('app.designation')"
-                                :value="(!is_null($driver->employeeDetail) && !is_null($driver->employeeDetail->designation)) ? ($driver->employeeDetail->designation->name) : '--'" />
+                            <x-cards.data-row :label="__('modules.vehicles.ilab_id')" :value="$vehicle->ilab_id" />
 
-                            <x-cards.data-row :label="__('app.department')"
-                                :value="(isset($driver->employeeDetail) && !is_null($driver->employeeDetail->department) && !is_null($driver->employeeDetail->department)) ? ($driver->employeeDetail->department->team_name) : '--'" />
+                            <x-cards.data-row :label="__('app.menu.vehicleType')" :value="$vehicle->vehicleType->name" />
 
-                            <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
-                                <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
-                                    @lang('modules.employees.gender')</p>
-                                <p class="mb-0 text-dark-grey f-14 w-70">
-                                    <x-gender :gender='$driver->gender' />
-                                </p>
-                            </div> --}}
+                            <x-cards.data-row :label="__('modules.vehicles.number_plate')" :value="$vehicle->vehicle_plate_number" />
 
+                            <x-cards.data-row :label="__('app.menu.makeModel')" :value="$vehicle->makeModel->name" />
 
-                            {{-- @php
-                                $currentyearJoiningDate = \Carbon\Carbon::parse(now(company()->timezone)->year.'-'.$driver->employeeDetail->joining_date->translatedFormat('m-d'));
-                                if ($currentyearJoiningDate->copy()->endOfDay()->isPast()) {
-                                    $currentyearJoiningDate = $currentyearJoiningDate->addYear();
-                                }
-                                $diffInHoursJoiningDate = now(company()->timezone)->floatDiffInHours($currentyearJoiningDate, false);
-                            @endphp
+                            <x-cards.data-row :label="__('app.menu.rentalCompany')" :value="$vehicle->rentalCompany->name" />
 
-                            <x-cards.data-row :label="__('modules.employees.workAnniversary')" :value="(!is_null($driver->employeeDetail) && !is_null($driver->employeeDetail->joining_date)) ? (($diffInHoursJoiningDate > -23 && $diffInHoursJoiningDate <= 0) ? __('app.today') : $currentyearJoiningDate->longRelativeToNowDiffForHumans()) : '--'" /> --}}
-
-                                <x-cards.data-row :label="__('modules.vehicles.date')"
-                                :value="is_null($vehicle->date) ? '--' : date('d F', strtotime($vehicle->date))" />
-
-                                <x-cards.data-row :label="__('modules.vehicles.ilab_id')"
-                                :value="$vehicle->ilab_id" />
-
-                                <x-cards.data-row :label="__('app.menu.vehicleType')"
-                                :value="$vehicle->vehicleType->name" />
-
-                                <x-cards.data-row :label="__('modules.vehicles.number_plate')"
-                                :value="$vehicle->vehicle_plate_number" />
-
-                                <x-cards.data-row :label="__('app.menu.makeModel')"
-                                :value="$vehicle->makeModel->name" />
-
-                                <x-cards.data-row :label="__('app.menu.rentalCompany')"
-                                :value="$vehicle->rentalCompany->name" />
-
-                                <x-cards.data-row :label="__('modules.vehicles.color')"
-                                    :value="$vehicle->color ?? '--'" />
+                            <x-cards.data-row :label="__('modules.vehicles.color')" :value="$vehicle->color ?? '--'" />
 
 
                         </x-cards.data>
@@ -98,8 +58,8 @@
                         {{-- @if ($showFullProfile)
                              <x-cards.data class="mb-4" :title="__('modules.appreciations.appreciation')">
                                 @forelse ($driver->appreciationsGrouped as $item)
-                                <div class="float-left position-relative mb-2" style="width: 50px" data-toggle="tooltip" data-original-title="@if(isset($item->award->title)){{  $item->award->title }} @endif">
-                                    @if(isset($item->award->awardIcon->icon))
+                                <div class="float-left position-relative mb-2" style="width: 50px" data-toggle="tooltip" data-original-title="@if (isset($item->award->title)){{  $item->award->title }} @endif">
+                                    @if (isset($item->award->awardIcon->icon))
                                         <x-award-icon :award="$item->award" />
                                     @endif
                                     <span class="position-absolute badge badge-secondary rounded-circle border-additional-grey appreciation-count">{{ $item->no_of_awards }}</span>
@@ -110,7 +70,7 @@
                             </x-cards.data>
                         @endif --}}
 
-                            {{-- <div class="row">
+                        {{-- <div class="row">
                                 @if (in_array('attendance', user_modules()))
                                     <div class="col-xl-6 col-sm-12 mb-4">
                                         <x-cards.widget :title="__('modules.dashboard.lateAttendanceMark')"

@@ -236,15 +236,21 @@ class VehicleController extends AccountBaseController
     public function update(UpdateRequest $request, Vehicle $vehicle)
     {
         // return $request->all();
-
         $validated = $request->validated();
 
-        $validated['istimarah_expiry_date'] = $request->istimarah_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->istimarah_expiry_date)->format('Y-m-d') : null;
+        if(isset($request->tamm_expiry_date)){
+            $validated['tamm_expiry_date'] = $request->tamm_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->tamm_expiry_date)->format('Y-m-d') : null;
+        }
 
+        if(isset($request->istimarah_expiry_date)){
+            $validated['istimarah_expiry_date'] = $request->istimarah_expiry_date ? Carbon::createFromFormat($this->company->date_format, $request->istimarah_expiry_date)->format('Y-m-d') : null;
+        }
+
+        
         if ($request->hasFile('istimarah')) {
             $validated['istimarah'] = Files::uploadLocalOrS3($request->istimarah, 'istimarah', 300);
         }
-
+        
         if ($request->istimarah_delete == 'yes') {
             Files::deleteFile($vehicle->istimarah, 'istimarah');
             $vehicle->istimarah = null;
@@ -258,6 +264,7 @@ class VehicleController extends AccountBaseController
         if ($request->tamm_report_delete == 'yes') {
             Files::deleteFile($vehicle->tamm_report, 'tamm-report');
             $vehicle->tamm_report = null;
+            $validated['tamm_expiry_date'] = null;
         }
 
         if ($request->hasFile('other_report')) {
@@ -269,21 +276,23 @@ class VehicleController extends AccountBaseController
             $vehicle->other_report = null;
         }
 
-        if ($request->hasFile('inside_image')) {
-            $imagePath = Files::uploadLocalOrS3($request->inside_image, 'vehicle-images', 300);
+        if ($request->hasFile('inside_images')) {
+            $existingImages = $vehicle->images()->where('type', 'inside')->get();
+            if ($existingImages) {
+                foreach ($existingImages as $image) {
+                    // Delete the file from the filesystem
+                    $filePath = Files::deleteFile($image->image, 'vehicle-images');
+                }
 
-            $existingImage = $vehicle->images()->where('type', 'inside')->first();
+                $vehicle->images()->where('type', 'inside')->delete();
+            }
 
-            if ($existingImage) {
-                // Update existing image (or replace based on your logic)
-                $existingImage->image = $imagePath;
-                $existingImage->save();
-            } else {
-                // Create a new image record
-                $vehicle->images()->create([
-                    'image' => $imagePath,
-                    'type' => 'inside',
-                ]);
+            foreach ($request->file('inside_images') as $file) {
+                $imagePath = Files::uploadLocalOrS3($file, 'vehicle-images', 300);
+                // Create or update image record
+                $vehicle->images()->updateOrCreate(
+                    ['type' => 'inside', 'image' => $imagePath]
+                );
             }
         }
 
@@ -293,21 +302,23 @@ class VehicleController extends AccountBaseController
             $vehicle->images()->where('type', 'inside')->delete();
         }
 
-        if ($request->hasFile('outside_image')) {
-            $imagePath = Files::uploadLocalOrS3($request->outside_image, 'vehicle-images', 300);
+        if ($request->hasFile('outside_images')) {
+            $existingImages = $vehicle->images()->where('type', 'outside')->get();
+            if ($existingImages) {
+                foreach ($existingImages as $image) {
+                    // Delete the file from the filesystem
+                    $filePath = Files::deleteFile($image->image, 'vehicle-images');
+                }
 
-            $existingImage = $vehicle->images()->where('type', 'outside')->first();
+                $vehicle->images()->where('type', 'outside')->delete();
+            }
 
-            if ($existingImage) {
-                // Update existing image (or replace based on your logic)
-                $existingImage->image = $imagePath;
-                $existingImage->save();
-            } else {
-                // Create a new image record
-                $vehicle->images()->create([
-                    'image' => $imagePath,
-                    'type' => 'outside',
-                ]);
+            foreach ($request->file('outside_images') as $file) {
+                $imagePath = Files::uploadLocalOrS3($file, 'vehicle-images', 300);
+                // Create or update image record
+                $vehicle->images()->updateOrCreate(
+                    ['type' => 'outside', 'image' => $imagePath]
+                );
             }
         }
 
@@ -327,6 +338,13 @@ class VehicleController extends AccountBaseController
 
 
         $vehicle->update($validated);
+
+        return Reply::successWithData(__('messages.updateSuccess'), ['redirectUrl' => route('vehicles.index')]);
+    }
+
+    public function uploadImages(Request $request, Vehicle $vehicle)
+    {
+        // return response()->json(['request' => $request->all()]);
 
         return Reply::successWithData(__('messages.updateSuccess'), ['redirectUrl' => route('vehicles.index')]);
     }

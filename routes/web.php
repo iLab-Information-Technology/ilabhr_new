@@ -233,6 +233,7 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     // Vehicle Managment System Routes
     Route::get('driver-link/{id}', [VehicleController::class, 'linkDriver'])->name('vehicles.link-driver');
     Route::post('submit-link/{vehicle}', [VehicleController::class, 'submitDriverLink'])->name('vehicles.submit-driver');
+    Route::post('/vehicles/{vehicle}/upload-images', [VehicleController::class, 'uploadImages'])->name('vehicles.uploadImages');
     
     Route::resource('vehicles', VehicleController::class);
     Route::resource('vehicle-types', VehicleTypeController::class);

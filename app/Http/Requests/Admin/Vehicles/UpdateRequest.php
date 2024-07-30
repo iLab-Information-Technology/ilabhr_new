@@ -33,6 +33,7 @@ class UpdateRequest extends FormRequest
             'color' => 'sometimes|string',
             'status' => 'sometimes|in:0,1,3',
             'istimarah_expiry_date' => 'nullable|date',
+            'tamm_expiry_date' => 'nullable|date',
             'istimarah' => 'nullable|file|mimes:png,jpg,jpeg,svg,pdf,doc,docx|max:2048',
             'tamm_report' => 'nullable|file|mimes:png,jpg,jpeg,svg,pdf,doc,docx|max:2048',
             'other_report' => 'nullable|file|mimes:png,jpg,jpeg,svg,pdf,doc,docx|max:2048'

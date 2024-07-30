@@ -77,7 +77,7 @@
 
                     </div>
                 </x-slot>
-
+                <x-cards.data-row :label="__('modules.drivers.expiryDate')" :value=" $vehicle->tamm_expiry_date  ? $vehicle->tamm_expiry_date : '--'" />
                 <div class="col-12 px-0 pb-3 d-block d-lg-flex d-md-flex">
                     <p class="mb-0 text-lightest f-14 w-30 d-inline-block text-capitalize">
                         @lang('modules.employees.scanCopy')</p>
@@ -257,10 +257,14 @@
 
     // Iqama Start
     $('.add-document, .edit-document').click(function(){
+        event.preventDefault(); // Prevent default action
         const tab = $(this).attr('data-tab');
         var url = `{{ route('vehicles.edit', $vehicle->id) }}?tab=${tab}`;
-        $(MODAL_LG + ' ' + MODAL_HEADING).html('...');
+        $(MODAL_LG + ' ' + MODAL_HEADING).html('Loading...');
         $.ajaxModal(MODAL_LG, url);
+
+
+        
     });
 
     $('body').on('click', '.delete-iqama', function () {
