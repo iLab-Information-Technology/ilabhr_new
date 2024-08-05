@@ -464,7 +464,7 @@
             <td align="center" width="10%" class="border-bottom-0">{{ $receipt_voucher->driver->iqaama_number }}
             </td>
             <td align="center" class="border-bottom-0">
-                @if ($bussiness)
+                @if (!empty($bussiness))
                     {{ $bussiness->platform_id ?: '---' }}
                 @else
                     ---

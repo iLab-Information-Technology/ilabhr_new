@@ -203,6 +203,8 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     // Receipt Voucher
     Route::get('receipt-voucher/download/{id}', [ReceiptVoucherController::class, 'download'])->name('receipt-voucher.download');
 
+    Route::get('receipt-voucher/demopdf/{id}',[ReceiptVoucherController::class,'demoPdf'])->name('receipt-voucher.demopdf');
+
     // DMS
     Route::resource('branches', BranchController::class);
     Route::resource('receipt-voucher', ReceiptVoucherController::class);
