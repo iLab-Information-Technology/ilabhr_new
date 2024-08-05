@@ -50,6 +50,12 @@
 
                         </x-cards.data>
 
+                        @if ($vehicle->status == 3)
+                            <x-cards.data :title="__('modules.client.statusInfo')" class=" mt-4">
+
+                            </x-cards.data>
+                        @endif
+
 
                     </div>
 

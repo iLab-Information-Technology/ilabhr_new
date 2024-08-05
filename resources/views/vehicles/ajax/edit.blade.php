@@ -85,7 +85,7 @@
 
                     {{-- Start: Replacement Date --}}
                     <div class="col-md-4">
-                        <x-forms.datepicker fieldId="replacement_date" :fieldLabel="__('modules.vehicles.replacementDate')" fieldName="replacement_date"
+                        <x-forms.datepicker fieldId="replacement_date" :fieldLabel="__('modules.vehicles.replacementDate')" fieldName="replacement_date" :fieldValue="$vehicle->replacements[0]->date"
                             :fieldPlaceholder="__('placeholders.date')" />
                     </div>
                     {{-- End: Replacement Date --}}

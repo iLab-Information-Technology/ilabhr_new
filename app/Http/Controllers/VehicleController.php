@@ -191,7 +191,7 @@ class VehicleController extends AccountBaseController
         $this->rentalCompany = RentalCompany::get();
         $this->vehicleType = VehicleType::get();
 
-        $this->vehicle = $vehicle;
+        $this->vehicle = $vehicle->load('driver', 'replacements');
 
         $tab = request('tab');
 
@@ -248,7 +248,7 @@ class VehicleController extends AccountBaseController
 
         
         if ($request->hasFile('istimarah')) {
-            $validated['istimarah'] = Files::uploadLocalOrS3($request->istimarah, 'istimarah', 300);
+            $validated['istimarah'] = Files::uploadLocalOrS3($request->istimarah, 'istimarah');
         }
         
         if ($request->istimarah_delete == 'yes') {
@@ -258,7 +258,7 @@ class VehicleController extends AccountBaseController
         }
 
         if ($request->hasFile('tamm_report')) {
-            $validated['tamm_report'] = Files::uploadLocalOrS3($request->tamm_report, 'tamm-report', 300);
+            $validated['tamm_report'] = Files::uploadLocalOrS3($request->tamm_report, 'tamm-report');
         }
 
         if ($request->tamm_report_delete == 'yes') {
@@ -268,7 +268,7 @@ class VehicleController extends AccountBaseController
         }
 
         if ($request->hasFile('other_report')) {
-            $validated['other_report'] = Files::uploadLocalOrS3($request->other_report, 'other-report', 300);
+            $validated['other_report'] = Files::uploadLocalOrS3($request->other_report, 'other-report');
         }
 
         if ($request->other_report_delete == 'yes') {
@@ -329,11 +329,15 @@ class VehicleController extends AccountBaseController
         }
 
         if ($request->status == 3) {
+            $replacement_date = $request->replacement_date ? Carbon::createFromFormat($this->company->date_format, $request->replacement_date)->format('Y-m-d') : null;
             VehicleReplacement::create([
                 'vehicle_id' => $vehicle->id,
-                'date' => $request->replacement_date,
+                'from_driver_id' => $vehicle->driver->id,
+                'date' => $replacement_date,
                 'reason' => $request->replacement_reason,
             ]);
+
+            $vehicle->driver()->delete();
         }
 
 

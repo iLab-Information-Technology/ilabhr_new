@@ -34,4 +34,9 @@ class Vehicle extends Model
     public function images(){
         return $this->hasMany(VehicleImage::class);
     }
+
+    public function replacements()
+    {
+        return $this->hasMany(VehicleReplacement::class);
+    }
 }
