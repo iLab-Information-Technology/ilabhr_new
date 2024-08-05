@@ -19,5 +19,5 @@ jobs:
           sudo rm -rf .htaccess .env
       - name: Deploy Code to server
         run: |
-          sudo cp -r * /www/wwwroot/erp.ilab.sa/
-          cd /www/wwwroot/erp.ilab.sa/ && sudo composer install --prefer-dist --no-progress 
+          sudo cp -r * /www/wwwroot/hr.ilab.sa/
+          cd /www/wwwroot/hr.ilab.sa/ && sudo composer install --prefer-dist --no-progress 

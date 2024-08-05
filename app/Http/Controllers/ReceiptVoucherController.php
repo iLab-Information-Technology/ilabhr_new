@@ -14,6 +14,7 @@ use App\Helper\Files;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReceiptVoucherController extends AccountBaseController
 {
@@ -197,8 +198,20 @@ class ReceiptVoucherController extends AccountBaseController
         return Reply::success(__('messages.deleteSuccess'));
     }
 
-    public function download($id)
+    public function download(Request $request, $id)
     {
+        try {
+            $this->receiptVoucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
+            $view = $request->boolean('view') ? 'receipt-voucher.pdf.show_pdf' : 'receipt-voucher.pdf.generate_pdf';
+            return view($view, $this->data);
+        } catch (\Exception $e) {
+            abort(500, 'Error occurred during download');
+        }
+    }
+
+    public function download1($id)
+    {
+
         try {
             $this->invoiceSetting = invoice_setting();
             $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
@@ -210,8 +223,6 @@ class ReceiptVoucherController extends AccountBaseController
                 'vi' => 'BeVietnamPro',
                 default => $this->invoiceSetting->is_chinese_lang ? 'SimHei' : 'Verdana',
             };
-
-
 
             if (!$this->receipt_voucher) {
                 \Log::error('Receipt voucher not found for ID: ' . $id);
@@ -276,4 +287,5 @@ class ReceiptVoucherController extends AccountBaseController
             'fileName' => $filename
         ];
     }
+    
 }

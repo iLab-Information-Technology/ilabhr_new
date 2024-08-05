@@ -10,15 +10,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "authorizenet/authorizenet": "^2.0",
-        "barryvdh/laravel-dompdf": "^2.0.0",
+        "ab-alselwi/laravel-arabic-html": "^0.2.0",
+        "authorizenet/authorizenet": "^2.0", 
         "barryvdh/laravel-ide-helper": "*",
         "barryvdh/laravel-translation-manager": "^0.6.3",
         "billowapp/payfast": "^0.6.2",
         "billowapp/show-me-the-money": "0.4.4",
         "craftsys/msg91-laravel-notification-channel": "^0.7.0",
         "doctrine/dbal": "^3.0",
-        "dompdf/dompdf": "2.0.4",
         "edujugon/push-notification": "^5.2",
         "eluceo/ical": "^0.16.1",
         "endroid/qr-code": "^5.0",
@@ -102,14 +101,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/Froiden/laravelrave"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Froiden/laravel-dompdf"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/Froiden/dompdf"
         },
         {
             "type": "vcs",
