@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt Voucher</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
     <style>
         @font-face {
             font-family: 'NotoKufiArabic';
@@ -17,65 +14,43 @@
         body {
             font-family: 'NotoKufiArabic', serif;
             font-size: 12px;
-            /* Default font size for HTML */
             color: #333;
             margin: 0;
             padding: 0;
             font-weight: normal;
         }
 
-        .invoice-table-wrapper {
+        .invoice-container {
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
+            display: grid;
+            grid-template-rows: auto auto auto auto auto auto;
+            gap: 0;
         }
 
-        table {
-            width: 100%;
+        .header,
+        .details,
+        .items-5,
+        .items-4,
+        .items-3 {
+            display: grid;
+            gap: 0;
             border-collapse: collapse;
-            table-layout: auto;
-            /* Ensures that the table adjusts based on content */
         }
 
-        th,
-        td {
-            padding: 8px;/* 
-            border: 1px solid #ddd;  */
-            vertical-align: middle;
-            word-wrap: break-word;
-            /* Allows content to wrap within the cell */
+        .header {
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
         }
 
-        /* Specific widths for each column */
-        .col-city {
-            width: 20%;
-        }
-
-        .col-voucher {
-            width: 20%;
-        }
-
-        .col-account {
-            width: 20%;
-        }
-
-        .col-job {
-            width: 20%;
-        }
-
-        .col-other-account {
-            width: 20%;
-        }
-
-        .inv-logo-heading img {
+        .header img {
             max-width: 150px;
         }
 
-        .inv-logo-heading td {
-            vertical-align: top;
-        }
-
-        .inv-logo-heading td:nth-child(2) {
+        .header div {
             text-align: right;
             font-weight: bold;
             font-size: 21px;
@@ -83,63 +58,123 @@
             color: #000;
         }
 
-        .inv-num p {
-            margin: 10px 0 0 0;
+        .details {
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
         }
 
-        .inv-num-date td {
+        .details>div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .details p {
+            margin: 0;
+        }
+
+        .details .inv-num-date {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .details .inv-num-date div {
             padding: 5px;
             border: 1px solid #ddd;
         }
 
-        .inv-num-date td:first-child {
+        .details .inv-num-date div:first-child {
             background-color: #f2f2f2;
             font-weight: bold;
         }
 
-        .inv-unpaid p {
-            margin: 0;
-        }
-
-        .inv-unpaid span {
+        .cell-heading {
+            background-color: #f2f2f2;
             font-weight: bold;
         }
 
-        .inv-desc td {
+        .items-5 {
+            grid-template-columns: repeat(5, 1fr);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .items-4 {
+            grid-template-columns: repeat(4, 1fr);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .items-3 {
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .items-5>div,
+        .items-4>div,
+        .items-3>div {
             padding: 8px;
             border: 1px solid #ddd;
             text-align: center;
         }
 
-        /* .inv-desc tr:nth-child(even) {
-            background-color: #f9f9f9;
-        } */
-
-        .inv-desc tr:first-child {
+        .headings {
+            background-color: #f2f2f2;
             font-weight: bold;
-            color: #333;
+        }
+
+        .signatures {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .signatures>div {
+            padding: 8px;
+            border: 1px solid #ddd;
             text-align: center;
         }
 
-        .inv-desc tr:last-child td {
+        .signature-line {
             padding: 50px 10px 2px 10px;
-        }
-        .headings{
-
-            background-color: #f2f2f2;
-        }
-
-        .inv-desc-mob {
-            display: none;
+            font-family: "Playwrite CU", cursive;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+            font-size: 30px;
         }
 
-        @media only screen and (max-width: 600px) {
-            .inv-desc {
-                display: none;
+        @media print {
+            .invoice-container {
+                padding: 0;
             }
 
-            .inv-desc-mob {
-                display: block;
+            .header,
+            .details,
+            .items-5,
+            .items-4,
+            .items-3,
+            .signatures {
+                gap: 0;
+            }
+
+            .header div {
+                font-size: 18px;
+            }
+
+            .items-5>div,
+            .items-4>div,
+            .items-3>div,
+            .signatures>div {
+                padding: 4px;
+            }
+
+            .signature-line {
+                padding: 30px 5px 1px 5px;
+                font-family: "Playwrite CU", cursive;
+                font-optical-sizing: auto;
+                font-weight: 600;
+                font-style: normal;
+                font-size: 30px;
             }
         }
 
@@ -149,13 +184,11 @@
 
         /* PDF-specific styles */
         .pdf-style {
-            font-size: 24px;
+            font-size: 30px;
             /* Larger font size for PDF */
         }
 
-
-
-          /* Loader styles */
+        /* Loader styles */
         .loader-wrapper {
             position: fixed;
             top: 0;
@@ -166,7 +199,7 @@
             z-index: 9999;
             display: flex;
             justify-content: center;
-            align-items: center; 
+            align-items: center;
         }
 
         .loader {
@@ -179,165 +212,163 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            0% {
+                transform: rotate(0deg);
+            }
 
-        /* Styles for PDF content */
+            100% {
+                transform: rotate(360deg);
+            }
+        }
         .invoice-table-wrapper {
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
         }
-
     </style>
 </head>
 
 <body>
-
-<div class="loader-wrapper" id="loader-wrapper">
+    <div class="loader-wrapper" id="loader-wrapper">
         <div class="loader" id="loader"></div>
     </div>
-    <div class="invoice-table-wrapper" id="content">
-        <table>
-            <tbody>
-                <tr class="inv-logo-heading">
-                    <td><img src="{{ asset('user-uploads/app-logo/06eace9938c8f15983f12a5430e8b294.png') }}" alt="ilab Information Technologies" id="logo"></td>
-                    <td align="right">سند القبض</td>
-                </tr>
-                <tr class="inv-num">
-                    <td>
-                        <p>
-                            ilab Information Technologies<br>
-                            +966920008946
-                        </p>
-                    </td>
-                    <td align="right">
-                        <table class="inv-num-date">
-                            <tbody>
-                                <tr>
-                                    <td>عدد إيصال</td>
-                                    <td>{{ $receiptVoucher->voucher_number }}</td>
-                                </tr>
-                                <tr>
-                                    <td>تاريخ استلام</td>
-                                    <td>{{ $receiptVoucher->voucher_date->translatedFormat(company()->date_format) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="invoice-container" id="content">
+        <div class="header">
+            <img src="{{ asset('user-uploads/app-logo/06eace9938c8f15983f12a5430e8b294.png') }}" alt="ilab Information Technologies" id="logo">
+            <div>سند القبض</div>
+        </div>
 
-        <table>
-            <tbody>
-                <tr class="inv-unpaid">
-                    <td>
-                        <p>
-                            @if (
-                            ($receiptVoucher->driver) &&
-                            ($receiptVoucher->driver->name ||
-                            $receiptVoucher->driver->email ||
-                            $receiptVoucher->driver->work_mobile_no))
-                            <span>تم الاستلام من السائق</span><br>
-                            @if ($receiptVoucher->driver && $receiptVoucher->driver->name)
-                            {{ $receiptVoucher->driver->name }}<br>
-                            @endif
+        <div class="details">
+            <div>
+                <p>
+                    ilab Information Technologies<br>
+                    +966920008946
+                </p>
+            </div>
+            <div class="inv-num-date">
+                <div>عدد إيصال</div>
+                <div>{{ $receiptVoucher->voucher_number }}</div>
+                <div class="cell-heading">تاريخ استلام</div>
+                <div>{{ $receiptVoucher->voucher_date->translatedFormat(company()->date_format) }}</div>
+            </div>
+        </div>
 
-                            @if ($receiptVoucher->driver && $receiptVoucher->driver->email)
-                            {{ $receiptVoucher->driver->email }}<br>
-                            @endif
+        <div class="details">
+            <div>
+                <p class="mb-0 text-left">
+                    @if (
+                    ($receiptVoucher->driver) &&
+                    ($receiptVoucher->driver->name ||
+                    $receiptVoucher->driver->email ||
+                    $receiptVoucher->driver->work_mobile_no))
+                    <span class="text-dark-grey text-capitalize">تلقى من السائق</span><br>
 
-                            @if ($receiptVoucher->driver && $receiptVoucher->driver->work_mobile_with_phone_code)
-                            {{ $receiptVoucher->driver->work_mobile_with_phone_code }}<br>
-                            @endif
+                    @if ($receiptVoucher->driver && $receiptVoucher->driver->name)
+                    {{ $receiptVoucher->driver->name }}<br>
+                    @endif
 
-                            @endif
-                        </p>
-                    </td> 
-                </tr>
-                <tr>
-                    <td colspan="2"></td>
-                </tr>
-            </tbody>
-        </table>
+                    @if ($receiptVoucher->driver && $receiptVoucher->driver->email)
+                    {{ $receiptVoucher->driver->email }}<br>
+                    @endif
 
+                    @if ($receiptVoucher->driver && $receiptVoucher->driver->work_mobile_with_phone_code)
+                    {{ $receiptVoucher->driver->work_mobile_with_phone_code }}<br>
+                    @endif
 
-        <table class="inv-desc">
-            <tbody>
-                <tr class="headings">
-                    <td class="col-city">مدينة</td>
-                    <td class="col-voucher" align="center">رقم القسيمة</td>
-                    <td class="col-account" align="center">رقم حساب</td>
-                    <td class="col-job" align="center">عمل</td>
-                    <td class="col-other-account" align="right">حساب آخر</td>
-                </tr>
-                <tr>
-                    <td class="col-city">{{ $receiptVoucher->driver->branch->name}}</td>
-                    <td class="col-voucher" align="center">{{ $receiptVoucher->driver->iqaama_number }}</td>
-                    <td class="col-account" align="center">@if(!empty($bussiness))
-                        {{ $bussiness->platform_id ?: '---' }}
-                        @else
-                        ---
-                        @endif
-                    </td>
-                    <td class="col-job" align="center">@if ($receiptVoucher->bussiness)
-                        {{ $receiptVoucher->business->name ? : '---'}}
-                        @else
-                        ---
-                        @endif
-                    </td>
-                    <td class="col-other-account" align="right">{{ $receiptVoucher->other_business ?: '---' }}</td>
-                </tr>
-                <tr class="headings">
-                    <td class="col-city" align="center">من التاريخ</td>
-                    <td class="col-voucher" align="center">تاريخ الانتهاء</td>
-                    <td class="col-account" align="right">كمية</td>
-                    <td class="col-job" align="right" colspan="2">مبلغ المحفظة</td>
-                </tr>
-                <tr>
-                    <td class="col-city">{{ $receiptVoucher->start_date->format(company()->date_format) }}</td>
-                    <td class="col-voucher" align="center">{{ $receiptVoucher->end_date->format(company()->date_format) }}</td>
-                    <td class="col-account" align="right">{{ $receiptVoucher->total_amount }}</td>
-                    <td class="col-job" align="right" colspan="2">{{ $receiptVoucher->wallet_amount }}</td>
-                </tr>
-                <tr class="headings">
-                    <td class="col-city">توقيع المحاسب</td>
-                    <td class="col-voucher" align="center">توقيع السائق</td>
-                    <td class="col-account" align="right" colspan="3">توقيع المشرف</td>
-                </tr>
-                <tr>
-                    <td class="col-city" align="center">________________________________</td>
-                    <td class="col-voucher" align="center">@if ($receiptVoucher->signature != "")
-                        <img src="{{ $receiptVoucher->signature }}" alt="Driver Sign" width="200px" height="100px">
-                        @else ________________________________ @endif
-                    </td>
-                    <td class="col-account" align="center" colspan="3">{{ $receiptVoucher->creator->name }}</td>
-                </tr>
-            </tbody>
-        </table>
+                    {{-- @if ( --}}
+                    {{-- $invoice->clientDetails && --}}
+                    {{-- $invoice->clientDetails->company_name && --}}
+                    {{-- invoice_setting()->show_client_company_name == 'yes') --}}
+                    {{-- {{ $invoice->clientDetails->company_name }}<br> --}}
+                    {{-- @endif --}}
 
-        <div style="float: right; margin-top: 30px;"></div>
+                    {{-- @if ( --}}
+                    {{-- $invoice->clientDetails && --}}
+                    {{-- $invoice->clientDetails->address && --}}
+                    {{-- invoice_setting()->show_client_company_address == 'yes') --}}
+                    {{-- {!! nl2br($invoice->clientDetails->address) !!} --}}
+                    {{-- @endif --}}
+
+                    @endif
+
+                    {{-- @if ($invoiceSetting->show_project == 1 && isset($invoice->project)) --}}
+                    {{-- <br><br> --}}
+                    {{-- <span class="text-dark-grey text-capitalize">@lang('modules.invoices.projectName')</span><br> --}}
+                    {{-- {{ $invoice->project->project_name }} --}}
+                    {{-- @endif --}}
+
+                    {{-- @if ($invoiceSetting->show_gst == 'yes' && !is_null($client->clientDetails->gst_number)) --}}
+                    {{-- @if ($client->clientDetails->tax_name) --}}
+                    {{-- <br>{{$client->clientDetails->tax_name}}: {{$client->clientDetails->gst_number}} --}}
+                    {{-- @else --}}
+                    {{-- <br>@lang('app.gstIn'): {{ $client->clientDetails->gst_number }} --}}
+                    {{-- @endif --}}
+                    {{-- @endif --}}
+                </p>
+            </div>
+        </div>
+
+        <div class="items-5">
+            <div class="headings">مدينة</div>
+            <div class="headings" align="center">رقم القسيمة</div>
+            <div class="headings" align="center">رقم حساب</div>
+            <div class="headings" align="center">عمل</div>
+            <div class="headings" align="right">حساب آخر</div>
+
+            <div>{{ $receiptVoucher->driver->branch->name}}</div>
+            <div align="center">{{ $receiptVoucher->driver->iqaama_number }}</div>
+            <div align="center">@if(!empty($bussiness))
+                {{ $bussiness->platform_id ?: '---' }}
+                @else
+                ---
+                @endif
+            </div>
+            <div align="center">@if ($receiptVoucher->bussiness)
+                {{ $receiptVoucher->business->name ? : '---'}}
+                @else
+                ---
+                @endif
+            </div>
+            <div align="right">{{ $receiptVoucher->other_business ?: '---' }}</div>
+        </div>
+
+        <div class="items-4">
+            <div class="headings" align="center">من التاريخ</div>
+            <div class="headings" align="center">تاريخ الانتهاء</div>
+            <div class="headings" align="right">كمية</div>
+            <div class="headings" align="right">مبلغ المحفظة</div>
+
+            <div>{{ $receiptVoucher->start_date->format(company()->date_format) }}</div>
+            <div align="center">{{ $receiptVoucher->end_date->format(company()->date_format) }}</div>
+            <div align="right">{{ $receiptVoucher->total_amount }}</div>
+            <div align="right">{{ $receiptVoucher->wallet_amount }}</div>
+        </div>
+
+        <div class="items-3">
+            <div class="headings">توقيع المحاسب</div>
+            <div class="headings" align="center">توقيع السائق</div>
+            <div class="headings" align="right">توقيع المشرف</div>
+
+            <div class="signature-line">________________________________</div>
+            <div class="signature-line" align="center">
+                @if ($receiptVoucher->signature != "")
+                <img src="{{ $receiptVoucher->signature }}" alt="Driver Sign" width="200px" height="100px">
+                @else
+                ________________________________
+                @endif
+            </div>
+            <div class="signature-line" align="center">{{ $receiptVoucher->creator->name }}</div>
+        </div>
     </div>
-
-    <!--   <button id="generatePdf">Generate PDF</button> -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="{{ asset('js/NotoKufiArabic-Regular-normal.js') }}"></script>
     <script>
-        /*  document.getElementById('generatePdf').addEventListener('click', function () { */
         const {
             jsPDF
         } = window.jspdf;
-
-        // Add the pdf-style class to the content
         const content = document.getElementById('content');
         content.classList.add('pdf-style');
-
-        // Use html2canvas to capture the HTML content as an image
         html2canvas(content, {
             scale: 3, // Increase the scale for higher resolution
             useCORS: true // Enable cross-origin for external images
@@ -347,35 +378,22 @@
             const pageHeight = 297; // A4 height in mm
             const imgHeight = canvas.height * imgWidth / canvas.width;
             let heightLeft = imgHeight;
-
-            // Create a new jsPDF instance
             const doc = new jsPDF('p', 'mm', 'a4');
-
             let position = 0;
-
-            // Add the image to the PDF
             doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
-
-            // Add extra pages if needed
             while (heightLeft >= 0) {
                 position = heightLeft - imgHeight;
                 doc.addPage();
                 doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
             }
-            // Save the PDF
-            doc.save("document.pdf");
-            // Remove the pdf-style class after generating the PDF
+            doc.save("{{$receiptVoucher->voucher_number}}.pdf");
             content.classList.remove('pdf-style');
         });
-
-        // Redirect back after the download starts
         setTimeout(() => {
             window.history.back();
-           // window.location.href = 'http://localhost:8085/ilabhr_new/public/account/receipt-voucher';
         }, 1000);
-        //  });
         window.top.close();
     </script>
 </body>

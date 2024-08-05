@@ -11,6 +11,7 @@
             font-family: 'NotoKufiArabic';
             src: url('{{asset("fonts/NotoKufiArabic-Regular.ttf")}}') format('truetype');
         }
+
         body {
             font-family: 'NotoKufiArabic', serif;
             font-size: 12px;
@@ -19,6 +20,7 @@
             padding: 0;
             font-weight: normal;
         }
+
         .invoice-container {
             width: 100%;
             padding: 20px;
@@ -85,7 +87,7 @@
         }
 
         .details .inv-num-date div:first-child {
-             
+
             font-weight: bold;
         }
 
@@ -136,6 +138,11 @@
 
         .signature-line {
             padding: 50px 10px 2px 10px;
+            font-family: "Playwrite CU", cursive;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+            font-size: 30px;
         }
 
         @media print {
@@ -165,6 +172,11 @@
 
             .signature-line {
                 padding: 30px 5px 1px 5px;
+                font-family: "Playwrite CU", cursive;
+                font-optical-sizing: auto;
+                font-weight: 600;
+                font-style: normal;
+                font-size: 30px;
             }
         }
 
@@ -354,10 +366,6 @@
             <div class="signature-line" align="center">{{ $receiptVoucher->creator->name }}</div>
         </div>
     </div>
-
-    <!-- <button id="generatePdf">Generate PDF</button> -->
-
-
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -365,16 +373,11 @@
 
 <script src="{{ asset('js/NotoKufiArabic-Regular-normal.js') }}"></script>
 <script>
-    //document.getElementById('generatePdf').addEventListener('click', function () {
     const {
         jsPDF
     } = window.jspdf;
-
-    // Add the pdf-style class to the content
     const content = document.getElementById('content');
     content.classList.add('pdf-style');
-
-    // Use html2canvas to capture the HTML content as an image
     html2canvas(content, {
         scale: 3, // Increase the scale for higher resolution
         useCORS: true // Enable cross-origin for external images
@@ -384,30 +387,20 @@
         const pageHeight = 297; // A4 height in mm
         const imgHeight = canvas.height * imgWidth / canvas.width;
         let heightLeft = imgHeight;
-
-        // Create a new jsPDF instance
         const doc = new jsPDF('p', 'mm', 'a4');
 
         let position = 0;
-
-        // Add the image to the PDF
         doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
-
-        // Add extra pages if needed
         while (heightLeft >= 0) {
             position = heightLeft - imgHeight;
             doc.addPage();
             doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
-
-        // Open the PDF in a new browser tab
         const pdfBlob = doc.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         window.open(pdfUrl);
-
-        // Remove the pdf-style class after generating the PDF
         content.classList.remove('pdf-style');
     });
 

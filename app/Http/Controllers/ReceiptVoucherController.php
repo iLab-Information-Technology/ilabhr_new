@@ -198,36 +198,20 @@ class ReceiptVoucherController extends AccountBaseController
         return Reply::success(__('messages.deleteSuccess'));
     }
 
-    public function download(Request $request,$id)
+    public function download(Request $request, $id)
     {
         try {
             $this->receiptVoucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
-            if($request->has('view') && $request->get('view') == true){
-                $html = view('receipt-voucher.pdf.show_pdf',$this->data);
-            }else{
-                $html = view('receipt-voucher.pdf.generate_pdf',$this->data);
-            }
-           return $html;
-            /* $pdf = PDF::loadHTML($html)->output();
-            $headers = array(
-                "Content-type" => "application/pdf",
-            );
-
-            return response()->streamDownload(
-                fn () => print($pdf), 
-                "invoice.pdf",  
-                $headers); 
-            $pdf            = Pdf::loadView('receipt-voucher.pdf.generate_pdf', $this->data);
-            return $pdf->stream(); */
+            $view = $request->boolean('view') ? 'receipt-voucher.pdf.show_pdf' : 'receipt-voucher.pdf.generate_pdf';
+            return view($view, $this->data);
         } catch (\Exception $e) {
-            \Log::error('Exception during download: ' . $e->getMessage());
             abort(500, 'Error occurred during download');
         }
     }
 
     public function download1($id)
     {
-        
+
         try {
             $this->invoiceSetting = invoice_setting();
             $this->receipt_voucher = ReceiptVoucher::with('driver', 'business')->findOrFail($id);
@@ -303,4 +287,5 @@ class ReceiptVoucherController extends AccountBaseController
             'fileName' => $filename
         ];
     }
+    
 }
