@@ -11,7 +11,6 @@
             font-family: 'NotoKufiArabic';
             src: url('{{asset("fonts/NotoKufiArabic-Regular.ttf")}}') format('truetype');
         }
-
         body {
             font-family: 'NotoKufiArabic', serif;
             font-size: 12px;
@@ -20,7 +19,6 @@
             padding: 0;
             font-weight: normal;
         }
-
         .invoice-container {
             width: 100%;
             padding: 20px;
