@@ -1,6 +1,12 @@
 # Readme for worksuite
 ### Plugins used in the app
 
+## Local Development (Windows)
+- Requires PHP >= 8.2.0. See [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md) for setup.
+- Start scripts: [start-php82.ps1](start-php82.ps1), [start-php82.bat](start-php82.bat)
+- If you see a "Lower PHP version" page, ensure your server uses PHP 8.2 (see [public/index.php](public/index.php#L8-L18)).
+- Hosting guides: [docs/APACHE_VHOST.conf](docs/APACHE_VHOST.conf), [docs/IIS_SETUP.md](docs/IIS_SETUP.md)
+
 <ol>
     <li>
         <strong>Bootstrap 4 </strong> - <a href="https://getbootstrap.com/">https://getbootstrap.com/</a>
