@@ -20,14 +20,14 @@ On your local machine, create a production-ready `.env`:
 ```bash
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://yourdomain.com
+APP_URL=https://hr.dobs.cloud/
 
 DB_CONNECTION=mysql
 DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE=ilab_production
-DB_USERNAME=your_db_user
-DB_PASSWORD=your_db_password
+DB_DATABASE=dobsykjq_hrsystem
+DB_USERNAME=dobsykjq_dms
+DB_PASSWORD="9gj*X]MwPPy+"
 
 MAIL_MAILER=smtp
 MAIL_HOST=your_smtp_host
