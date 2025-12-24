@@ -34,41 +34,7 @@ class TrialExpire extends Command
      */
     public function handle()
     {
-        $trialPackage = Package::where('default', 'trial')->first();
-        $defaultPackage = Package::where('default', 'yes')->first();
-        $setting = PackageSetting::first();
-
-        if ($defaultPackage->annual_status) {
-            $expireDate = now()->addYear()->format('Y-m-d');
-        }
-        else {
-            $expireDate = now()->addMonth()->format('Y-m-d');
-        }
-
-        $this->notifyCompanyOnNotificationDays($setting, $trialPackage);
-
-        // Before today is just incase cron job is missed for today
-        $companiesNotify = Company::with('package')
-            ->where('status', 'active')
-            ->whereNotNull('licence_expire_on')
-            ->whereDate('licence_expire_on','<=', Carbon::now()->format('Y-m-d'))
-            ->whereHas('package', function ($query) use ($trialPackage) {
-                $query->where('default', 'trial')->where('id', $trialPackage->id);
-            })
-            ->get();
-
-        foreach ($companiesNotify as $cmp) {
-            $companyUser = Company::firstActiveAdmin($cmp);
-
-            $cmp->package_id = $defaultPackage->id;
-            $cmp->licence_expire_on = $expireDate;
-            $cmp->status = 'license_expired';
-            $cmp->save();
-
-            $this->updateSubscription($cmp, $defaultPackage);
-
-            $companyUser->notify(new TrialLicenseExp($cmp));
-        }
+        // Trial expiration logic disabled
     }
 
     public function updateSubscription(Company $company, Package $package)
