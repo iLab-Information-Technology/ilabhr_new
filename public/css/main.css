@@ -1058,8 +1058,8 @@ AUTHOR URL: https://themeforest.net/user/ajay138/
   --white: #fff;
   --gray: #6c757d;
   --gray-dark: #343a40;
-  --primary: #1d82f5;
-  --secondary: #6c757d;
+  --primary: #544088;
+  --secondary: #e96920;
   --success: #28a745;
   --info: #17a2b8;
   --warning: #FCBD01;
@@ -15299,16 +15299,17 @@ ul.thumbnails.image_picker_selector li .thumbnail.selected {
 }
 
 .sidebar-dark .main-sidebar {
-  background-color: #171f29 !important;
+  background: linear-gradient(180deg, #544088 0%, #3d2d61 100%) !important;
 }
 .sidebar-dark .sidebar-brand-box {
-  background-color: #171f29 !important;
+  background: linear-gradient(135deg, #e96920 0%, #ff7b3d 100%) !important;
+  box-shadow: 0 2px 8px rgba(233, 105, 32, 0.3);
 }
 .sidebar-dark .sidebar-menu {
-  background-color: #171f29 !important;
+  background-color: transparent !important;
 }
 .sidebar-dark .sidebarTogglerBox {
-  background-color: #171f29 !important;
+  background-color: transparent !important;
 }
 
 .sidebar-light .main-sidebar {

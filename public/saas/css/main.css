@@ -35,8 +35,11 @@ AUTHOR: Rakesh Kumar
 }
 
 :root {
-  --main-color: #2a36bb;
-  --main-home-background:#2a36bb;
+  --main-color: #544088;
+  --main-home-background:#544088;
+  --secondary-color: #e96920;
+  --gradient-start: #544088;
+  --gradient-end: #6b52a3;
 }
 
 
@@ -59,7 +62,7 @@ AUTHOR: Rakesh Kumar
   transition: all 300ms linear;
 }
 .navbar .navbar-nav .nav-link:hover, .navbar .navbar-nav .nav-link:focus {
-  color: #000a40;
+  color: #544088;
 }
 
 .navbar .logo {
@@ -79,7 +82,7 @@ AUTHOR: Rakesh Kumar
 
 @media (max-width: 991.98px) {
   .navbar-collapse {
-    background-color: #eef7ff;
+    background-color: #f5f2f9;
     padding: 20px;
     margin-top: 20px;
   }
@@ -244,7 +247,7 @@ AUTHOR: Rakesh Kumar
   margin: 0 10px;
 }
 .client-img .img-holder{
-  background:#f1f4ff;
+  background:#f5f2f9;
   min-height: 110px;
   display: flex;
   align-items: center;
@@ -420,7 +423,7 @@ AUTHOR: Rakesh Kumar
 .cta-section {
   /* background-image: url(../img/home/cta-bg.png); */
   position: relative;
-  background-color: #f1f4ff !important;
+  background-color: #f5f2f9 !important;
   padding:70px 0 40px;
 }
 
@@ -493,7 +496,7 @@ AUTHOR: Rakesh Kumar
 
 /* ===== Contact Section ===== */
 .contact-detail {
-  background-color: #f2f5ff;
+  background-color: #f5f2f9;
   border: 1px solid #e6ebff;
   padding: 35px;
 }
@@ -582,7 +585,7 @@ AUTHOR: Rakesh Kumar
 
 .pricing-table .rate {
   padding: 14px 0;
-  background-color: #f1f4ff;
+  background-color: #f5f2f9;
 }
 .pricing-table .rate h2 span{
    font-size: 30px;
@@ -603,14 +606,14 @@ AUTHOR: Rakesh Kumar
 }
 
 .pricing-table .price-head {
-  background-color: #e0e6fb;
+  background-color: #e8e3f0;
   padding: 15px;
 }
 .pricing-table .price-head h5{
   font-size: 18px !important;
 }
 .pricing-table.price-pro .price-head {
-  background-color:#457de4;
+  background-color:#544088;
 }
 .pricing-table.price-pro .price-head h5{
   color:#fff;
@@ -622,7 +625,7 @@ AUTHOR: Rakesh Kumar
 .pricing-table.price-pro {
   -webkit-box-shadow: 0 1px 30px 1px rgba(0, 0, 0, 0.1) !important;
           box-shadow: 0 1px 30px 1px rgba(0, 0, 0, 0.1) !important;
-  border: 1px solid #457de4 !important;
+  border: 1px solid #544088 !important;
   border-top: 0;
   border-bottom: 0;
 }
@@ -648,7 +651,7 @@ AUTHOR: Rakesh Kumar
 }
 
 .price-content li:nth-child(even) {
-  background-color:#f1f4ff;
+  background-color:#f5f2f9;
 }
 
 @media (min-width: 992px) {
@@ -658,7 +661,7 @@ AUTHOR: Rakesh Kumar
 }
 
 .price-content .blue {
-  color:#457de4;
+  color:#544088;
 }
 
 .price-content .zmdi-close-circle {
@@ -733,7 +736,7 @@ AUTHOR: Rakesh Kumar
 .price-top.title h3 {
   padding: 23px 20px;
   margin-bottom: 0;
-  background-color: #f1f4ff;;
+  background-color: #f5f2f9;;
 }
 
 @media (min-width: 992px) {
@@ -969,8 +972,8 @@ h6 {
 }
 
 .bg-light {
-  background-color:#f1f4ff !important;
-  background-image: -webkit-linear-gradient( -90deg, #f1f4ff 0%, rgb(253, 254, 255) 100%);
+  background-color:#f5f2f9 !important;
+  background-image: -webkit-linear-gradient( -90deg, #f5f2f9 0%, rgb(253, 254, 255) 100%);
 }
 
 .br-10 {
@@ -1728,7 +1731,7 @@ h6 {
 }
 
 .login-section{
-  background-color:#f1f4ff;
+  background-color:#f5f2f9;
   padding-top: 100px;
 }
 .login-box{
@@ -2081,3 +2084,4 @@ h6 {
 .spinner-border{
     vertical-align: middle;
 }
+
