@@ -370,7 +370,7 @@ class Company extends BaseModel
     {
 
         if (is_null($this->logo)) {
-            return asset('img/worksuite-logo.png');
+            return asset('img/ilabhr-logo.png');
         }
 
         return asset_url_local_s3('app-logo/' . $this->logo);
@@ -443,7 +443,7 @@ class Company extends BaseModel
         return Attribute::make(
             get: function () {
                 if (is_null($this->logo)) {
-                    return asset('img/worksuite-logo.png');
+                    return asset('img/ilabhr-logo.png');
                 }
 
                 return $this->generateMaskedImageAppUrl('app-logo/' . $this->logo);

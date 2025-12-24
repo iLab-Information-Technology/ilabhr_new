@@ -427,7 +427,7 @@ class GlobalSetting extends BaseModel
         }
 
         if (is_null($this->light_logo)) {
-            return asset('img/worksuite-logo.png');
+            return asset('img/ilabhr-logo.png');
         }
 
         return asset_url_local_s3('app-logo/' . $this->light_logo);
@@ -437,7 +437,7 @@ class GlobalSetting extends BaseModel
     public function defaultLogo()
     {
         if (is_null($this->logo)) {
-            return asset('img/worksuite-logo.png');
+            return asset('img/ilabhr-logo.png');
         }
 
         return asset_url_local_s3('app-logo/' . $this->logo);
@@ -446,7 +446,7 @@ class GlobalSetting extends BaseModel
     public function getLightLogoUrlAttribute()
     {
         if (is_null($this->light_logo)) {
-            return asset('img/worksuite-logo.png');
+            return asset('img/ilabhr-logo.png');
         }
 
         return asset_url_local_s3('app-logo/' . $this->light_logo);
@@ -455,7 +455,7 @@ class GlobalSetting extends BaseModel
     public function getDarkLogoUrlAttribute()
     {
         if (is_null($this->logo)) {
-            return asset('img/worksuite-logo.png');
+            return asset('img/ilabhr-logo.png');
         }
 
         return asset_url_local_s3('app-logo/' . $this->logo);
@@ -476,7 +476,7 @@ class GlobalSetting extends BaseModel
         return Attribute::make(
             get: function () {
                 if (is_null($this->logo)) {
-                    return asset('img/worksuite-logo.png');
+                    return asset('img/ilabhr-logo.png');
                 }
 
                 return $this->generateMaskedImageAppUrl('app-logo/' . $this->logo);
@@ -500,7 +500,7 @@ class GlobalSetting extends BaseModel
                 }
 
                 if (is_null($this->light_logo)) {
-                    return asset('img/worksuite-logo.png');
+                    return asset('img/ilabhr-logo.png');
                 }
 
                 return $this->generateMaskedImageAppUrl('app-logo/' . $this->light_logo);
@@ -513,7 +513,7 @@ class GlobalSetting extends BaseModel
         return Attribute::make(
             get: function () {
                 if (is_null($this->light_logo)) {
-                    return asset('img/worksuite-logo.png');
+                    return asset('img/ilabhr-logo.png');
                 }
 
                 return $this->generateMaskedImageAppUrl('app-logo/' . $this->light_logo);
@@ -527,7 +527,7 @@ class GlobalSetting extends BaseModel
         return Attribute::make(
             get: function () {
                 if (is_null($this->logo)) {
-                    return asset('img/worksuite-logo.png');
+                    return asset('img/ilabhr-logo.png');
                 }
 
                 return $this->generateMaskedImageAppUrl('app-logo/' . $this->logo);
@@ -570,7 +570,7 @@ class GlobalSetting extends BaseModel
             get: function () {
                 if (is_null($this->logo_front)) {
                     if (is_null($this->logo)) {
-                        return asset('front/img/worksuite-logo.png');
+                        return asset('front/img/ilabhr-logo.png');
                     }
 
                     return $this->logo_url;
@@ -610,7 +610,7 @@ class GlobalSetting extends BaseModel
     {
         if (is_null($this->logo_front)) {
             if (is_null($this->logo)) {
-                return asset('front/img/worksuite-logo.png');
+                return asset('front/img/ilabhr-logo.png');
             }
 
             return $this->logo_url;

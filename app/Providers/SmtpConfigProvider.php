@@ -44,7 +44,7 @@ class SmtpConfigProvider extends ServiceProvider
                 Config::set('app.name', $settings->global_app_name);
 
                 if (is_null($settings->light_logo)) {
-                    Config::set('app.logo', asset('img/worksuite-logo.png'));
+                    Config::set('app.logo', asset('img/ilabhr-logo.png'));
                 }
                 else {
                     Config::set('app.logo', $this->generateMaskedImageAppUrl('app-logo/' . $settings->light_logo));

@@ -93,7 +93,7 @@ if (function_exists('apache_get_modules')) {
 <div class="container">
     <div class="row" style="margin-top: 30px">
         <div class="text-center m-t-20 mt-20">
-            <img class="text-center" src="{{ asset('img/worksuite-logo.png') }}" style="max-height: 40px" alt="Home"/>
+            <img class="text-center" src="{{ asset('img/ilabhr-logo.png') }}" style="max-height: 40px" alt="Home"/>
         </div>
         <div class="bs-example" data-example-id="alerts-with-links" style="margin-top:10px ">
 
