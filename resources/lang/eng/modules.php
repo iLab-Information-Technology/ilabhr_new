@@ -1270,7 +1270,7 @@ return array(
         'systemDetails' => 'System Details',
         'updateTitle' => 'Update To New Version',
         'updateDatabase' => 'Update Database',
-        'fileReplaceAlert' => 'To update the worksuite to the new version check documentation for the instructions.',
+        'fileReplaceAlert' => 'To update iLab to the new version check documentation for the instructions.',
         'updateDatabaseButton' => 'Click to update database',
         'newUpdate' => 'New update available',
         'updateNow' => 'Update Now',

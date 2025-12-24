@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title> Worksuite Not installed</title>
+    <title> iLab Not installed</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="//envato.froid.works/plugins/froiden-helper/helper.css">
     <link href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
