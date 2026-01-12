@@ -63,7 +63,7 @@ class LanguageSetting extends BaseModel
             'language_code' => 'ar',
             'flag_code' => 'sa',
             'language_name' => 'Arabic',
-            'status' => 'disabled',
+            'status' => 'enabled',
 
         ],
         [
