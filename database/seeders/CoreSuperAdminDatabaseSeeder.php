@@ -76,6 +76,16 @@ class CoreSuperAdminDatabaseSeeder extends Seeder
                 'thousand_separator' => ',',
                 'decimal_separator' => '.'
             ],
+            [
+                'currency_name' => 'Saudi Riyal',
+                'currency_symbol' => '﷼',
+                'currency_code' => 'SAR',
+                'exchange_rate' => 1,
+                'currency_position' => 'left',
+                'no_of_decimal' => 2,
+                'thousand_separator' => ',',
+                'decimal_separator' => '.'
+            ],
         ];
 
         GlobalCurrency::insert($globalCurrency);
