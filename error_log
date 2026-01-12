@@ -1,0 +1,40 @@
+[24-Dec-2025 10:28:28 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:28:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:29:28 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:29:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:29:41 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:29:41 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:53:00 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:53:00 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:58:29 UTC] PHP Warning:  require(/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php): Failed to open stream: No such file or directory in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
+[24-Dec-2025 10:58:29 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/dobsykjq/hr.dobs.cloud/vendor/autoload.php' (include_path='.:/opt/alt/php83/usr/share/pear:/opt/alt/php83/usr/share/php:/usr/share/pear:/usr/share/php') in /home/dobsykjq/hr.dobs.cloud/artisan:18
+Stack trace:
+#0 {main}
+  thrown in /home/dobsykjq/hr.dobs.cloud/artisan on line 18
